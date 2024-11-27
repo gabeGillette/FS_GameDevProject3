@@ -30,6 +30,10 @@ public class playerController : MonoBehaviour, IDamage
     [SerializeField][Range(0, 1)] float audHurtVol;
     [SerializeField] AudioClip[] audSteps;
     [SerializeField][Range(0, 1)] float audStepsVol;
+
+    [Header("-----Default Gun-----")]
+    [SerializeField] gunStats defaultGun;
+
     /// <summary>
     /// Contain all Vector2 and Vector3 in this section to keep them organized
     /// </summary>
@@ -54,6 +58,14 @@ public class playerController : MonoBehaviour, IDamage
     void Start()
     {
         HPOriginal = HP;
+
+        if (defaultGun != null && !gunList.Contains(defaultGun))  // Check if gunList doesn't already contain the default gun
+        {
+            // Add the default gun to the player's inventory (gunList)
+            gunList.Add(defaultGun);
+            selectedGun = 0;  // Set the selected gun to the default gun
+            getGunStats(defaultGun);  // Set gun stats and model
+        }
     }
 
     void Update()
@@ -151,8 +163,12 @@ public class playerController : MonoBehaviour, IDamage
 
     public void getGunStats(gunStats gun)
     {
-        gunList.Add(gun);
-        selectedGun = gunList.Count - 1;
+        if (!gunList.Contains(gun)) // Avoid adding the gun again if it's already in the list
+        {
+            gunList.Add(gun);
+        }
+
+       
 
         //Stats
         shootDamage = gun.shootDamage;
