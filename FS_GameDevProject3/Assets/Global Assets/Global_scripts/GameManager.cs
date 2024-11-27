@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     static private GameManager _instance;
 
     private GameObject _player;
+    private PlayerController _playerScript;
 
     private List<GameObject> _evidenceList;
 
@@ -21,7 +22,7 @@ public class GameManager : MonoBehaviour
 
     public static GameManager Instance => _instance;
     public GameObject Player => _player;
-    public PlayerController PlayerScript => _player.GetComponent<PlayerController>();
+    public PlayerController PlayerScript => _playerScript;
 
     /*--------------------------------------------- PRIVATE METHODS */
 
@@ -30,6 +31,12 @@ public class GameManager : MonoBehaviour
     {
         // find the player
         _player = GameObject.FindWithTag("Player");
+        _playerScript = _player.GetComponent<PlayerController>();
+
+        if (_playerScript == null)
+        {
+            Debug.LogError("Player is missing PlayerController!");
+        }
 
         // find all the evidence interactables
         _evidenceList = new List<GameObject>();
