@@ -4,119 +4,123 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class PlayerController : MonoBehaviour
+namespace gabe_indev
 {
 
-    /*-------------------------------------------------------- SERIALIZED FIELDS */
-    [SerializeField] float _speed;
-
-    [SerializeField] float _sprintMod;
-
-    [SerializeField][Range(1, 5)] int _jumpMax;
-
-    [SerializeField][Range(1, 20)] float _jumpSpeed;
-
-    [SerializeField] float _gravity;
-
-    [SerializeField] float _shootRate;
-
-    [SerializeField] GameObject _feetCollider;
-
-
-    /*---------------------------------------------------- PRIVATE CLASS MEMBERS */
-
-    Vector3 _movDir;
-    Vector3 _playerVelocity;
-    bool _isSprinting;
-    bool _isJumping;
-    int _jumpCount;
-
-    CharacterController _controller;
-    PlayerFeet _feet;
-
-
-    /*----------------------------------------------------- PUBLIC CLASS METHODS */
-
-    void Start()
+    public class PlayerController : MonoBehaviour
     {
-        _controller = GetComponent<CharacterController>();
-        _feet = _feetCollider.GetComponent<PlayerFeet>();
-    }
+
+        /*-------------------------------------------------------- SERIALIZED FIELDS */
+        [SerializeField] float _speed;
+
+        [SerializeField] float _sprintMod;
+
+        [SerializeField][Range(1, 5)] int _jumpMax;
+
+        [SerializeField][Range(1, 20)] float _jumpSpeed;
+
+        [SerializeField] float _gravity;
+
+        [SerializeField] float _shootRate;
+
+        [SerializeField] GameObject _feetCollider;
 
 
-    void Update()
-    {
-        // update player movement.
-        Movement();
-        Sprint();
+        /*---------------------------------------------------- PRIVATE CLASS MEMBERS */
 
-    }
+        Vector3 _movDir;
+        Vector3 _playerVelocity;
+        bool _isSprinting;
+        bool _isJumping;
+        int _jumpCount;
+
+        CharacterController _controller;
+        PlayerFeet _feet;
 
 
-    void Sprint()
-    {
-        if (Input.GetButtonDown("Sprint"))
+        /*----------------------------------------------------- PUBLIC CLASS METHODS */
+
+        void Start()
         {
-            _speed *= _sprintMod;
-            _isSprinting = true;
+            _controller = GetComponent<CharacterController>();
+            _feet = _feetCollider.GetComponent<PlayerFeet>();
         }
-        else if (Input.GetButtonUp("Sprint"))
-        {
-            _speed /= _sprintMod;
-            _isSprinting = false;
-        }
-    }
 
-    void Movement()
-    {
-        //if the player is on the ground then reset some values.
-        if (_controller.isGrounded)
+
+        void Update()
         {
-            _jumpCount = 0;
-            _playerVelocity.y = 0;
-            if(_feet.IsColliding)
+            // update player movement.
+            Movement();
+            Sprint();
+
+        }
+
+
+        void Sprint()
+        {
+            if (Input.GetButtonDown("Sprint"))
             {
-                transform.SetParent(_feet.What.transform, true);
-
-
+                _speed *= _sprintMod;
+                _isSprinting = true;
             }
-
-        }
-        else
-        {
-            if (!_feet.IsColliding)
+            else if (Input.GetButtonUp("Sprint"))
             {
-                transform.SetParent(null, true);
+                _speed /= _sprintMod;
+                _isSprinting = false;
             }
         }
 
-
-        // Determine a direction vector based on Input axis and 
-        // update the player controller in the direction scaled by spped/deltatime
-        _movDir = ((transform.forward * Input.GetAxis("Vertical")) +
-          (transform.right * Input.GetAxis("Horizontal")));
-
-        _controller.Move(_movDir * _speed * Time.deltaTime);
-
-        // Check if the player is jumping and jump the player if so.
-        Jump();
-
-        // move the player's controller by playerVelocity
-        _controller.Move(_playerVelocity * Time.deltaTime);
-
-        // Decrease the y axis of the velocity by gravity scaled by deltatime
-        _playerVelocity.y -= _gravity * Time.deltaTime;
-
-    }
-
-    void Jump()
-    {
-        if (Input.GetButtonDown("Jump") && _jumpCount < _jumpMax)
+        void Movement()
         {
-            _jumpCount++;
-            _playerVelocity.y = _jumpSpeed;
-        }
-    }
+            //if the player is on the ground then reset some values.
+            if (_controller.isGrounded)
+            {
+                _jumpCount = 0;
+                _playerVelocity.y = 0;
+                if (_feet.IsColliding)
+                {
+                    transform.SetParent(_feet.What.transform, true);
 
+
+                }
+
+            }
+            else
+            {
+                if (!_feet.IsColliding)
+                {
+                    transform.SetParent(null, true);
+                }
+            }
+
+
+            // Determine a direction vector based on Input axis and 
+            // update the player controller in the direction scaled by spped/deltatime
+            _movDir = ((transform.forward * Input.GetAxis("Vertical")) +
+              (transform.right * Input.GetAxis("Horizontal")));
+
+            _controller.Move(_movDir * _speed * Time.deltaTime);
+
+            // Check if the player is jumping and jump the player if so.
+            Jump();
+
+            // move the player's controller by playerVelocity
+            _controller.Move(_playerVelocity * Time.deltaTime);
+
+            // Decrease the y axis of the velocity by gravity scaled by deltatime
+            _playerVelocity.y -= _gravity * Time.deltaTime;
+
+        }
+
+        void Jump()
+        {
+            if (Input.GetButtonDown("Jump") && _jumpCount < _jumpMax)
+            {
+                _jumpCount++;
+                _playerVelocity.y = _jumpSpeed;
+            }
+        }
+
+    }
 }
 
