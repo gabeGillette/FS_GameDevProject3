@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - Evidence
+  - PlayerSpawn
   layers:
   - Default
   - TransparentFX
