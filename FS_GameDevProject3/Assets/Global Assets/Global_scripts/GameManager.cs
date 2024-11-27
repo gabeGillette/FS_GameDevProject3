@@ -4,14 +4,19 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    /*------------------------------------------- SERIALIZED */
+
+    [SerializeField] GameObject _playerPrefab;
+
+
     /*------------------------------------------ PRIVATE MEMBERS */
 
     static private GameManager _instance;
 
     private GameObject _player;
     private playerController _playerScript;
-
     private List<GameObject> _evidenceList;
+    private GameObject _playerSpawn;
 
     private int _evidenceTotal;
     private int _evidenceCollected;
@@ -29,13 +34,14 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        // find the player
-        _player = GameObject.FindWithTag("Player");
-        _playerScript = _player.GetComponent<playerController>();
+        SetPlayerReference();
 
-        if (_playerScript == null)
+        // find the playerspawner
+        _playerSpawn = GameObject.FindWithTag("PlayerSpawn");
+
+        if (_playerSpawn != null)
         {
-            Debug.LogError("Player is missing PlayerController!");
+            RespawnPlayer(_playerSpawn.transform);
         }
 
         // find all the evidence interactables
@@ -60,7 +66,7 @@ public class GameManager : MonoBehaviour
         Debug.Log("Collected " + pickup.name);
 
         // get component
-        IPickup pickupScript = pickup.GetComponent<IPickup>();
+        pickup.TryGetComponent<IPickup>(out IPickup pickupScript);
 
         // fire event
         if (pickupScript != null)
@@ -76,6 +82,39 @@ public class GameManager : MonoBehaviour
 
         // destroy the object
         Destroy(pickup);
+    }
+
+
+    public void RespawnPlayer(Transform spawnPoint)
+    {
+        if (_player != null)
+        {
+            // despawn the player if it's already in the scene
+            Destroy(_player);
+        }
+
+        // instantiate a new player
+        Instantiate(_playerPrefab, spawnPoint.position, spawnPoint.rotation);
+
+        SetPlayerReference();
+    }
+
+
+    private void SetPlayerReference()
+    {
+        // find the player
+        _player = GameObject.FindWithTag("Player");
+
+        if (_player == null)
+        {
+            Debug.LogError("Player does not exist!");
+        }
+
+        _player.TryGetComponent<playerController>(out _playerScript);
+        if (_playerScript == null)
+        {
+            Debug.LogError("Player is missing PlayerController!");
+        }
     }
 
 
