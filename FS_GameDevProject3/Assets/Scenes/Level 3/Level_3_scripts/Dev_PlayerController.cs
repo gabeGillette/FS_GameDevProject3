@@ -20,7 +20,9 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] float _shootRate;
 
-    
+    [SerializeField] GameObject _feetCollider;
+
+
     /*---------------------------------------------------- PRIVATE CLASS MEMBERS */
 
     Vector3 _movDir;
@@ -28,7 +30,9 @@ public class PlayerController : MonoBehaviour
     bool _isSprinting;
     bool _isJumping;
     int _jumpCount;
+
     CharacterController _controller;
+    PlayerFeet _feet;
 
 
     /*----------------------------------------------------- PUBLIC CLASS METHODS */
@@ -36,6 +40,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         _controller = GetComponent<CharacterController>();
+        _feet = _feetCollider.GetComponent<PlayerFeet>();
     }
 
 
@@ -64,12 +69,27 @@ public class PlayerController : MonoBehaviour
 
     void Movement()
     {
-        // if the player is on the ground then reset some values.
+        //if the player is on the ground then reset some values.
         if (_controller.isGrounded)
         {
             _jumpCount = 0;
             _playerVelocity.y = 0;
+            if(_feet.IsColliding)
+            {
+                transform.SetParent(_feet.What.transform, true);
+
+
+            }
+
         }
+        else
+        {
+            if (!_feet.IsColliding)
+            {
+                transform.SetParent(null, true);
+            }
+        }
+
 
         // Determine a direction vector based on Input axis and 
         // update the player controller in the direction scaled by spped/deltatime
@@ -98,6 +118,5 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-   
 }
 
