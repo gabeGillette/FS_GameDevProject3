@@ -31,4 +31,15 @@ public class GameOptions : ScriptableObject
 
     [Tooltip("Camera FOV in degrees")]
     [SerializeField, Range(60, 100)] float _CameraFOV;
+
+
+    public float XLookSens { get { return _xLookSens; } set { _xLookSens = value; } }
+    public float YLookSens { get { return _yLookSens; } set { _yLookSens = value; } }
+    public bool InvertAim { get { return _invertAim; } set { _invertAim = value; } }
+    public float MasterSoundVol { get { return _masterSoundVol; } set { _masterSoundVol = value; } }
+    public float SFXSoundVol { get { return _sfxVolume; } set { _sfxVolume = value; } }
+    public float MusicSoundVol { get { return _musicVolume; } set { _musicVolume = value; } }
+    public float VoiceSoundVol { get { return _voiceVolume; } set { _voiceVolume = value; } }
+    public float CameraFOV { get { return _CameraFOV; } set { _CameraFOV = value; } }
+
 }

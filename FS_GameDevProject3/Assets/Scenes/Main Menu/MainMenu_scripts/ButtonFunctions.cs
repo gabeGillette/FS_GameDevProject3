@@ -14,4 +14,10 @@ public class ButtonFunctions : MonoBehaviour
     {
         UnityEngine.SceneManagement.SceneManager.LoadScene(id);
     }
+
+
+    public void OpenOptionsMenu()
+    {
+        //
+    }
 }
