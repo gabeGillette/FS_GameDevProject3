@@ -145,8 +145,18 @@ public class enemeyWandererAI : MonoBehaviour
 
     bool CanSeePlayer()
     {
-        // Raycast or other visibility logic
-        return Vector3.Distance(transform.position, player.position) < chaseRange;
+        // Define a LayerMask that excludes the HidingSpot layer
+        int layerMask = ~(1 << LayerMask.NameToLayer("HidingSpot")); // Excludes HidingSpot
+
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, (player.position - transform.position).normalized, out hit, chaseRange, layerMask))
+        {
+            if (hit.transform.CompareTag("Player"))
+            {
+                return true; // Player is visible
+            }
+        }
+        return false; // Player is not visible
     }
 
     bool PlayerIsHiding(out Transform hidingSpot)
