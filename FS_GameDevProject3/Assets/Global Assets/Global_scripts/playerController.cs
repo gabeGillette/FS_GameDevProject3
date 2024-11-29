@@ -6,65 +6,70 @@ using UnityEngine;
 public class playerController : MonoBehaviour, IDamage
 {
     [Header("-----Components-----")]
-    [SerializeField] LayerMask ignoreMask;
-    [SerializeField] CharacterController controller;
+    [SerializeField] LayerMask _ignoreMask;
+    [SerializeField] CharacterController _controller;
 
     [Header("-----Stats-----")]
-    [SerializeField][Range(0, 100)] int HP;
-    [SerializeField][Range(1, 5)] int moveSpeed;
-    [SerializeField][Range(2, 5)] int sprintMod;
-    [SerializeField][Range(1, 3)] int jumpMax;
-    [SerializeField][Range(5, 20)] int jumpSpeed;
-    [SerializeField][Range(15, 40)] int gravity;
+    [SerializeField][Range(0, 100)] int _HP;
+    [SerializeField][Range(1, 5)] int _moveSpeed;
+    [SerializeField][Range(2, 5)] int _sprintMod;
+    [SerializeField][Range(1, 3)] int _jumpMax;
+    [SerializeField][Range(5, 20)] int _jumpSpeed;
+    [SerializeField][Range(15, 40)] int _gravity;
 
     [Header("-----Guns-----")]
-    [SerializeField] List<gunStats> gunList = new List<gunStats>();
-    [SerializeField] GameObject gunModel;
-    [SerializeField] GameObject muzzleFlashLgt;
+    [SerializeField] List<gunStats> _gunList = new List<gunStats>();
+    [SerializeField] GameObject _gunModel;
+    [SerializeField] GameObject _muzzleFlashLgt;
 
     [Header("-----Audio-----")]
-    [SerializeField] AudioSource aud;
-    [SerializeField] AudioClip[] audJump;
-    [SerializeField] [Range(0, 1)] float audJumpVol;
-    [SerializeField] AudioClip[] audHurt;
-    [SerializeField][Range(0, 1)] float audHurtVol;
-    [SerializeField] AudioClip[] audSteps;
-    [SerializeField][Range(0, 1)] float audStepsVol;
+    [SerializeField] AudioSource _aud;
+    [SerializeField] AudioClip[] _audJump;
+    [SerializeField] [Range(0, 1)] float _audJumpVol;
+    [SerializeField] AudioClip[] _audHurt;
+    [SerializeField][Range(0, 1)] float _audHurtVol;
+    [SerializeField] AudioClip[] _audSteps;
+    [SerializeField][Range(0, 1)] float _audStepsVol;
 
     [Header("-----Default Gun-----")]
-    [SerializeField] gunStats defaultGun;
+    [SerializeField] gunStats _defaultGun;
 
     /// <summary>
     /// Contain all Vector2 and Vector3 in this section to keep them organized
     /// </summary>
-    Vector3 moveDir;
-    Vector3 playerVel;
+    Vector3 _moveDir;
+    Vector3 _playerVel;
 
     /// <summary>
     /// Contain all private variables in this section that will determine controlling capabilities of the character to including future plans for shooting and sounds
     /// </summary>
-    bool isSprinting;
-    bool isShooting;
-    bool isPlayingSteps;
+    bool _isSprinting;
+    bool _isShooting;
+    bool _isPlayingSteps;
 
-    int jumpCount;
-    int HPOriginal;
-    int selectedGun;
-    int shootDamage;
-    int shootDist;
+    int _jumpCount;
+    int _HPOriginal;
+    int _selectedGun;
+    int _shootDamage;
+    int _shootDist;
 
-    float shootRate;
+    float _shootRate;
+
+    public int HP => _HP;
+    public int HPOriginal => _HPOriginal;
+    public List<gunStats> GunList => _gunList;
+    public gunStats SelectedGun => GunList[_selectedGun];
 
     void Start()
     {
-        HPOriginal = HP;
+        _HPOriginal = _HP;
 
-        if (defaultGun != null && !gunList.Contains(defaultGun))  // Check if gunList doesn't already contain the default gun
+        if (_defaultGun != null && !_gunList.Contains(_defaultGun))  // Check if gunList doesn't already contain the default gun
         {
             // Add the default gun to the player's inventory (gunList)
-            gunList.Add(defaultGun);
-            selectedGun = 0;  // Set the selected gun to the default gun
-            getGunStats(defaultGun);  // Set gun stats and model
+            _gunList.Add(_defaultGun);
+            _selectedGun = 0;  // Set the selected gun to the default gun
+            getGunStats(_defaultGun);  // Set gun stats and model
         }
     }
 
@@ -102,28 +107,28 @@ public class playerController : MonoBehaviour, IDamage
     void movement()
     {
         //Reset the jumpCount on the ground and reset the playerVelocity so gravity doesn't keep building
-        if(controller.isGrounded)
+        if(_controller.isGrounded)
         {
-            jumpCount = 0;
-            playerVel = Vector3.zero;
+            _jumpCount = 0;
+            _playerVel = Vector3.zero;
         }
 
-        moveDir = (transform.forward * Input.GetAxis("Vertical")) + (transform.right * Input.GetAxis("Horizontal"));
-        controller.Move(moveDir * moveSpeed * Time.deltaTime);
+        _moveDir = (transform.forward * Input.GetAxis("Vertical")) + (transform.right * Input.GetAxis("Horizontal"));
+        _controller.Move(_moveDir * _moveSpeed * Time.deltaTime);
 
         Jump();
 
-        controller.Move(playerVel * Time.deltaTime);
-        playerVel.y -= gravity * Time.deltaTime;
+        _controller.Move(_playerVel * Time.deltaTime);
+        _playerVel.y -= _gravity * Time.deltaTime;
 
         
     }
     void Jump()
     {
-        if (Input.GetButtonDown("Jump") && jumpCount < jumpMax)
+        if (Input.GetButtonDown("Jump") && _jumpCount < _jumpMax)
         {
-            jumpCount++;
-            playerVel.y = jumpSpeed;
+            _jumpCount++;
+            _playerVel.y = _jumpSpeed;
         }
     }
 
@@ -131,19 +136,19 @@ public class playerController : MonoBehaviour, IDamage
     {
         if (Input.GetButtonDown("Sprint"))
         {
-            moveSpeed *= sprintMod;
-            isSprinting = true;
+            _moveSpeed *= _sprintMod;
+            _isSprinting = true;
         }
         else if (Input.GetButtonUp("Sprint"))
         {
-            moveSpeed /= sprintMod;
-            isSprinting = false;
+            _moveSpeed /= _sprintMod;
+            _isSprinting = false;
         }
     }
 
     public void takeDamage (int amount)
     {
-        HP -= amount;
+        _HP -= amount;
 
         ////What will the game Manager do if you hit 0 HP
         //if(HP <= 0)
@@ -163,61 +168,61 @@ public class playerController : MonoBehaviour, IDamage
 
     public void getGunStats(gunStats gun)
     {
-        if (!gunList.Contains(gun)) // Avoid adding the gun again if it's already in the list
+        if (!_gunList.Contains(gun)) // Avoid adding the gun again if it's already in the list
         {
-            gunList.Add(gun);
+            _gunList.Add(gun);
         }
 
        
 
         //Stats
-        shootDamage = gun.shootDamage;
-        shootDist = gun.shootDistance;
-        shootRate = gun.shootRate;
+        _shootDamage = gun.shootDamage;
+        _shootDist = gun.shootDistance;
+        _shootRate = gun.shootRate;
 
         //Visual
-        gunModel.GetComponent<MeshFilter>().sharedMesh = gun.gunModel.GetComponent<MeshFilter>().sharedMesh;
-        gunModel.GetComponent<MeshRenderer>().sharedMaterial = gun.gunModel.GetComponent<MeshRenderer>().sharedMaterial;
+        _gunModel.GetComponent<MeshFilter>().sharedMesh = gun.gunModel.GetComponent<MeshFilter>().sharedMesh;
+        _gunModel.GetComponent<MeshRenderer>().sharedMaterial = gun.gunModel.GetComponent<MeshRenderer>().sharedMaterial;
     }
 
     void selectGun()
     {
-        if(Input.GetAxis("Mouse ScrollWheel") > 0 && selectedGun < gunList.Count - 1)
+        if(Input.GetAxis("Mouse ScrollWheel") > 0 && _selectedGun < _gunList.Count - 1)
         {
-            selectedGun++;
+            _selectedGun++;
             changeGun();
         }
-        else if (Input.GetAxis("Mouse ScrollWheel") < 0 && selectedGun > 0)
+        else if (Input.GetAxis("Mouse ScrollWheel") < 0 && _selectedGun > 0)
         {
-            selectedGun--;
+            _selectedGun--;
             changeGun();
         }
     }
 
     void changeGun()
     {
-        shootDamage = gunList[selectedGun].shootDamage;
-        shootDist = gunList[selectedGun].shootDistance;
-        shootRate = gunList[selectedGun].shootRate;
+        _shootDamage = _gunList[_selectedGun].shootDamage;
+        _shootDist = _gunList[_selectedGun].shootDistance;
+        _shootRate = _gunList[_selectedGun].shootRate;
 
-        gunModel.GetComponent<MeshFilter>().sharedMesh = gunList[selectedGun].gunModel.GetComponent<MeshFilter>().sharedMesh;
-        gunModel.GetComponent<MeshRenderer>().sharedMaterial = gunList[selectedGun].gunModel.GetComponent<MeshRenderer>().sharedMaterial;
+        _gunModel.GetComponent<MeshFilter>().sharedMesh = _gunList[_selectedGun].gunModel.GetComponent<MeshFilter>().sharedMesh;
+        _gunModel.GetComponent<MeshRenderer>().sharedMaterial = _gunList[_selectedGun].gunModel.GetComponent<MeshRenderer>().sharedMaterial;
     }
 
     void reload()
     {
-        if(Input.GetButtonDown("Reload") && gunList.Count > 0)
+        if(Input.GetButtonDown("Reload") && _gunList.Count > 0)
         {
-            gunList[selectedGun].ammoCur = gunList[selectedGun].ammoMax;
+            _gunList[_selectedGun].ammoCur = _gunList[_selectedGun].ammoMax;
         }
     }
 
     IEnumerator playStep()
     {
-        isPlayingSteps = true;
-        aud.PlayOneShot(audSteps[Random.Range(0, audSteps.Length)], audStepsVol);
+        _isPlayingSteps = true;
+        _aud.PlayOneShot(_audSteps[Random.Range(0, _audSteps.Length)], _audStepsVol);
 
-        if (!isSprinting)
+        if (!_isSprinting)
         {
             yield return new WaitForSeconds(0.5f);
         }
@@ -225,36 +230,36 @@ public class playerController : MonoBehaviour, IDamage
         {
             yield return new WaitForSeconds(0.3f);
         }
-        isPlayingSteps = false;
+        _isPlayingSteps = false;
     }
     IEnumerator shoot()
     {
-        isShooting = true;
-        gunList[selectedGun].ammoCur--;
-        aud.PlayOneShot(gunList[selectedGun].shootSound[Random.Range(0, gunList[selectedGun].shootSound.Length)], gunList[selectedGun].shootVol);
+        _isShooting = true;
+        _gunList[_selectedGun].ammoCur--;
+        _aud.PlayOneShot(_gunList[_selectedGun].shootSound[Random.Range(0, _gunList[_selectedGun].shootSound.Length)], _gunList[_selectedGun].shootVol);
         StartCoroutine(muzzleFlash());
 
         RaycastHit hit;
-        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, shootDist, ~ignoreMask))
+        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, _shootDist, ~_ignoreMask))
         {
             IDamage dmg = hit.collider.GetComponent<IDamage>();
 
             if (dmg != null)
             {
-                dmg.takeDamage(shootDamage);
+                dmg.takeDamage(_shootDamage);
             }
         }
-        Instantiate(gunList[selectedGun].hitEffect, hit.point, Quaternion.identity);
+        Instantiate(_gunList[_selectedGun].hitEffect, hit.point, Quaternion.identity);
 
-        yield return new WaitForSeconds(shootRate);
-        isShooting = false;
+        yield return new WaitForSeconds(_shootRate);
+        _isShooting = false;
     }
 
     IEnumerator muzzleFlash()
     {
-        muzzleFlashLgt.SetActive(true);
+        _muzzleFlashLgt.SetActive(true);
         yield return new WaitForSeconds(0.05f);
-        muzzleFlashLgt.SetActive(false);
+        _muzzleFlashLgt.SetActive(false);
     }
 
     ///Uncomment when gameManager is implemented for flash damage on the player///

@@ -1,12 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     /*------------------------------------------- SERIALIZED */
 
     [SerializeField] GameObject _playerPrefab;
+    [SerializeField] Image _reticle;
+
+    [SerializeField] TMP_Text _UITopLeft;
+    [SerializeField] TMP_Text _UITopRight;
+    [SerializeField] TMP_Text _UIMessages;
+
+    [SerializeField] [Range(0, 20)] float _messageDuration;
 
 
     /*------------------------------------------ PRIVATE MEMBERS */
@@ -21,6 +31,11 @@ public class GameManager : MonoBehaviour
     private int _evidenceTotal;
     private int _evidenceCollected;
 
+    private int _currentLevel;
+    private string _gameVersion = "0.0.000";
+
+    private List<string> _messageList = new List<string>();
+
     
 
     /*------------------------------------------ PUBLIC ACCESSORS */
@@ -34,7 +49,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        SetPlayerReference();
+        _currentLevel = SceneManager.GetActiveScene().buildIndex;
 
         // find the playerspawner
         _playerSpawn = GameObject.FindWithTag("PlayerSpawn");
@@ -50,6 +65,8 @@ public class GameManager : MonoBehaviour
 
         _evidenceCollected = 0;
         _evidenceTotal = _evidenceList.Count;
+
+        UpdateUI();
     }
 
     
@@ -117,5 +134,25 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void UpdateUI()
+    {
+        _UITopLeft.text = ($"Health: {PlayerScript.HP}\n" +
+            $"Ammo: {PlayerScript.SelectedGun.ammoCur} / {PlayerScript.SelectedGun.ammoMax}\n" +
+            $"Evidence: {_evidenceCollected}/{_evidenceTotal}\n" +
+            $"Monsters Spawned: {0}/{0}\n" +
+            $"Monsters Killed: {0}/{0}");
+
+        _UITopRight.text = ($"Level: {_currentLevel}\n" +
+            $"Version: {_gameVersion}");
+
+        string fullMessage = "";
+
+        foreach(string message in _messageList)
+        {
+            fullMessage += message + "\n";
+        }
+
+        _UIMessages.text = fullMessage;
+    }
 
 }

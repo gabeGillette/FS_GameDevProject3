@@ -14,9 +14,10 @@ public class L3_move_bridge : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        transform.Translate(new Vector3(_speed * Time.deltaTime, 0, 0));
+        //transform.Translate(new Vector3(_speed * Time.deltaTime, 0, 0));
         //gameObject.GetComponent<CharacterController>().Move(new Vector3 (_speed * Time.deltaTime, 0, 0));
+        gameObject.GetComponent<CharacterController>().Move(new Vector3(_speed, 0, 0));
     }
 }
