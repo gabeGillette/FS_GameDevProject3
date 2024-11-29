@@ -17,7 +17,7 @@ namespace gabe_indev
 
         [SerializeField][Range(1, 5)] int _jumpMax;
 
-        [SerializeField][Range(1, 20)] float _jumpSpeed;
+        [SerializeField][Range(0, 20)] float _jumpSpeed;
 
         [SerializeField] float _gravity;
 
@@ -50,9 +50,15 @@ namespace gabe_indev
         void Update()
         {
             // update player movement.
-            Movement();
+            CalcMovement();
             Sprint();
+           
 
+        }
+
+        private void FixedUpdate()
+        {
+            Movement();
         }
 
 
@@ -87,11 +93,20 @@ namespace gabe_indev
             }
             else
             {
-                if (!_feet.IsColliding)
+                /*if (!_feet.IsColliding)
                 {
                     transform.SetParent(null, true);
-                }
+                }*/
+
+                transform.SetParent(null, true);
             }
+
+            _controller.Move(_playerVelocity);
+        }
+
+        void CalcMovement()
+        {
+
 
 
             // Determine a direction vector based on Input axis and 
@@ -99,16 +114,20 @@ namespace gabe_indev
             _movDir = ((transform.forward * Input.GetAxis("Vertical")) +
               (transform.right * Input.GetAxis("Horizontal")));
 
-            _controller.Move(_movDir * _speed * Time.deltaTime);
+            //_controller.Move(_movDir * _speed * Time.deltaTime);
+            _playerVelocity.x = _movDir.x * _speed;
+            _playerVelocity.z = _movDir.z * _speed;
 
             // Check if the player is jumping and jump the player if so.
             Jump();
 
             // move the player's controller by playerVelocity
-            _controller.Move(_playerVelocity * Time.deltaTime);
+            //_controller.Move(_playerVelocity * Time.deltaTime);
 
             // Decrease the y axis of the velocity by gravity scaled by deltatime
-            _playerVelocity.y -= _gravity * Time.deltaTime;
+            //_playerVelocity.y -= _gravity * Time.deltaTime;
+
+            _playerVelocity.y -= _gravity;
 
         }
 

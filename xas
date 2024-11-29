@@ -1,0 +1,33 @@
+Adam McKee (6):
+      PlayerController/GunStats/IDamage Scripts
+      Added Weapons
+      Merge branch 'main' of https://github.com/gabeGillette/FS_GameDevProject3
+      Player Prefab
+      Floor 1 Layout
+      Merge branch 'main' of https://github.com/gabeGillette/FS_GameDevProject3
+
+Gabe Gillette (16):
+      First Commit -Gabriel
+      Debug Main Menu Scene Started -Gabriel
+      Added Scenes for level 1,2,3,4 and made debug menu functional.
+      Created initial folders
+      Added camera controller and temp (level 3 only) player controller.
+      Created defualt gameoptions scriptable object
+      Added start of game options, test player in level 3.
+      Added simple GameManager
+      Game manager now finds all the evidence in the level. IPickup interface added.
+      Removed unused terrain asset.
+      Added PlayerScript getter to GameManager.cs. Modified function name in Ipickup.cs
+      Improved getter for PlayerScript in GameManager.cs
+      Fixed issue with GameManager not being able to find player.
+      Merge branch 'main' of https://github.com/gabeGillette/FS_GameDevProject3
+      Modified player prefab so that it's tagged by default.
+      Added PlayerSpawn object.
+
+Gabriel Gillette (1):
+      Create README.md
+
+Kenton Weaver (2):
+      Base for basic EnemyAI
+      Hiding from enemy
+
