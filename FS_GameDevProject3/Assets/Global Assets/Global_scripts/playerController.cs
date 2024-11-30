@@ -54,14 +54,19 @@ public class playerController : MonoBehaviour, IDamage
     int _shootDist;
 
     float _shootRate;
+    float _lastShotTime = 0f; // Time when the player last shot
 
     public int HP => _HP;
     public int HPOriginal => _HPOriginal;
     public List<gunStats> GunList => _gunList;
     public gunStats SelectedGun => GunList[_selectedGun];
 
+    private GameManager _gameManager;
+
     void Start()
     {
+        _gameManager = FindAnyObjectByType<GameManager>();
+
         _HPOriginal = _HP;
 
         if (_defaultGun != null && !_gunList.Contains(_defaultGun))  // Check if gunList doesn't already contain the default gun
@@ -121,7 +126,13 @@ public class playerController : MonoBehaviour, IDamage
         _controller.Move(_playerVel * Time.deltaTime);
         _playerVel.y -= _gravity * Time.deltaTime;
 
-        
+        if (Input.GetButton("Fire1")  && _gunList[_selectedGun].ammoCur > 0)
+        {
+            if (Time.time - _lastShotTime >= _shootRate && !_isShooting)
+            {
+                StartCoroutine(shoot());
+            }
+        } 
     }
     void Jump()
     {
@@ -214,6 +225,8 @@ public class playerController : MonoBehaviour, IDamage
         if(Input.GetButtonDown("Reload") && _gunList.Count > 0)
         {
             _gunList[_selectedGun].ammoCur = _gunList[_selectedGun].ammoMax;
+            _gameManager.UpdateUI();
+
         }
     }
 
@@ -236,7 +249,7 @@ public class playerController : MonoBehaviour, IDamage
     {
         _isShooting = true;
         _gunList[_selectedGun].ammoCur--;
-        _aud.PlayOneShot(_gunList[_selectedGun].shootSound[Random.Range(0, _gunList[_selectedGun].shootSound.Length)], _gunList[_selectedGun].shootVol);
+       // _aud.PlayOneShot(_gunList[_selectedGun].shootSound[Random.Range(0, _gunList[_selectedGun].shootSound.Length)], _gunList[_selectedGun].shootVol);
         StartCoroutine(muzzleFlash());
 
         RaycastHit hit;
@@ -251,7 +264,14 @@ public class playerController : MonoBehaviour, IDamage
         }
         Instantiate(_gunList[_selectedGun].hitEffect, hit.point, Quaternion.identity);
 
+        Debug.Log("Time between shots: " + (Time.time - _lastShotTime));
+
+        _lastShotTime = Time.time;
+
         yield return new WaitForSeconds(_shootRate);
+
+        _gameManager.UpdateUI();        
+        
         _isShooting = false;
     }
 
