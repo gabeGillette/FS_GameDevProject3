@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Evidence
   - PlayerSpawn
+  - Enemy
   layers:
   - Default
   - TransparentFX
@@ -14,8 +15,8 @@ TagManager:
   - Water
   - UI
   - Player
-  - HidingSpot
-  - ViewModel
+  - 
+  - Enemy
   - 
   - 
   - 
