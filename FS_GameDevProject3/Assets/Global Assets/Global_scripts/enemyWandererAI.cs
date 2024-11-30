@@ -1,164 +1,130 @@
 using System.Collections;
+using System.Collections.Generic;
+using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class enemyWandererAI : MonoBehaviour
+public class enemyAI : MonoBehaviour, IDamage
 {
-    // References
     [SerializeField] private NavMeshAgent agent;
-    [SerializeField] private Animator anim; // Animator for animations
+    [SerializeField] private Renderer model;
+    [SerializeField] private Animator anim;
+    [SerializeField] private Transform AttackPos;
     [SerializeField] private Transform headPos;
-    [SerializeField] private Transform player;
-    [SerializeField] private LayerMask playerLayer;
-    [SerializeField] private LayerMask hidingSpotLayer;
-    [SerializeField] private LayerMask noiseDetectionLayer;
 
-    // Stats
-    [SerializeField] private int HP = 100;
-    [SerializeField] private float roamSpeed = 2f;
-    [SerializeField] private float chaseSpeed = 5f;
-    [SerializeField] private float roamDistance = 10f;
-    [SerializeField] private float meleeRange = 1.5f;
-    [SerializeField] private float meleeRate = 2f; // Time between melee attacks
-    [SerializeField] private float viewAngle = 120f;
-    [SerializeField] private float investigateTime = 5f;
-    [SerializeField] private float hearingRange = 15f;
+    [SerializeField] private int HP;
+    [SerializeField] private int faceTargetSpeed;
+    [SerializeField] private int viewAngle;
+    [SerializeField] private int roamDist;
+    [SerializeField] private int roamTimer;
+    [SerializeField] private int animSpeedTrans;
 
-    // Internal state
-    private Vector3 startPosition;
-    private bool isRoaming = false;
-    private bool isChasing = false;
-    private bool isAttacking = false;
-    private bool isInvestigating = false;
-    private float nextAttackTime = 0f;
+    [SerializeField] private LayerMask detectionLayer;
 
+    [SerializeField] private float attackRate;
+
+    private bool isAttacking;
+    private bool playerInRange;
+    private bool isRoaming;
+
+    private Vector3 playerDir;
+    private Vector3 startingPos;
+
+    private float angleToPlayer;
+    private float stoppingDistOrig;
+
+    // Start is called before the first frame update
     void Start()
     {
-        startPosition = transform.position;
-
-        // Ensure the agent starts with roaming speed
-        agent.speed = roamSpeed;
+        stoppingDistOrig = agent.stoppingDistance;
+        startingPos = transform.position;
     }
 
+    // Update is called once per frame
     void Update()
     {
-        if (!isChasing && !isInvestigating)
-        {
-            if (!isRoaming)
-                StartCoroutine(Roam());
-        }
+        HandleAnimationSpeed();
 
-        if (CanSeePlayer())
+        if (playerInRange && !canSeePlayer())
         {
-            ChasePlayer();
+            Debug.Log("Player is near, but not visible. Enemy roaming.");
+            if (!isRoaming && agent.remainingDistance < 0.05f)
+                StartCoroutine(roam());
         }
-
-        // Update walking animation
-        UpdateWalkingAnimation();
+        else if (!playerInRange)
+        {
+            Debug.Log("Player is out of range. Enemy roaming.");
+            if (!isRoaming && agent.remainingDistance < 0.05f)
+                StartCoroutine(roam());
+        }
     }
 
-    private IEnumerator Roam()
+    private void HandleAnimationSpeed()
+    {
+        float agentSpeed = agent.velocity.magnitude; // Use actual magnitude
+        anim.SetFloat("Speed", Mathf.Lerp(anim.GetFloat("Speed"), agentSpeed, Time.deltaTime * animSpeedTrans));
+    }
+
+    private IEnumerator roam()
     {
         isRoaming = true;
+        yield return new WaitForSeconds(roamTimer);
 
-        // Wait a moment before picking a new destination
-        yield return new WaitForSeconds(Random.Range(1, 3));
+        ResetStoppingDistance();
 
-        Vector3 randomPoint = Random.insideUnitSphere * roamDistance + startPosition;
+        Vector3 randomDist = Random.insideUnitSphere * roamDist;
+        randomDist += startingPos;
+
         NavMeshHit hit;
-
-        if (NavMesh.SamplePosition(randomPoint, out hit, roamDistance, NavMesh.AllAreas))
-        {
-            agent.speed = roamSpeed;
-            agent.SetDestination(hit.position);
-        }
+        NavMesh.SamplePosition(randomDist, out hit, roamDist, 1);
+        agent.SetDestination(hit.position);
 
         isRoaming = false;
     }
 
-    private bool CanSeePlayer()
+    private bool canSeePlayer()
     {
-        Vector3 directionToPlayer = (player.position - headPos.position).normalized;
-        float angleToPlayer = Vector3.Angle(transform.forward, directionToPlayer);
+        if (GameManager.Instance.Player == null) return false; // Handle case where player is null
 
-        if (angleToPlayer < viewAngle / 2f)
+        playerDir = GameManager.Instance.Player.transform.position - headPos.position;
+        angleToPlayer = Vector3.Angle(playerDir, transform.forward);
+
+        Debug.DrawRay(headPos.position, playerDir * 50f, Color.red);
+
+        RaycastHit hit;
+        if (Physics.Raycast(headPos.position, playerDir, out hit, Mathf.Infinity, detectionLayer))
         {
-            RaycastHit hit;
-            if (Physics.Raycast(headPos.position, directionToPlayer, out hit, Mathf.Infinity, playerLayer))
+            if (hit.collider.CompareTag("Player") && angleToPlayer <= viewAngle)
             {
-                if (hit.collider.CompareTag("Player"))
+                agent.SetDestination(GameManager.Instance.Player.transform.position);
+
+                if (agent.remainingDistance <= agent.stoppingDistance)
                 {
-                    // Check if the player is hiding
-                    Collider[] hidingSpots = Physics.OverlapSphere(player.position, 0.5f, hidingSpotLayer);
-                    if (hidingSpots.Length == 0) // No hiding spots nearby
+                    faceTarget();
+
+                    if (!isAttacking)
                     {
-                        return true;
+                        StartCoroutine(meleeAttack());
                     }
                 }
+
+                return true;
             }
         }
         return false;
     }
 
-    private void ChasePlayer()
+    private void faceTarget()
     {
-        isChasing = true;
-        agent.speed = chaseSpeed;
-        agent.SetDestination(player.position);
-
-        if (agent.remainingDistance <= meleeRange)
-        {
-            FacePlayer();
-            if (Time.time >= nextAttackTime)
-            {
-                MeleeAttack();
-                nextAttackTime = Time.time + meleeRate;
-            }
-        }
-        else
-        {
-            isAttacking = false;
-        }
-    }
-
-    private void MeleeAttack()
-    {
-        isAttacking = true;
-        anim.SetTrigger("Attack"); // Play attack animation
-        Debug.Log("Enemy attacks the player!");
-        // Add damage application to the player here
-    }
-
-    private void FacePlayer()
-    {
-        Vector3 direction = (player.position - transform.position).normalized;
-        Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
-        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f);
-    }
-
-    private IEnumerator Investigate(Vector3 soundPosition)
-    {
-        isInvestigating = true;
-        agent.SetDestination(soundPosition);
-
-        yield return new WaitForSeconds(investigateTime);
-
-        isInvestigating = false;
-    }
-
-    public void HearNoise(Vector3 noisePosition)
-    {
-        if (!isChasing)
-        {
-            StartCoroutine(Investigate(noisePosition));
-        }
+        Quaternion rot = Quaternion.LookRotation(playerDir);
+        transform.rotation = Quaternion.Lerp(transform.rotation, rot, Time.deltaTime * faceTargetSpeed);
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            isChasing = true;
+            playerInRange = true;
         }
     }
 
@@ -166,32 +132,60 @@ public class enemyWandererAI : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            isChasing = false;
-            agent.speed = roamSpeed; // Return to roaming speed
+            playerInRange = false;
+            ResetStoppingDistance();
         }
     }
 
-    public void TakeDamage(int amount)
+    private IEnumerator meleeAttack()
+    {
+        isAttacking = true; // Prevent multiple melee attacks
+        anim.SetTrigger("Attack");
+
+        // Apply damage if the player is within range
+        Collider[] hitPlayers = Physics.OverlapSphere(AttackPos.position, agent.stoppingDistance);
+        foreach (Collider player in hitPlayers)
+        {
+            if (player.CompareTag("Player"))
+            {
+                Debug.Log("Enemy attacks the player!");
+                player.GetComponent<playerController>()?.takeDamage(10); // Adjust damage value
+            }
+        }
+
+        yield return new WaitForSeconds(attackRate);
+        isAttacking = false;
+    }
+
+    public void takeDamage(int amount)
     {
         HP -= amount;
-        anim.SetTrigger("Hit"); // Play hit animation
+
+        if (HP > 0) // Only stagger if still alive
+        {
+            anim.SetTrigger("Hit"); // Play hit animation
+        }
 
         if (HP <= 0)
         {
-            Die();
+            anim.SetTrigger("Die"); // Play death animation
+            Destroy(gameObject, 2f); // Delay destruction for animation
         }
     }
 
-    private void Die()
+    private void ResetStoppingDistance()
     {
-        Debug.Log("Enemy defeated!");
-        anim.SetTrigger("Die"); // Play death animation
-        Destroy(gameObject, 2f); // Delay destruction to let the death animation play
+        agent.stoppingDistance = 0;
+        isAttacking = false;
     }
 
-    private void UpdateWalkingAnimation()
+    private void OnDrawGizmosSelected()
     {
-        float speedPercent = agent.velocity.magnitude / chaseSpeed;
-        anim.SetFloat("Speed", speedPercent); // Assuming the Animator has a "Speed" parameter
+        // Visualize melee attack range in the Scene view
+        if (AttackPos != null)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(AttackPos.position, agent.stoppingDistance);
+        }
     }
 }
