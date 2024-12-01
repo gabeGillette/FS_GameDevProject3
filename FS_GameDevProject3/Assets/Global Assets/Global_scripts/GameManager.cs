@@ -138,7 +138,7 @@ public class GameManager : MonoBehaviour
     public void UpdateUI()
     {
         _UITopLeft.text = ($"Health: {PlayerScript.HP}\n" +
-            $"Ammo: {PlayerScript.SelectedGun.ammoCur} / {PlayerScript.SelectedGun.ammoMax}\n" +
+            $"Ammo: {PlayerScript.SelectedGun.ammoCur} / {PlayerScript.SelectedGun.ammoRes}\n" +
             $"Evidence: {_evidenceCollected}/{_evidenceTotal}\n" +
             $"Monsters Spawned: {0}/{0}\n" +
             $"Monsters Killed: {0}/{0}");

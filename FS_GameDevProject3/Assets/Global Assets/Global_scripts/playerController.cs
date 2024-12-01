@@ -63,19 +63,31 @@ public class playerController : MonoBehaviour, IDamage
 
     private GameManager _gameManager;
 
-    void Start()
+  
+    void Awake()
     {
         _gameManager = FindAnyObjectByType<GameManager>();
+        // Add the default gun to the player's inventory (gunList)
+        _gunList.Add(_defaultGun);
+        _selectedGun = _gunList.Count - 1;  // Set the selected gun to the default gun
+        getGunStats(_defaultGun);  // Set gun stats and model
+        
+    }
 
+    void Start()
+    {
         _HPOriginal = _HP;
 
-        if (_defaultGun != null && !_gunList.Contains(_defaultGun))  // Check if gunList doesn't already contain the default gun
+        if (_gunList[_selectedGun].ammoCur > _gunList[_selectedGun].ammoMax)
         {
-            // Add the default gun to the player's inventory (gunList)
-            _gunList.Add(_defaultGun);
-            _selectedGun = 0;  // Set the selected gun to the default gun
-            getGunStats(_defaultGun);  // Set gun stats and model
+            _gunList[_selectedGun].ammoCur = _gunList[_selectedGun].ammoMax;
         }
+
+
+
+
+        _gameManager.UpdateUI();
+
     }
 
     void Update()
@@ -88,9 +100,14 @@ public class playerController : MonoBehaviour, IDamage
         //    reload();
         //}
         
-        
-        
-        
+        if (_gunList[_selectedGun].ammoRes < 0)
+        {
+            _gunList[_selectedGun].ammoRes = 0;
+            _gameManager.UpdateUI();
+
+        }
+
+
         movement();
         selectGun();
         reload();
@@ -224,8 +241,32 @@ public class playerController : MonoBehaviour, IDamage
     {
         if(Input.GetButtonDown("Reload") && _gunList.Count > 0)
         {
-            _gunList[_selectedGun].ammoCur = _gunList[_selectedGun].ammoMax;
-            _gameManager.UpdateUI();
+
+            int currentRes = _gunList[_selectedGun].ammoRes;
+
+            //Check to see if there is ammo in the reserves
+            if (_gunList[_selectedGun].ammoRes != 0)
+            {
+                //Variable to hold the ammo currently in the gun and subtract that from the max so there is no wasted ammo
+                int ammoToAdd = (_gunList[_selectedGun].ammoMax - _gunList[_selectedGun].ammoCur);
+                Debug.Log(ammoToAdd);
+                
+                //Reload the gun to max ammo
+                
+               if (currentRes < _gunList[_selectedGun].ammoMax)
+                {
+                    _gunList[_selectedGun].ammoCur += currentRes;
+                    _gunList[_selectedGun].ammoRes -= currentRes;
+                    _gameManager.UpdateUI();
+                }
+                else
+                {
+                    _gunList[_selectedGun].ammoCur += ammoToAdd;
+                    _gunList[_selectedGun].ammoRes -= ammoToAdd;
+                    _gameManager.UpdateUI();
+                }
+            }
+            
 
         }
     }
@@ -248,8 +289,11 @@ public class playerController : MonoBehaviour, IDamage
     IEnumerator shoot()
     {
         _isShooting = true;
+
         _gunList[_selectedGun].ammoCur--;
-       // _aud.PlayOneShot(_gunList[_selectedGun].shootSound[Random.Range(0, _gunList[_selectedGun].shootSound.Length)], _gunList[_selectedGun].shootVol);
+        _gameManager.UpdateUI();
+
+        // _aud.PlayOneShot(_gunList[_selectedGun].shootSound[Random.Range(0, _gunList[_selectedGun].shootSound.Length)], _gunList[_selectedGun].shootVol);
         StartCoroutine(muzzleFlash());
 
         RaycastHit hit;
@@ -264,13 +308,13 @@ public class playerController : MonoBehaviour, IDamage
         }
         Instantiate(_gunList[_selectedGun].hitEffect, hit.point, Quaternion.identity);
 
-        Debug.Log("Time between shots: " + (Time.time - _lastShotTime));
+       // Debug.Log(hit.collider.name);
+       // Debug.Log("Time between shots: " + (Time.time - _lastShotTime));
 
         _lastShotTime = Time.time;
 
         yield return new WaitForSeconds(_shootRate);
 
-        _gameManager.UpdateUI();        
         
         _isShooting = false;
     }

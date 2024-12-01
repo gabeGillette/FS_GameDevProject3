@@ -165,9 +165,7 @@ MonoBehaviour:
   _jumpMax: 1
   _jumpSpeed: 13
   _gravity: 28
-  _gunList:
-  - {fileID: 11400000, guid: 7ceaea2ab0275224caeca105a2388aa4, type: 2}
-  - {fileID: 11400000, guid: 1d5059b77f419bc4fbed0d1d0e62e103, type: 2}
+  _gunList: []
   _gunModel: {fileID: 928731692731131764}
   _muzzleFlashLgt: {fileID: 1733554781026060419}
   _aud: {fileID: 0}
