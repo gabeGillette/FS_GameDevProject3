@@ -18,6 +18,8 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] [Range(0, 20)] float _messageDuration;
 
+    [SerializeField] TextAsset _versionFile;
+
 
     /*------------------------------------------ PRIVATE MEMBERS */
 
@@ -32,7 +34,6 @@ public class GameManager : MonoBehaviour
     private int _evidenceCollected;
 
     private int _currentLevel;
-    private string _gameVersion = "0.0.000";
 
     private List<string> _messageList = new List<string>();
 
@@ -143,7 +144,7 @@ public class GameManager : MonoBehaviour
             $"Monsters Killed: {0}/{0}");
 
         _UITopRight.text = ($"Level: {_currentLevel}\n" +
-            $"Version: {_gameVersion}");
+            $"Version: {_versionFile.text}");
 
         string fullMessage = "";
 

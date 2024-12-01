@@ -50,6 +50,7 @@ MonoBehaviour:
   _UITopRight: {fileID: 6838099876380327575}
   _UIMessages: {fileID: 3070601579686523831}
   _messageDuration: 2.6
+  _versionFile: {fileID: 4900000, guid: 35c4f19d0d371284189df6fdd20eebbc, type: 3}
 --- !u!1 &2486051270981894069
 GameObject:
   m_ObjectHideFlags: 0

@@ -264,6 +264,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1823298720586367622, guid: 76109f1f08ff88345babda569dc9fb9b, type: 3}
+      propertyPath: m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4010195110198444045, guid: 76109f1f08ff88345babda569dc9fb9b, type: 3}
       propertyPath: m_Name
       value: MainMenuUI_debug

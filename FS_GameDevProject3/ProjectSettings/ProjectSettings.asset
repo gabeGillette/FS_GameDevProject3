@@ -770,8 +770,8 @@ PlayerSettings:
   apiCompatibilityLevelPerPlatform: {}
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
-  metroPackageName: FS_GameDevProject3
-  metroPackageVersion: 
+  metroPackageName: FSGameDevProject3
+  metroPackageVersion: 1.0.0.0
   metroCertificatePath: 
   metroCertificatePassword: 
   metroCertificateSubject: 
@@ -779,7 +779,7 @@ PlayerSettings:
   metroCertificateNotAfter: 0000000000000000
   metroApplicationDescription: FS_GameDevProject3
   wsaImages: {}
-  metroTileShortName: 
+  metroTileShortName: FS_GameDevProject3
   metroTileShowName: 0
   metroMediumTileShowName: 0
   metroLargeTileShowName: 0
