@@ -165,9 +165,13 @@ MonoBehaviour:
   _jumpMax: 1
   _jumpSpeed: 13
   _gravity: 28
+  _crouchHeight: 0.5
+  _normalHeight: 2
+  _crouchSpeedModifier: 0.5
   _gunList: []
   _gunModel: {fileID: 928731692731131764}
   _muzzleFlashLgt: {fileID: 1733554781026060419}
+  _muzzlePosition: {fileID: 5221351691570569604}
   _aud: {fileID: 0}
   _audJump: []
   _audJumpVol: 0
@@ -275,6 +279,37 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &2184826311040026435
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5221351691570569604}
+  m_Layer: 8
+  m_Name: BulletStartLoc
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5221351691570569604
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2184826311040026435}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.009, y: 0.471, z: 0.762}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 551783456511802830}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6935188812029657834
 GameObject:
   m_ObjectHideFlags: 0
@@ -556,6 +591,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4df3ce82db8e66645afd54ab1d5b0262, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5279192530335828872}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4df3ce82db8e66645afd54ab1d5b0262, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5221351691570569604}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4df3ce82db8e66645afd54ab1d5b0262, type: 3}
 --- !u!4 &551783456511802830 stripped

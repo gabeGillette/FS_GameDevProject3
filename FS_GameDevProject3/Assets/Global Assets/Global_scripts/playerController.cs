@@ -17,10 +17,17 @@ public class playerController : MonoBehaviour, IDamage
     [SerializeField][Range(5, 20)] int _jumpSpeed;
     [SerializeField][Range(15, 40)] int _gravity;
 
+    [Header("-----Crouch-----")]
+    [SerializeField] float _crouchHeight = 0.5f; // Height of the character while crouching
+    [SerializeField] float _normalHeight = 2.0f; // Normal height when standing
+    [SerializeField] float _crouchSpeedModifier = 0.5f; // Speed modifier when crouching
+    private bool _isCrouching = false; // Track crouch state
+
     [Header("-----Guns-----")]
     [SerializeField] List<gunStats> _gunList = new List<gunStats>();
     [SerializeField] GameObject _gunModel;
     [SerializeField] GameObject _muzzleFlashLgt;
+    [SerializeField] Transform _muzzlePosition;
 
     [Header("-----Audio-----")]
     [SerializeField] AudioSource _aud;
@@ -109,6 +116,7 @@ public class playerController : MonoBehaviour, IDamage
 
 
         movement();
+        //crouch();
         selectGun();
         reload();
         sprint();
@@ -173,6 +181,32 @@ public class playerController : MonoBehaviour, IDamage
             _isSprinting = false;
         }
     }
+
+    //void crouch()
+    //{
+    //    if (Input.GetButtonDown("Crouch") && !_isSprinting)  // Check crouch input and ensure player isn't sprinting
+    //    {
+    //        _isCrouching = !_isCrouching; // Toggle crouch state
+
+    //        float heightDifference = _normalHeight - _crouchHeight;
+
+    //        if (_isCrouching)
+    //        {
+    //            _controller.height = _crouchHeight; // Reduce the character's height
+    //            _controller.center = new Vector3(0, _crouchHeight / 2, 0); // Adjust the center of the character's collider for proper positioning
+    //            _moveSpeed = Mathf.RoundToInt(_moveSpeed * _crouchSpeedModifier); // Modify speed when crouching
+    //        }
+    //        else
+    //        {
+    //            _controller.height = _normalHeight; // Reset to normal height
+    //            _controller.center = new Vector3(0, _normalHeight / 2, 0); // Reset the collider center
+    //            _moveSpeed = Mathf.RoundToInt(_moveSpeed / _crouchSpeedModifier); // Reset speed to normal
+
+    //            transform.position += new Vector3(0, heightDifference / 2, 0);
+
+    //        }
+    //    }
+    //}
 
     public void takeDamage (int amount)
     {
@@ -295,6 +329,14 @@ public class playerController : MonoBehaviour, IDamage
 
         // _aud.PlayOneShot(_gunList[_selectedGun].shootSound[Random.Range(0, _gunList[_selectedGun].shootSound.Length)], _gunList[_selectedGun].shootVol);
         StartCoroutine(muzzleFlash());
+
+        GameObject bullet = Instantiate(_gunList[_selectedGun].bulletPrefab, _muzzlePosition.position, Camera.main.transform.rotation);
+        Rigidbody bulletRb = bullet.GetComponent<Rigidbody>();
+        if (bulletRb != null)
+        {
+            // Add forward force to the bullet to simulate its movement
+            bulletRb.AddForce(Camera.main.transform.forward * _shootDist, ForceMode.VelocityChange);
+        }
 
         RaycastHit hit;
         if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, _shootDist, ~_ignoreMask))
