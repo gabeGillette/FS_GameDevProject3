@@ -37,6 +37,9 @@ public class GameManager : MonoBehaviour
 
     private List<string> _messageList = new List<string>();
 
+    private bool _isPaused;
+    private float _timeScale;
+
     
 
     /*------------------------------------------ PUBLIC ACCESSORS */
@@ -50,6 +53,9 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
+        _isPaused = false;
+        _timeScale = 1.0f;
+
         _currentLevel = SceneManager.GetActiveScene().buildIndex;
 
         // find the playerspawner
@@ -70,7 +76,21 @@ public class GameManager : MonoBehaviour
         UpdateUI();
     }
 
-    
+    public void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (!_isPaused) {
+                pauseGame();
+            }
+            else
+            {
+                unpauseGame();
+            }
+                   
+        }
+    }
+
     public void CollectEvidence()
     {
         _evidenceCollected++;
@@ -154,6 +174,18 @@ public class GameManager : MonoBehaviour
         }
 
         _UIMessages.text = fullMessage;
+    }
+
+    public void pauseGame()
+    {
+        _isPaused = true;
+        Time.timeScale = 0.0f;
+    }
+
+    public void unpauseGame()
+    {
+        _isPaused = false;
+        Time.timeScale = _timeScale;
     }
 
 }
