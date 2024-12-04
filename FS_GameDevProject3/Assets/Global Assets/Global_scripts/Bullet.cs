@@ -14,11 +14,15 @@ public class Bullet : MonoBehaviour
     // Optionally, you can use this to deal damage or create effects
     public int damage = 10; // Example damage, adjust based on your needs
 
+    [SerializeField] private GameObject impactEffectPrefab; //Particle effect for when the bullet hits the target
+
     void Start()
     {
         _rigidbody = GetComponent<Rigidbody>(); // If needed for physics
         _timeAlive = 0f; // Initialize the time timer to 0
 
+        Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), gameObject.layer, true); //make the bullet ignore the player
+        Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Gun"), gameObject.layer, true); //make the bullet ignore the gun
     }
 
     private void Update()
@@ -39,6 +43,12 @@ public class Bullet : MonoBehaviour
     {
         // Check if the bullet hit something
         // You can check for specific tags or types of objects if needed
+        if (collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag("Gun"))
+        {
+            return; // Ignore collisions with the player and gun
+        }
+
+        PlayImpactEffect(collision.contacts[0].point);
         Debug.Log("Bullet hit: " + collision.collider.name);
 
         // Apply damage to the object if it implements the IDamage interface
@@ -75,6 +85,16 @@ public class Bullet : MonoBehaviour
         {
             // Move the bullet forward using its own forward direction and speed
             _rigidbody.velocity = transform.forward * bulletSpeed; // Adjusts velocity directly
+        }
+    }
+
+    //Play the effect at the point of impact for the bullet
+    private void PlayImpactEffect(Vector3 position)
+    {
+        if (impactEffectPrefab != null)
+        {
+            // Instantiate the effect at the collision point with no rotation
+            Instantiate(impactEffectPrefab, position, Quaternion.identity);
         }
     }
 }
