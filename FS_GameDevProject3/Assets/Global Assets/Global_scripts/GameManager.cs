@@ -180,12 +180,14 @@ public class GameManager : MonoBehaviour
     {
         _isPaused = true;
         Time.timeScale = 0.0f;
+        Cursor.lockState = CursorLockMode.Confined;
     }
 
     public void unpauseGame()
     {
         _isPaused = false;
         Time.timeScale = _timeScale;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
 }
