@@ -74,8 +74,10 @@ public class playerController : MonoBehaviour, IDamage
     public gunStats SelectedGun => GunList[_selectedGun];
 
     private GameManager _gameManager;
+    public AudioClip reloadSound;
+    public AudioClip emptySound;
 
-  
+
     void Awake()
     {
         _gameManager = FindAnyObjectByType<GameManager>();
@@ -316,6 +318,8 @@ public class playerController : MonoBehaviour, IDamage
             //Check to see if there is ammo in the reserves
             if (_gunList[_selectedGun].ammoRes != 0)
             {
+                AudioSource.PlayClipAtPoint(reloadSound, transform.position);
+
                 //Variable to hold the ammo currently in the gun and subtract that from the max so there is no wasted ammo
                 int ammoToAdd = (_gunList[_selectedGun].ammoMax - _gunList[_selectedGun].ammoCur);
                 Debug.Log(ammoToAdd);
@@ -335,8 +339,10 @@ public class playerController : MonoBehaviour, IDamage
                     _gameManager.UpdateUI();
                 }
             }
-            if (_gunList[_selectedGun].ammoRes < 0)
+            if (_gunList[_selectedGun].ammoRes <= 0)
             {
+                AudioSource.PlayClipAtPoint(emptySound, transform.position);
+
                 _gunList[_selectedGun].ammoRes = 0;
                 _gameManager.UpdateUI();
 
@@ -368,7 +374,7 @@ public class playerController : MonoBehaviour, IDamage
         _gunList[_selectedGun].ammoCur--;
         _gameManager.UpdateUI();
 
-        // _aud.PlayOneShot(_gunList[_selectedGun].shootSound[Random.Range(0, _gunList[_selectedGun].shootSound.Length)], _gunList[_selectedGun].shootVol);
+        _aud.PlayOneShot(_gunList[_selectedGun].shootSound[Random.Range(0, _gunList[_selectedGun].shootSound.Length)], _gunList[_selectedGun].shootVol);
         StartCoroutine(muzzleFlash());
 
         GameObject bullet = Instantiate(_gunList[_selectedGun].bulletPrefab, _muzzlePosition.position, Camera.main.transform.rotation);

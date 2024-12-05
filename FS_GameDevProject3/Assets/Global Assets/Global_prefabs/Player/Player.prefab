@@ -184,6 +184,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 4bc21899eae7448ccaf4ebdd49cfcd9f, type: 3}
   _audHealthPickUpVol: 1
   _defaultGun: {fileID: 11400000, guid: 7ceaea2ab0275224caeca105a2388aa4, type: 2}
+  reloadSound: {fileID: 8300000, guid: 42f814318ccc27f4f9575414dde12a1e, type: 3}
+  emptySound: {fileID: 8300000, guid: ce74b2e2af9b6a740aebd34f1643c641, type: 3}
 --- !u!33 &4977928010108839875
 MeshFilter:
   m_ObjectHideFlags: 0
