@@ -17,20 +17,23 @@ public class MenuManager : MonoBehaviour
     [SerializeField] Button _confirmYes;
     [SerializeField] Button _confirmNo;
 
+    [SerializeField] AudioClip _hover;
+    [SerializeField] AudioClip _accept;
+    [SerializeField] AudioClip _deny;
+    [SerializeField] AudioClip _next;
+    [SerializeField] AudioClip _gunShot;
+
+    [SerializeField] AudioSource _source;
+
     
 
     public enum MENU {PAUSE, SAVE, LOAD, MAIN, LEVEL_SELECT}
     public enum BUTTON_FUNCTION {RESUME, QUIT, SAVE, LOAD, NEW_GAME, OPTIONS}
 
-    [SerializeField] GameObject _defaultMenu;
 
     // Start is called before the first frame update
     void Start()
     {
-        if(_defaultMenu != null)
-        {
-            _defaultMenu.gameObject.SetActive(true);
-        }
     }
 
     // Update is called once per frame
@@ -107,5 +110,9 @@ public class MenuManager : MonoBehaviour
         }
     }
 
+    public void PlayHover()
+    {
+        _source.PlayOneShot(_hover);
+    }
 
 }

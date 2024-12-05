@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
+using UnityEngine.EventSystems;
 
 public class Menu : MonoBehaviour
 {
@@ -9,6 +11,12 @@ public class Menu : MonoBehaviour
 /*--------------------------------------- SERIALIZED */
 
     [SerializeField] GameObject[] _buttons;
+    [SerializeField] GraphicRaycaster _raycaster;
+    [SerializeField] EventSystem _eventSystem;
+    PointerEventData _pointerEventData;
+
+    [SerializeField] AudioSource _audioSource;
+    [SerializeField] AudioClip _sfx_hover;
 
     public void DisableButtons()
     {
@@ -24,5 +32,11 @@ public class Menu : MonoBehaviour
         {
             button.GetComponent<Button>().interactable = true;
         }
+    }
+
+
+    public void OnHover()
+    {
+        _audioSource.PlayOneShot(_sfx_hover);
     }
 }
