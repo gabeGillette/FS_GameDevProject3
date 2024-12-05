@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -37,6 +38,8 @@ public class playerController : MonoBehaviour, IDamage
     [SerializeField][Range(0, 1)] float _audHurtVol;
     [SerializeField] AudioClip[] _audSteps;
     [SerializeField][Range(0, 1)] float _audStepsVol;
+    [SerializeField] AudioClip[] _audHealthPickUp;
+    [SerializeField][Range(0, 1)] float _audHealthPickUpVol;
 
     [Header("-----Default Gun-----")]
     [SerializeField] gunStats _defaultGun;
@@ -56,6 +59,7 @@ public class playerController : MonoBehaviour, IDamage
 
     int _jumpCount;
     int _HPOriginal;
+    int _HPMax = 100;
     int _selectedGun;
     int _shootDamage;
     int _shootDist;
@@ -64,6 +68,7 @@ public class playerController : MonoBehaviour, IDamage
     float _lastShotTime = 0f; // Time when the player last shot
 
     public int HP => _HP;
+    public int HPMax => _HPMax;
     public int HPOriginal => _HPOriginal;
     public List<gunStats> GunList => _gunList;
     public gunStats SelectedGun => GunList[_selectedGun];
@@ -83,7 +88,7 @@ public class playerController : MonoBehaviour, IDamage
 
     void Start()
     {
-        _HPOriginal = _HP;
+        _HPOriginal = _HPMax;
 
         if (_gunList[_selectedGun].ammoCur > _gunList[_selectedGun].ammoMax)
         {
@@ -106,7 +111,7 @@ public class playerController : MonoBehaviour, IDamage
         //    selectGun();
         //    reload();
         //}
-        
+
         if (_gunList[_selectedGun].ammoRes < 0)
         {
             _gunList[_selectedGun].ammoRes = 0;
@@ -134,6 +139,36 @@ public class playerController : MonoBehaviour, IDamage
     //    updatePlayerUI();
     //}
 
+    public void restoreHealth(int amount)
+    {
+        //Checks if the player has less than original amount
+        if (_HP < _HPMax)
+        {
+            //Checks to see if the amount the player would pick up is greater than the original amount they started with/are allowed and then sets to max HP
+            if (_HP + amount > _HPMax)
+            {
+                _HP = _HPMax;
+            }
+            //Otherwise adds the amount to the health
+            else
+            {
+                _HP += amount;
+            }
+            _aud.PlayOneShot(_audHealthPickUp[Random.Range(0, _audHealthPickUp.Length)], _audHealthPickUpVol);
+
+        }
+        //If the player's health is already at max HP from the original it will return and do nothing.
+        else
+        {
+            return;
+        }
+        
+        _gameManager.UpdateUI();
+
+       
+
+
+    }
     void movement()
     {
         //Reset the jumpCount on the ground and reset the playerVelocity so gravity doesn't keep building
@@ -208,12 +243,12 @@ public class playerController : MonoBehaviour, IDamage
     //    }
     //}
 
-    public void takeDamage (int amount)
+    public void takeDamage(int amount)
     {
         _HP -= amount;
 
-        ////What will the game Manager do if you hit 0 HP
-        //if(HP <= 0)
+        //What will the game Manager do if you hit 0 HP
+        //if (HP <= 0)
         //{
 
         //}
@@ -300,7 +335,13 @@ public class playerController : MonoBehaviour, IDamage
                     _gameManager.UpdateUI();
                 }
             }
-            
+            if (_gunList[_selectedGun].ammoRes < 0)
+            {
+                _gunList[_selectedGun].ammoRes = 0;
+                _gameManager.UpdateUI();
+
+            }
+
 
         }
     }

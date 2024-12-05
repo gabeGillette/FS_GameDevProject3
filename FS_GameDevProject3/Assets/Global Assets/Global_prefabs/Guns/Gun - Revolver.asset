@@ -16,9 +16,9 @@ MonoBehaviour:
   shootDamage: 1
   shootDistance: 3
   shootRate: 2
-  ammoCur: 2
+  ammoCur: 0
   ammoMax: 6
-  ammoRes: 286
+  ammoRes: 0
   hitEffect: {fileID: 743155560472071913, guid: 39849a6c9ff32f24ca96f34fd2b6ee49, type: 3}
   shootSound: []
   shootVol: 1
