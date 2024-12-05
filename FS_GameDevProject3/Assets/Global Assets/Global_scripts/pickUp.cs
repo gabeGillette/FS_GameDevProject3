@@ -4,12 +4,13 @@ using UnityEngine;
 
 public class pickUp : MonoBehaviour, IPickup
 {
-    enum pickupType { gun, HP, stamina, grenade }
+    enum pickupType { gun, HP, stamina, grenade, evidence }
     [SerializeField] pickupType type;
     [SerializeField] gunStats gun;
     [SerializeField] [Range(5,50)] int healthPackAmount;
 
-   
+    public AudioClip evidenceSound;
+
 
     // Start is called before the first frame update
     void Start()
@@ -27,6 +28,8 @@ public class pickUp : MonoBehaviour, IPickup
         if (player != null)
         {
             playerController playerControllerScript = player.GetComponent<playerController>();
+            GameManager gameManager = FindObjectOfType<GameManager>();
+
             if (type == pickupType.HP)
             {
                 Debug.Log("Player Cur Health" + playerControllerScript.HP + "  Player Max Health:" + playerControllerScript.HPOriginal);
@@ -41,6 +44,15 @@ public class pickUp : MonoBehaviour, IPickup
             else if (type == pickupType.gun)
             {
                 //   playerControllerScript.PickUpGun(gun);
+                Destroy(gameObject);
+
+            }
+            else if (type == pickupType.evidence)
+            {
+                AudioSource.PlayClipAtPoint(evidenceSound, transform.position);
+
+
+                gameManager.CollectEvidence();
                 Destroy(gameObject);
 
             }

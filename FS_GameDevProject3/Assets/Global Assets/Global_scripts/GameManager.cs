@@ -94,6 +94,7 @@ public class GameManager : MonoBehaviour
     public void CollectEvidence()
     {
         _evidenceCollected++;
+        UpdateUI();
     }
 
     public void GetPickup(GameObject pickup)
