@@ -11,9 +11,6 @@ public class Menu : MonoBehaviour
 /*--------------------------------------- SERIALIZED */
 
     [SerializeField] GameObject[] _buttons;
-    [SerializeField] GraphicRaycaster _raycaster;
-    [SerializeField] EventSystem _eventSystem;
-    PointerEventData _pointerEventData;
 
 
     public void DisableButtons()

@@ -5,18 +5,21 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using System;
 using UnityEngine.UIElements;
+using TMPro;
 
 public class MenuManager : MonoBehaviour
 {
 
 
-    [SerializeField] GameObject _confirmMenu;
+    [SerializeField] GameObject _modalPopup;
     [SerializeField] GameObject _pauseMenu;
     [SerializeField] GameObject _mainMenu;
     [SerializeField] GameObject[] _allMenus;
 
-    //[SerializeField] Button _confirmYes;
-    //[SerializeField] Button _confirmNo;
+    [SerializeField] UnityEngine.UI.Button _modalYes;
+    [SerializeField] UnityEngine.UI.Button _modalNo;
+    [SerializeField] TMP_Text _modalHeader;
+    [SerializeField] TMP_Text _modalSubtitle;
 
     [SerializeField] AudioClip _hover;
     [SerializeField] AudioClip _accept;
@@ -31,15 +34,24 @@ public class MenuManager : MonoBehaviour
     
 
     public enum MENU {PAUSE, SAVE, LOAD, MAIN, LEVEL_SELECT}
-    public enum BUTTON_FUNCTION {RESUME, QUIT, SAVE, LOAD, NEW_GAME, OPTIONS}
 
-    public Dictionary <string, AudioClip> MenuSounds;
+    private Dictionary <string, AudioClip> _menuSounds;
+    private Dictionary <string, UnityAction> _buttonActions;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        MenuSounds = new Dictionary<string, AudioClip>(){{"hover", _hover}, {"accept", _accept}, {"deny", _deny}, {"next", _next}, {"gunshot", _gunShot}};
+        _menuSounds = new Dictionary<string, AudioClip>(){{"hover", _hover}, {"accept", _accept}, {"deny", _deny}, {"next", _next}, {"gunshot", _gunShot}};
+        
+        _buttonActions = new Dictionary<string, UnityAction>();
+        _buttonActions.Add("new", () => Debug.Log("new game"));
+        _buttonActions.Add("load", () => Debug.Log("load game"));
+        _buttonActions.Add("options", () => Debug.Log("options menu"));
+        _buttonActions.Add("help", () => Debug.Log("help menu"));
+        _buttonActions.Add("credits", () => Debug.Log("credits menu"));
+        _buttonActions.Add("quit", () => Debug.Log("quit game?"));
+
     }
 
     // Update is called once per frame
@@ -49,19 +61,24 @@ public class MenuManager : MonoBehaviour
     }
 
 
-    public void ConfirmDestructive(UnityAction YesAction, UnityAction NoAction)
+    public void DisplayModal(string header, string subtitle, UnityAction YesAction, UnityAction NoAction)
     {
         DisableAllMenus();
-        _confirmMenu.gameObject.SetActive(true);
-        EnableMenu(_confirmMenu);
+        _modalPopup.gameObject.SetActive(true);
+        EnableMenu(_modalPopup);
+        _modalHeader.text = header;
+        _modalSubtitle.text = subtitle;
 
-        //_confirmYes.onClick.AddListener(YesAction);
-        //_confirmNo.onClick.AddListener(NoAction);
+        _modalYes.onClick.AddListener(YesAction);
+        _modalNo.onClick.AddListener(NoAction);
 
     }
 
 
-
+    public void DoButtonAction(string action)
+    {
+        _buttonActions[action]();
+    }
 
     public void KillAllMenus()
     {
@@ -90,33 +107,11 @@ public class MenuManager : MonoBehaviour
     }
 
 
-    public void ButtonFunction(BUTTON_FUNCTION function)
-    {
-        switch(function)
-        {
-            case BUTTON_FUNCTION.RESUME:
-                KillAllMenus();
-                GameManager.Instance.UnpauseGame();
-                break;
 
-            case BUTTON_FUNCTION.QUIT:
-                DisableAllMenus();
-                break;
-            case BUTTON_FUNCTION.SAVE:
-                break;
-            case BUTTON_FUNCTION.LOAD:
-                break;
-            case BUTTON_FUNCTION.NEW_GAME:
-                break;
-            case BUTTON_FUNCTION.OPTIONS:
-                break;
-            
-        }
-    }
 
     public void PlaySoundEffect(string sound)
     {
-        _source.PlayOneShot(MenuSounds[sound]);
+        _source.PlayOneShot(_menuSounds[sound]);
     }
         
 
