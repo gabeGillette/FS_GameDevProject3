@@ -73,6 +73,8 @@ public class playerController : MonoBehaviour, IDamage
     public List<gunStats> GunList => _gunList;
     public gunStats SelectedGun => GunList[_selectedGun];
 
+    public int ReserveAmmo => _gunList[_selectedGun].ammoRes;
+
     private GameManager _gameManager;
     public AudioClip reloadSound;
     public AudioClip emptySound;
@@ -170,6 +172,11 @@ public class playerController : MonoBehaviour, IDamage
        
 
 
+    }
+    public void returnAmmo(int amount)
+    {
+        _gunList[_selectedGun].ammoRes += amount;
+        _gameManager.UpdateUI();
     }
     void movement()
     {
