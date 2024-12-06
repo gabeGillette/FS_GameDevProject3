@@ -15,8 +15,6 @@ public class Menu : MonoBehaviour
     [SerializeField] EventSystem _eventSystem;
     PointerEventData _pointerEventData;
 
-    [SerializeField] AudioSource _audioSource;
-    [SerializeField] AudioClip _sfx_hover;
 
     public void DisableButtons()
     {
@@ -35,8 +33,4 @@ public class Menu : MonoBehaviour
     }
 
 
-    public void OnHover()
-    {
-        _audioSource.PlayOneShot(_sfx_hover);
-    }
 }

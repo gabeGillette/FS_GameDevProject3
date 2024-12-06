@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using System;
+using UnityEngine.UIElements;
 
 public class MenuManager : MonoBehaviour
 {
@@ -14,8 +15,8 @@ public class MenuManager : MonoBehaviour
     [SerializeField] GameObject _mainMenu;
     [SerializeField] GameObject[] _allMenus;
 
-    [SerializeField] Button _confirmYes;
-    [SerializeField] Button _confirmNo;
+    //[SerializeField] Button _confirmYes;
+    //[SerializeField] Button _confirmNo;
 
     [SerializeField] AudioClip _hover;
     [SerializeField] AudioClip _accept;
@@ -25,15 +26,20 @@ public class MenuManager : MonoBehaviour
 
     [SerializeField] AudioSource _source;
 
+
+
     
 
     public enum MENU {PAUSE, SAVE, LOAD, MAIN, LEVEL_SELECT}
     public enum BUTTON_FUNCTION {RESUME, QUIT, SAVE, LOAD, NEW_GAME, OPTIONS}
 
+    public Dictionary <string, AudioClip> MenuSounds;
+
 
     // Start is called before the first frame update
     void Start()
     {
+        MenuSounds = new Dictionary<string, AudioClip>(){{"hover", _hover}, {"accept", _accept}, {"deny", _deny}, {"next", _next}, {"gunshot", _gunShot}};
     }
 
     // Update is called once per frame
@@ -49,8 +55,8 @@ public class MenuManager : MonoBehaviour
         _confirmMenu.gameObject.SetActive(true);
         EnableMenu(_confirmMenu);
 
-        _confirmYes.onClick.AddListener(YesAction);
-        _confirmNo.onClick.AddListener(NoAction);
+        //_confirmYes.onClick.AddListener(YesAction);
+        //_confirmNo.onClick.AddListener(NoAction);
 
     }
 
@@ -95,8 +101,6 @@ public class MenuManager : MonoBehaviour
 
             case BUTTON_FUNCTION.QUIT:
                 DisableAllMenus();
-
-
                 break;
             case BUTTON_FUNCTION.SAVE:
                 break;
@@ -110,9 +114,10 @@ public class MenuManager : MonoBehaviour
         }
     }
 
-    public void PlayHover()
+    public void PlaySoundEffect(string sound)
     {
-        _source.PlayOneShot(_hover);
+        _source.PlayOneShot(MenuSounds[sound]);
     }
+        
 
 }
