@@ -46,11 +46,18 @@ public class MenuManager : MonoBehaviour
         
         _buttonActions = new Dictionary<string, UnityAction>();
         _buttonActions.Add("new", () => Debug.Log("new game"));
+        
         _buttonActions.Add("load", () => Debug.Log("load game"));
+
         _buttonActions.Add("options", () => Debug.Log("options menu"));
+
         _buttonActions.Add("help", () => Debug.Log("help menu"));
+
         _buttonActions.Add("credits", () => Debug.Log("credits menu"));
-        _buttonActions.Add("quit", () => Debug.Log("quit game?"));
+
+        _buttonActions.Add("quit", () => {
+            DisplayModal("Are you sure?", "Do you really want to quit?", () => Debug.Log("yes"), () => Debug.Log("no"));
+        });
 
     }
 

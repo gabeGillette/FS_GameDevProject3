@@ -2531,6 +2531,7 @@ GameObject:
   - component: {fileID: 2007426054}
   - component: {fileID: 2007426056}
   - component: {fileID: 2007426055}
+  - component: {fileID: 2007426057}
   m_Layer: 5
   m_Name: Modal Popup
   m_TagString: Untagged
@@ -2596,6 +2597,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2007426053}
   m_CullTransparentMesh: 1
+--- !u!114 &2007426057
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2007426053}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60145d9c06c3edb9ebee028bb9df7716, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _buttons:
+  - {fileID: 923950873}
+  - {fileID: 1642311317}
 --- !u!1001 &2016657102
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2701,13 +2717,33 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1188576944}
     - target: {fileID: 3736409726215407695, guid: 31d0bb03b543ab00591801fc5fc98b43, type: 3}
+      propertyPath: _modalNo
+      value: 
+      objectReference: {fileID: 1642311320}
+    - target: {fileID: 3736409726215407695, guid: 31d0bb03b543ab00591801fc5fc98b43, type: 3}
       propertyPath: _mainMenu
       value: 
       objectReference: {fileID: 2116256917}
     - target: {fileID: 3736409726215407695, guid: 31d0bb03b543ab00591801fc5fc98b43, type: 3}
+      propertyPath: _modalYes
+      value: 
+      objectReference: {fileID: 923950876}
+    - target: {fileID: 3736409726215407695, guid: 31d0bb03b543ab00591801fc5fc98b43, type: 3}
+      propertyPath: _modalPopup
+      value: 
+      objectReference: {fileID: 2007426053}
+    - target: {fileID: 3736409726215407695, guid: 31d0bb03b543ab00591801fc5fc98b43, type: 3}
       propertyPath: _defaultMenu
       value: 
       objectReference: {fileID: 2116256917}
+    - target: {fileID: 3736409726215407695, guid: 31d0bb03b543ab00591801fc5fc98b43, type: 3}
+      propertyPath: _modalHeader
+      value: 
+      objectReference: {fileID: 207790773}
+    - target: {fileID: 3736409726215407695, guid: 31d0bb03b543ab00591801fc5fc98b43, type: 3}
+      propertyPath: _modalSubtitle
+      value: 
+      objectReference: {fileID: 1888038195}
     - target: {fileID: 3736409726215407695, guid: 31d0bb03b543ab00591801fc5fc98b43, type: 3}
       propertyPath: _allMenus.Array.size
       value: 1
