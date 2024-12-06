@@ -56,7 +56,7 @@ public class MenuManager : MonoBehaviour
         _buttonActions.Add("credits", () => Debug.Log("credits menu"));
 
         _buttonActions.Add("quit", () => {
-            DisplayModal("Are you sure?", "Do you really want to quit?", () => Debug.Log("yes"), () => Debug.Log("no"));
+            DisplayModal("Are you sure?", "Do you really want to quit?", () => QuitGame(), () => Debug.Log("no"));
         });
 
     }
@@ -121,5 +121,13 @@ public class MenuManager : MonoBehaviour
         _source.PlayOneShot(_menuSounds[sound]);
     }
         
+    public void QuitGame()
+    {
+        #if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+        #else
+            Application.Quit();
+        #endif
+    }
 
 }
