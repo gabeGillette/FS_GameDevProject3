@@ -82,6 +82,12 @@ public class playerController : MonoBehaviour, IDamage
 
     void Awake()
     {
+        Rigidbody rb = GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            // Freeze rotation on all axes (prevents spinning)
+            rb.freezeRotation = true; // This will prevent the player from rotating due to physics forces
+        }
         _gameManager = FindAnyObjectByType<GameManager>();
         // Add the default gun to the player's inventory (gunList)
         _gunList.Add(_defaultGun);
@@ -330,20 +336,23 @@ public class playerController : MonoBehaviour, IDamage
                 //Variable to hold the ammo currently in the gun and subtract that from the max so there is no wasted ammo
                 int ammoToAdd = (_gunList[_selectedGun].ammoMax - _gunList[_selectedGun].ammoCur);
                 Debug.Log(ammoToAdd);
-                
+
                 //Reload the gun to max ammo
-                
-               if (currentRes < _gunList[_selectedGun].ammoMax)
+                //Checks to see if the the current reserves are available but less than the max along with making sure the current ammo is not equal to or greater than the max.
+                if (_gunList[_selectedGun].ammoCur < _gunList[_selectedGun].ammoMax)
                 {
-                    _gunList[_selectedGun].ammoCur += currentRes;
-                    _gunList[_selectedGun].ammoRes -= currentRes;
-                    _gameManager.UpdateUI();
-                }
-                else
-                {
-                    _gunList[_selectedGun].ammoCur += ammoToAdd;
-                    _gunList[_selectedGun].ammoRes -= ammoToAdd;
-                    _gameManager.UpdateUI();
+                    if (currentRes < _gunList[_selectedGun].ammoMax)
+                    {
+                        _gunList[_selectedGun].ammoCur += currentRes;
+                        _gunList[_selectedGun].ammoRes -= currentRes;
+                        _gameManager.UpdateUI();
+                    }
+                    else
+                    {
+                        _gunList[_selectedGun].ammoCur += ammoToAdd;
+                        _gunList[_selectedGun].ammoRes -= ammoToAdd;
+                        _gameManager.UpdateUI();
+                    }
                 }
             }
             if (_gunList[_selectedGun].ammoRes <= 0)
