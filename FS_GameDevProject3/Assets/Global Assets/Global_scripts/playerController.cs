@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class playerController : MonoBehaviour, IDamage
 {
@@ -282,7 +283,19 @@ public class playerController : MonoBehaviour, IDamage
 
         
         _gameManager.UpdateUI();
+        if (_HP <= 0)
+        {
+            death();
+        }
+    }
 
+    public void death()
+    {
+        // Get the current scene
+        Scene currentScene = SceneManager.GetActiveScene();
+
+        // Reload the scene by name or build index
+        SceneManager.LoadScene(currentScene.name);
     }
 
     /// <summary>
