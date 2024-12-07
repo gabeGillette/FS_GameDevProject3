@@ -14,6 +14,13 @@ public class MenuManager : MonoBehaviour
     [SerializeField] GameObject _modalPopup;
     [SerializeField] GameObject _pauseMenu;
     [SerializeField] GameObject _mainMenu;
+
+    [SerializeField] GameObject _optionsMenu;
+
+    [SerializeField] GameObject _helpMenu;
+
+    [SerializeField] GameObject _LoadMenu;
+
     [SerializeField] GameObject[] _allMenus;
 
     [SerializeField] UnityEngine.UI.Button _modalYes;
