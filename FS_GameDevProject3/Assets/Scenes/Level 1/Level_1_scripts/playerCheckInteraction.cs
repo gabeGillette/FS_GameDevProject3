@@ -39,7 +39,6 @@ public class playerCheckInteraction : MonoBehaviour
             if (interactText != null)
             {
                 interactText.gameObject.SetActive(true);  // Show the text
-                Debug.Log("Showing 'Press E to interact' message.");
 
             }
 
@@ -54,7 +53,6 @@ public class playerCheckInteraction : MonoBehaviour
             if (interactText != null)
             {
                 interactText.gameObject.SetActive(false);  // Hide the text if no interactable object is nearby
-                Debug.Log("Hiding 'Press E to interact' message.");
 
             }
         }

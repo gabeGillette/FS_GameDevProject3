@@ -280,11 +280,9 @@ public class playerController : MonoBehaviour, IDamage
     {
         _HP -= amount;
 
-        //What will the game Manager do if you hit 0 HP
-        //if (HP <= 0)
-        //{
+        
+        _gameManager.UpdateUI();
 
-        //}
     }
 
     /// <summary>
