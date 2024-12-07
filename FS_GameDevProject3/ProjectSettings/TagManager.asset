@@ -8,6 +8,8 @@ TagManager:
   - PlayerSpawn
   - Enemy
   - Gun
+  - ElevatorDoor
+  - SpikeTip
   layers:
   - Default
   - TransparentFX

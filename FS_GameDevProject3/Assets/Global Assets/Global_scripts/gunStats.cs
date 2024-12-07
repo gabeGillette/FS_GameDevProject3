@@ -2,7 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+public enum AmmoType
+{
+    Pistol,
+    Shotgun,
+    MachineGun,
+    // Add more ammo types as needed
+}
+
+
 [CreateAssetMenu]
+
+
 
 public class gunStats : ScriptableObject
 {
@@ -15,5 +27,7 @@ public class gunStats : ScriptableObject
     public ParticleSystem hitEffect;
     public AudioClip[] shootSound;
     public float shootVol;
-    public GameObject bulletPrefab;
+    public AmmoType ammoType;
+
+    //  public GameObject bulletPrefab;
 }

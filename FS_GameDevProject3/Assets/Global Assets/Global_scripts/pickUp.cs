@@ -45,7 +45,7 @@ public class pickUp : MonoBehaviour, IPickup
             }
             else if (type == pickupType.gun)
             {
-                //   playerControllerScript.PickUpGun(gun);
+                playerControllerScript.getGunStats(gun);
                 Destroy(gameObject);
 
             }
@@ -62,7 +62,14 @@ public class pickUp : MonoBehaviour, IPickup
             {
                 AudioSource.PlayClipAtPoint(ammoPickUpSound, transform.position);
 
-                playerControllerScript.returnAmmo(ammoPickup);
+                playerControllerScript.returnAmmo(ammoPickup, AmmoType.Pistol);
+                Destroy(gameObject);
+            }
+            else if (type == pickupType.shotgunammo)
+            {
+                AudioSource.PlayClipAtPoint(ammoPickUpSound, transform.position);
+
+                playerControllerScript.returnAmmo(ammoPickup, AmmoType.Shotgun);
                 Destroy(gameObject);
             }
         }

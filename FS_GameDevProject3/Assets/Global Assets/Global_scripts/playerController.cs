@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class playerController : MonoBehaviour, IDamage
 {
@@ -56,6 +57,8 @@ public class playerController : MonoBehaviour, IDamage
     bool _isSprinting;
     bool _isShooting;
     bool _isPlayingSteps;
+    bool hasPlayedEmptySound = false; // Flag to track if the empty sound has been played
+
 
     int _jumpCount;
     int _HPOriginal;
@@ -82,6 +85,12 @@ public class playerController : MonoBehaviour, IDamage
 
     void Awake()
     {
+        Rigidbody rb = GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            // Freeze rotation on all axes (prevents spinning)
+            rb.freezeRotation = true; // This will prevent the player from rotating due to physics forces
+        }
         _gameManager = FindAnyObjectByType<GameManager>();
         // Add the default gun to the player's inventory (gunList)
         _gunList.Add(_defaultGun);
@@ -125,7 +134,7 @@ public class playerController : MonoBehaviour, IDamage
 
 
         movement();
-        //crouch();
+        crouch();
         selectGun();
         reload();
         sprint();
@@ -173,10 +182,25 @@ public class playerController : MonoBehaviour, IDamage
 
 
     }
-    public void returnAmmo(int amount)
+    public void returnAmmo(int amount, AmmoType ammoType)
     {
-        _gunList[_selectedGun].ammoRes += amount;
-        _gameManager.UpdateUI();
+        foreach (var gun in _gunList)
+        {
+            // Check if the current gun uses the matching ammo type
+            if (gun.ammoType == ammoType)
+            {
+                // Add ammo to the reserve of this gun
+                gun.ammoRes += amount;
+
+                
+
+                // Update the UI with the new ammo count
+                _gameManager.UpdateUI();
+
+                Debug.Log($"Added {amount} ammo to {ammoType} reserves.");
+                return; // Exit the method once the ammo is added to the matching gun
+            }
+        }
     }
     void movement()
     {
@@ -195,13 +219,35 @@ public class playerController : MonoBehaviour, IDamage
         _controller.Move(_playerVel * Time.deltaTime);
         _playerVel.y -= _gravity * Time.deltaTime;
 
-        if (Input.GetButton("Fire1")  && _gunList[_selectedGun].ammoCur > 0)
+        if (Input.GetButton("Fire1"))
         {
-            if (Time.time - _lastShotTime >= _shootRate && !_isShooting)
+            // If the gun has ammo
+            if (_gunList[_selectedGun].ammoCur > 0)
             {
-                StartCoroutine(shoot());
+                if (Time.time - _lastShotTime >= _shootRate && !_isShooting)
+                {
+                    StartCoroutine(shoot());
+                }
+
+                // Reset the empty sound flag if ammo is available
+                hasPlayedEmptySound = false;
             }
-        } 
+            else
+            {
+                // Only play the empty sound once if it hasn't been played already
+                if (!hasPlayedEmptySound)
+                {
+                    AudioSource.PlayClipAtPoint(emptySound, transform.position);
+                    hasPlayedEmptySound = true; // Set the flag so it doesn't play again
+                }
+            }
+        }
+        else
+        {
+            // Reset the flag when the fire button is released
+            hasPlayedEmptySound = false;
+        }
+
     }
     void Jump()
     {
@@ -226,41 +272,30 @@ public class playerController : MonoBehaviour, IDamage
         }
     }
 
-    //void crouch()
-    //{
-    //    if (Input.GetButtonDown("Crouch") && !_isSprinting)  // Check crouch input and ensure player isn't sprinting
-    //    {
-    //        _isCrouching = !_isCrouching; // Toggle crouch state
+    void crouch()
+    {
 
-    //        float heightDifference = _normalHeight - _crouchHeight;
-
-    //        if (_isCrouching)
-    //        {
-    //            _controller.height = _crouchHeight; // Reduce the character's height
-    //            _controller.center = new Vector3(0, _crouchHeight / 2, 0); // Adjust the center of the character's collider for proper positioning
-    //            _moveSpeed = Mathf.RoundToInt(_moveSpeed * _crouchSpeedModifier); // Modify speed when crouching
-    //        }
-    //        else
-    //        {
-    //            _controller.height = _normalHeight; // Reset to normal height
-    //            _controller.center = new Vector3(0, _normalHeight / 2, 0); // Reset the collider center
-    //            _moveSpeed = Mathf.RoundToInt(_moveSpeed / _crouchSpeedModifier); // Reset speed to normal
-
-    //            transform.position += new Vector3(0, heightDifference / 2, 0);
-
-    //        }
-    //    }
-    //}
+    }
 
     public void takeDamage(int amount)
     {
         _HP -= amount;
 
-        //What will the game Manager do if you hit 0 HP
-        //if (HP <= 0)
-        //{
+        
+        _gameManager.UpdateUI();
+        if (_HP <= 0)
+        {
+            death();
+        }
+    }
 
-        //}
+    public void death()
+    {
+        // Get the current scene
+        Scene currentScene = SceneManager.GetActiveScene();
+
+        // Reload the scene by name or build index
+        SceneManager.LoadScene(currentScene.name);
     }
 
     /// <summary>
@@ -289,6 +324,8 @@ public class playerController : MonoBehaviour, IDamage
         //Visual
         _gunModel.GetComponent<MeshFilter>().sharedMesh = gun.gunModel.GetComponent<MeshFilter>().sharedMesh;
         _gunModel.GetComponent<MeshRenderer>().sharedMaterial = gun.gunModel.GetComponent<MeshRenderer>().sharedMaterial;
+     //   _gameManager.UpdateUI();
+
     }
 
     void selectGun()
@@ -313,6 +350,7 @@ public class playerController : MonoBehaviour, IDamage
 
         _gunModel.GetComponent<MeshFilter>().sharedMesh = _gunList[_selectedGun].gunModel.GetComponent<MeshFilter>().sharedMesh;
         _gunModel.GetComponent<MeshRenderer>().sharedMaterial = _gunList[_selectedGun].gunModel.GetComponent<MeshRenderer>().sharedMaterial;
+        _gameManager.UpdateUI();
     }
 
     void reload()
@@ -330,20 +368,23 @@ public class playerController : MonoBehaviour, IDamage
                 //Variable to hold the ammo currently in the gun and subtract that from the max so there is no wasted ammo
                 int ammoToAdd = (_gunList[_selectedGun].ammoMax - _gunList[_selectedGun].ammoCur);
                 Debug.Log(ammoToAdd);
-                
+
                 //Reload the gun to max ammo
-                
-               if (currentRes < _gunList[_selectedGun].ammoMax)
+                //Checks to see if the the current reserves are available but less than the max along with making sure the current ammo is not equal to or greater than the max.
+                if (_gunList[_selectedGun].ammoCur < _gunList[_selectedGun].ammoMax)
                 {
-                    _gunList[_selectedGun].ammoCur += currentRes;
-                    _gunList[_selectedGun].ammoRes -= currentRes;
-                    _gameManager.UpdateUI();
-                }
-                else
-                {
-                    _gunList[_selectedGun].ammoCur += ammoToAdd;
-                    _gunList[_selectedGun].ammoRes -= ammoToAdd;
-                    _gameManager.UpdateUI();
+                    if (currentRes < _gunList[_selectedGun].ammoMax)
+                    {
+                        _gunList[_selectedGun].ammoCur += currentRes;
+                        _gunList[_selectedGun].ammoRes -= currentRes;
+                        _gameManager.UpdateUI();
+                    }
+                    else
+                    {
+                        _gunList[_selectedGun].ammoCur += ammoToAdd;
+                        _gunList[_selectedGun].ammoRes -= ammoToAdd;
+                        _gameManager.UpdateUI();
+                    }
                 }
             }
             if (_gunList[_selectedGun].ammoRes <= 0)
@@ -374,46 +415,73 @@ public class playerController : MonoBehaviour, IDamage
         }
         _isPlayingSteps = false;
     }
+
     IEnumerator shoot()
     {
         _isShooting = true;
-
         _gunList[_selectedGun].ammoCur--;
         _gameManager.UpdateUI();
-
         _aud.PlayOneShot(_gunList[_selectedGun].shootSound[Random.Range(0, _gunList[_selectedGun].shootSound.Length)], _gunList[_selectedGun].shootVol);
         StartCoroutine(muzzleFlash());
-
-        GameObject bullet = Instantiate(_gunList[_selectedGun].bulletPrefab, _muzzlePosition.position, Camera.main.transform.rotation);
-        Rigidbody bulletRb = bullet.GetComponent<Rigidbody>();
-        if (bulletRb != null)
-        {
-            // Add forward force to the bullet to simulate its movement
-            bulletRb.AddForce(Camera.main.transform.forward * _shootDist, ForceMode.VelocityChange);
-        }
 
         RaycastHit hit;
         if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, _shootDist, ~_ignoreMask))
         {
+            Debug.Log(hit.collider.name);
             IDamage dmg = hit.collider.GetComponent<IDamage>();
 
             if (dmg != null)
             {
                 dmg.takeDamage(_shootDamage);
             }
+
         }
         Instantiate(_gunList[_selectedGun].hitEffect, hit.point, Quaternion.identity);
 
-       // Debug.Log(hit.collider.name);
-       // Debug.Log("Time between shots: " + (Time.time - _lastShotTime));
-
-        _lastShotTime = Time.time;
-
         yield return new WaitForSeconds(_shootRate);
+        _isShooting = false;
+
+    }
+    //IEnumerator shoot()
+    //{
+    //    _isShooting = true;
+
+    //    _gunList[_selectedGun].ammoCur--;
+    //    _gameManager.UpdateUI();
+
+    //    _aud.PlayOneShot(_gunList[_selectedGun].shootSound[Random.Range(0, _gunList[_selectedGun].shootSound.Length)], _gunList[_selectedGun].shootVol);
+    //    StartCoroutine(muzzleFlash());
+
+    //    GameObject bullet = Instantiate(_gunList[_selectedGun].bulletPrefab, _muzzlePosition.position, Camera.main.transform.rotation);
+    //    Rigidbody bulletRb = bullet.GetComponent<Rigidbody>();
+    //    if (bulletRb != null)
+    //    {
+    //        // Add forward force to the bullet to simulate its movement
+    //        bulletRb.AddForce(Camera.main.transform.forward * _shootDist, ForceMode.VelocityChange);
+    //    }
+
+    //    RaycastHit hit;
+    //    if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, _shootDist, ~_ignoreMask))
+    //    {
+    //        IDamage dmg = hit.collider.GetComponent<IDamage>();
+
+    //        if (dmg != null)
+    //        {
+    //            dmg.takeDamage(_shootDamage);
+    //        }
+    //    }
+    //    Instantiate(_gunList[_selectedGun].hitEffect, hit.point, Quaternion.identity);
+
+    //   // Debug.Log(hit.collider.name);
+    //   // Debug.Log("Time between shots: " + (Time.time - _lastShotTime));
+
+    //    _lastShotTime = Time.time;
+
+    //    yield return new WaitForSeconds(_shootRate);
 
         
-        _isShooting = false;
-    }
+    //    _isShooting = false;
+    //}
 
     IEnumerator muzzleFlash()
     {
