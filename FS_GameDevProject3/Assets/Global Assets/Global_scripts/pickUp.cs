@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class pickUp : MonoBehaviour, IPickup
 {
-    enum pickupType { gun, HP, stamina, grenade, evidence, pistolammo, shotgunammo, tommygunammo }
+    enum pickupType { gun, HP, stamina, grenade, evidence, pistolammo, shotgunammo, tommygunammo, key }
     [SerializeField] pickupType type;
     [SerializeField] gunStats gun;
     [SerializeField] [Range(5,50)] int healthPackAmount;
@@ -27,6 +27,8 @@ public class pickUp : MonoBehaviour, IPickup
     {
         // Find the player (assuming the player has a PlayerHealth script)
         GameObject player = GameObject.FindGameObjectWithTag("Player");
+
+        GameObject LevelController = GameObject.FindGameObjectWithTag("LevelController");
         if (player != null)
         {
             playerController playerControllerScript = player.GetComponent<playerController>();
@@ -52,10 +54,10 @@ public class pickUp : MonoBehaviour, IPickup
             else if (type == pickupType.evidence)
             {
                 AudioSource.PlayClipAtPoint(evidenceSound, transform.position);
+                Destroy(gameObject);
 
 
                 gameManager.CollectEvidence();
-                Destroy(gameObject);
 
             }
             else if(type == pickupType.pistolammo)
@@ -71,6 +73,13 @@ public class pickUp : MonoBehaviour, IPickup
 
                 playerControllerScript.returnAmmo(ammoPickup, AmmoType.Shotgun);
                 Destroy(gameObject);
+            }
+            else if(type == pickupType.key)
+            {
+                LevelRequirement levelRequirements = LevelController.GetComponent<LevelRequirement>();
+                levelRequirements.hasKey = true;
+                Destroy(gameObject);
+
             }
         }
 
