@@ -81,9 +81,11 @@ public class MenuManager : MonoBehaviour
             () => CloseModal());
         });
         _buttonActions.Add("options_cancel", () => {
-            DisplayModal("Are you sure?", "You have unsaved changes", 
-            () => CloseModal(), 
-            () => CloseModal());
+            if(_OptionsDirty){
+                DisplayModal("Are you sure?", "You have unsaved changes", 
+                () => CloseModal(), 
+                () => CloseModal());
+            }
         });
 
     }
