@@ -1,83 +1,99 @@
 using UnityEngine;
 
-public class RotateAndMoveObject : MonoBehaviour, IInteractable
+public class Doors : MonoBehaviour, IInteractable
 {
-    public float rotationSpeed = 90f; // Speed at which the lever rotates
-    public float rotationThreshold = 25f; // The degree amount after which the lever stops rotating
-    public Vector3 targetPosition = new Vector3(10f, 0f, 0f); // Target position for the "MoveableBookShelf"
-    public float moveSpeed = 2f; // Speed at which the bookshelf moves
+    public float slideDistance = 5f;    // How far the door should slide (if sliding is enabled)
+    public float slideSpeed = 2f;       // Speed at which the door slides (if sliding is enabled)
+    public float swingAngle = 90f;      // Angle the door should rotate when swinging
+    public float swingSpeed = 2f;      // Speed at which the door swings (if swinging is enabled)
 
-    private bool isRotating = false; // Track if the lever is rotating
-    private bool hasMoved = false; // Track if the bookshelf has already been moved
-    private GameObject bookshelf; // Reference to the object to be moved (with the "MoveableBookShelf" tag)
+    private Vector3 initialPosition;
+    private Vector3 targetPosition;
+    private Quaternion initialRotation;
+    private Quaternion targetRotation;
+    private bool isSliding = false;
+    private bool isSwinging = false;
+    private bool isOpen = false;
+    public bool slideToRight = true;    // If true, the door slides to the right, else to the left
+    public bool swingDoor = true;       // If true, the door will swing open instead of sliding
 
-    private float initialRotation; // Store the initial rotation of the lever
-    private float currentRotation = 0f; // Store the current rotation of the lever
-
-    // Implement Interact() method from IInteractable interface
-    public void Interact()
+    public void Start()
     {
-        if (!isRotating)
-        {
-            initialRotation = transform.rotation.eulerAngles.x; // Store the initial rotation of the lever
-            currentRotation = 0f; // Reset the current rotation
-            isRotating = true; // Start rotating the lever
-        }
+        initialPosition = transform.position;
+        initialRotation = transform.rotation;
 
-        // If the bookshelf hasn't been moved yet, move it
-        if (!hasMoved)
+        // Set up sliding target position
+        targetPosition = slideToRight ? initialPosition + Vector3.forward * slideDistance : initialPosition - Vector3.forward * slideDistance;
+
+        // Set up swinging target rotation
+        targetRotation = initialRotation * Quaternion.Euler(0f, swingAngle, 0f);
+    }
+
+    public void Update()
+    {
+        if (isSliding)
         {
-            bookshelf = GameObject.FindGameObjectWithTag("MoveableBookShelf"); // Find the bookshelf in the scene
-            if (bookshelf != null)
+            // Move the door smoothly towards the target position
+            transform.position = Vector3.MoveTowards(transform.position, targetPosition, slideSpeed * Time.deltaTime);
+
+            // Once the door reaches its target position, stop sliding
+            if (transform.position == targetPosition)
             {
-                StartCoroutine(MoveBookshelf()); // Start moving the bookshelf when the lever is pulled
+                isSliding = false;
+            }
+        }
+        else if (isSwinging)
+        {
+            // Rotate the door smoothly towards the target rotation
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, swingSpeed * Time.deltaTime);
+
+            // Once the door reaches its target rotation, stop swinging
+            if (Quaternion.Angle(transform.rotation, targetRotation) < 0.1f)
+            {
+                isSwinging = false;
             }
         }
     }
 
-    void Update()
+    public void Interact()
     {
-        // If the lever is rotating, rotate it
-        if (isRotating)
+        // If the door should slide
+        if (!swingDoor)
         {
-            RotateLever();
+            if (!isSliding)
+            {
+                isSliding = true;
+                if (isOpen)
+                {
+                    // Close the door by sliding it back to its original position
+                    targetPosition = initialPosition;
+                }
+                else
+                {
+                    // Open the door by sliding it to the target position
+                    targetPosition = slideToRight ? initialPosition + Vector3.forward * slideDistance : initialPosition - Vector3.forward * slideDistance;
+                }
+                isOpen = !isOpen;
+            }
         }
-    }
-
-    private void RotateLever()
-    {
-        // Rotate the lever around the X-axis
-        float rotationAmount = rotationSpeed * Time.deltaTime;
-        transform.Rotate(rotationAmount, 0f, 0f); // Apply rotation to the lever
-
-        currentRotation += rotationAmount;
-
-        // Stop rotating once we reach the rotation threshold
-        if (Mathf.Abs(currentRotation) >= rotationThreshold)
+        // If the door should swing open
+        else
         {
-            isRotating = false;
-            currentRotation = rotationThreshold; // Ensure it doesn't go beyond the threshold
+            if (!isSwinging)
+            {
+                isSwinging = true;
+                if (isOpen)
+                {
+                    // Close the door by rotating it back to its original position
+                    targetRotation = initialRotation;
+                }
+                else
+                {
+                    // Open the door by rotating it to the target rotation
+                    targetRotation = initialRotation * Quaternion.Euler(0f, swingAngle, 0f);
+                }
+                isOpen = !isOpen;
+            }
         }
-    }
-
-    private System.Collections.IEnumerator MoveBookshelf()
-    {
-        // Move the bookshelf smoothly to the target position
-        Vector3 initialPosition = bookshelf.transform.position;
-        float journeyLength = Vector3.Distance(initialPosition, targetPosition);
-        float startTime = Time.time;
-
-        while (Vector3.Distance(bookshelf.transform.position, targetPosition) > 0.01f)
-        {
-            float distanceCovered = (Time.time - startTime) * moveSpeed;
-            float fractionOfJourney = distanceCovered / journeyLength;
-            bookshelf.transform.position = Vector3.Lerp(initialPosition, targetPosition, fractionOfJourney);
-
-            yield return null; // Wait until the next frame
-        }
-
-        // Ensure the bookshelf ends exactly at the target position
-        bookshelf.transform.position = targetPosition;
-        hasMoved = true; // Mark that the bookshelf has been moved
     }
 }
