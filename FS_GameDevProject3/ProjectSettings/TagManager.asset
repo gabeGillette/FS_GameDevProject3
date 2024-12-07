@@ -12,6 +12,7 @@ TagManager:
   - SpikeTip
   - LevelController
   - MoveAbleBookCase
+  - FlashLight
   layers:
   - Default
   - TransparentFX
