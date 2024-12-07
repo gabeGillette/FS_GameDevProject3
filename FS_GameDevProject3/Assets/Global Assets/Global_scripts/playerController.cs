@@ -133,7 +133,7 @@ public class playerController : MonoBehaviour, IDamage
 
 
         movement();
-        //crouch();
+        crouch();
         selectGun();
         reload();
         sprint();
@@ -271,31 +271,10 @@ public class playerController : MonoBehaviour, IDamage
         }
     }
 
-    //void crouch()
-    //{
-    //    if (Input.GetButtonDown("Crouch") && !_isSprinting)  // Check crouch input and ensure player isn't sprinting
-    //    {
-    //        _isCrouching = !_isCrouching; // Toggle crouch state
+    void crouch()
+    {
 
-    //        float heightDifference = _normalHeight - _crouchHeight;
-
-    //        if (_isCrouching)
-    //        {
-    //            _controller.height = _crouchHeight; // Reduce the character's height
-    //            _controller.center = new Vector3(0, _crouchHeight / 2, 0); // Adjust the center of the character's collider for proper positioning
-    //            _moveSpeed = Mathf.RoundToInt(_moveSpeed * _crouchSpeedModifier); // Modify speed when crouching
-    //        }
-    //        else
-    //        {
-    //            _controller.height = _normalHeight; // Reset to normal height
-    //            _controller.center = new Vector3(0, _normalHeight / 2, 0); // Reset the collider center
-    //            _moveSpeed = Mathf.RoundToInt(_moveSpeed / _crouchSpeedModifier); // Reset speed to normal
-
-    //            transform.position += new Vector3(0, heightDifference / 2, 0);
-
-    //        }
-    //    }
-    //}
+    }
 
     public void takeDamage(int amount)
     {
