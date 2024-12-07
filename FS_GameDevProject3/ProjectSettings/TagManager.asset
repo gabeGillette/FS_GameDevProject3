@@ -8,6 +8,7 @@ TagManager:
   - PlayerSpawn
   - Enemy
   - Gun
+  - ElevatorDoor
   layers:
   - Default
   - TransparentFX
