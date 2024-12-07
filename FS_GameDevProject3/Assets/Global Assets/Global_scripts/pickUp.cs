@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class pickUp : MonoBehaviour, IPickup
 {
-    enum pickupType { gun, HP, stamina, grenade, evidence }
+    enum pickupType { gun, HP, stamina, grenade, evidence, pistolammo, shotgunammo, tommygunammo }
     [SerializeField] pickupType type;
     [SerializeField] gunStats gun;
     [SerializeField] [Range(5,50)] int healthPackAmount;
+    [SerializeField] int ammoPickup;
 
     public AudioClip evidenceSound;
+    public AudioClip ammoPickUpSound;
 
 
     // Start is called before the first frame update
@@ -55,6 +57,13 @@ public class pickUp : MonoBehaviour, IPickup
                 gameManager.CollectEvidence();
                 Destroy(gameObject);
 
+            }
+            else if(type == pickupType.pistolammo)
+            {
+                AudioSource.PlayClipAtPoint(ammoPickUpSound, transform.position);
+
+                playerControllerScript.returnAmmo(ammoPickup);
+                Destroy(gameObject);
             }
         }
 
