@@ -1,14 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class pickUp : MonoBehaviour, IPickup
 {
-    enum pickupType { gun, HP, stamina, grenade, evidence, pistolammo, shotgunammo, tommygunammo, key }
+    enum pickupType { gun, HP, stamina, battery, evidence, pistolammo, shotgunammo, tommygunammo, key }
     [SerializeField] pickupType type;
     [SerializeField] gunStats gun;
     [SerializeField] [Range(5,50)] int healthPackAmount;
     [SerializeField] int ammoPickup;
+    [SerializeField] int batteryRecharge;
 
     public AudioClip evidenceSound;
     public AudioClip ammoPickUpSound;
@@ -27,6 +29,7 @@ public class pickUp : MonoBehaviour, IPickup
     {
         // Find the player (assuming the player has a PlayerHealth script)
         GameObject player = GameObject.FindGameObjectWithTag("Player");
+        GameObject flashLight = GameObject.FindGameObjectWithTag("FlashLight");
 
         GameObject LevelController = GameObject.FindGameObjectWithTag("LevelController");
         if (player != null)
@@ -78,6 +81,13 @@ public class pickUp : MonoBehaviour, IPickup
             {
                 LevelRequirement levelRequirements = LevelController.GetComponent<LevelRequirement>();
                 levelRequirements.hasKey = true;
+                Destroy(gameObject);
+
+            }
+            else if (type == pickupType.battery)
+            {
+                FlashlightToggle batteryLevel = flashLight.GetComponent<FlashlightToggle>();
+                batteryLevel.batteryLife += batteryRecharge;
                 Destroy(gameObject);
 
             }
