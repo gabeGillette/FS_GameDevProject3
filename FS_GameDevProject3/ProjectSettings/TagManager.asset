@@ -11,6 +11,7 @@ TagManager:
   - ElevatorDoor
   - SpikeTip
   - LevelController
+  - MoveAbleBookCase
   layers:
   - Default
   - TransparentFX

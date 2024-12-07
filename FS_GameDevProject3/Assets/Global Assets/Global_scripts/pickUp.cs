@@ -54,10 +54,10 @@ public class pickUp : MonoBehaviour, IPickup
             else if (type == pickupType.evidence)
             {
                 AudioSource.PlayClipAtPoint(evidenceSound, transform.position);
+                Destroy(gameObject);
 
 
                 gameManager.CollectEvidence();
-                Destroy(gameObject);
 
             }
             else if(type == pickupType.pistolammo)
