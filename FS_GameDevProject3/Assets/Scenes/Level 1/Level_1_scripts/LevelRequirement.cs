@@ -114,7 +114,7 @@ public class LevelRequirement : MonoBehaviour, IInteractable
         string nextSceneName = sceneNames[nextIndex];  // Get the scene name from the array using the next index
 
         Debug.Log("Next Scene: " + nextSceneName);  // Log the scene name to the console
-
+        hasKey = false;
         // Load the next scene by its name
         SceneManager.LoadScene(nextSceneName);
     }
