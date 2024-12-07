@@ -56,7 +56,9 @@ public class MenuManager : MonoBehaviour
         _buttonActions.Add("credits", () => Debug.Log("credits menu"));
 
         _buttonActions.Add("quit", () => {
-            DisplayModal("Are you sure?", "Do you really want to quit?", () => QuitGame(), () => Debug.Log("no"));
+            DisplayModal("Are you sure?", "Do you really want to quit?", 
+            () => QuitGame(), 
+            () => CloseModal());
         });
 
     }
@@ -70,7 +72,7 @@ public class MenuManager : MonoBehaviour
 
     public void DisplayModal(string header, string subtitle, UnityAction YesAction, UnityAction NoAction)
     {
-        DisableAllMenus();
+        //DisableAllMenus();
         _modalPopup.gameObject.SetActive(true);
         EnableMenu(_modalPopup);
         _modalHeader.text = header;
@@ -129,5 +131,12 @@ public class MenuManager : MonoBehaviour
             Application.Quit();
         #endif
     }
+
+
+    public void CloseModal()
+    {
+        _modalPopup.SetActive(false);
+    }
+
 
 }
