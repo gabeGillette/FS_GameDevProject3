@@ -21,12 +21,16 @@ public class MenuManager : MonoBehaviour
 
     [SerializeField] GameObject _LoadMenu;
 
-    [SerializeField] GameObject[] _allMenus;
+    //[SerializeField] GameObject[] _allMenus;
 
     [SerializeField] UnityEngine.UI.Button _modalYes;
     [SerializeField] UnityEngine.UI.Button _modalNo;
     [SerializeField] TMP_Text _modalHeader;
     [SerializeField] TMP_Text _modalSubtitle;
+
+    //[SerializeField] UnityEngine.UI.Button _Options_Apply;
+    //[SerializeField] UnityEngine.UI.Button _Options_Default;
+    //[SerializeField] UnityEngine.UI.Button _Options_Cancel;
 
     [SerializeField] AudioClip _hover;
     [SerializeField] AudioClip _accept;
@@ -35,6 +39,8 @@ public class MenuManager : MonoBehaviour
     [SerializeField] AudioClip _gunShot;
 
     [SerializeField] AudioSource _source;
+
+    private bool _OptionsDirty = true;
 
 
 
@@ -68,6 +74,18 @@ public class MenuManager : MonoBehaviour
             () => CloseModal());
         });
 
+        _buttonActions.Add("options_apply", () => Debug.Log("applied options"));
+        _buttonActions.Add("options_default", () => {
+            DisplayModal("Are you sure?", "This will reset your settings back to default values.", 
+            () => CloseModal(), 
+            () => CloseModal());
+        });
+        _buttonActions.Add("options_cancel", () => {
+            DisplayModal("Are you sure?", "You have unsaved changes", 
+            () => CloseModal(), 
+            () => CloseModal());
+        });
+
     }
 
     // Update is called once per frame
@@ -98,10 +116,10 @@ public class MenuManager : MonoBehaviour
 
     public void KillAllMenus()
     {
-        foreach(GameObject menu in _allMenus)
+        /*foreach(GameObject menu in _allMenus)
         {
             menu.gameObject.SetActive(false);
-        }
+        }*/
     }
 
     public void DisableMenu(GameObject menu)
@@ -116,10 +134,10 @@ public class MenuManager : MonoBehaviour
 
     public void DisableAllMenus()
     {
-        foreach(GameObject menu in _allMenus)
+        /*foreach(GameObject menu in _allMenus)
         {
             DisableMenu(menu);
-        }
+        }*/
     }
 
 
