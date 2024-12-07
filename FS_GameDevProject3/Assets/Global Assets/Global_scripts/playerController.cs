@@ -56,6 +56,8 @@ public class playerController : MonoBehaviour, IDamage
     bool _isSprinting;
     bool _isShooting;
     bool _isPlayingSteps;
+    bool hasPlayedEmptySound = false; // Flag to track if the empty sound has been played
+
 
     int _jumpCount;
     int _HPOriginal;
@@ -179,10 +181,25 @@ public class playerController : MonoBehaviour, IDamage
 
 
     }
-    public void returnAmmo(int amount)
+    public void returnAmmo(int amount, AmmoType ammoType)
     {
-        _gunList[_selectedGun].ammoRes += amount;
-        _gameManager.UpdateUI();
+        foreach (var gun in _gunList)
+        {
+            // Check if the current gun uses the matching ammo type
+            if (gun.ammoType == ammoType)
+            {
+                // Add ammo to the reserve of this gun
+                gun.ammoRes += amount;
+
+                
+
+                // Update the UI with the new ammo count
+                _gameManager.UpdateUI();
+
+                Debug.Log($"Added {amount} ammo to {ammoType} reserves.");
+                return; // Exit the method once the ammo is added to the matching gun
+            }
+        }
     }
     void movement()
     {
@@ -201,13 +218,35 @@ public class playerController : MonoBehaviour, IDamage
         _controller.Move(_playerVel * Time.deltaTime);
         _playerVel.y -= _gravity * Time.deltaTime;
 
-        if (Input.GetButton("Fire1")  && _gunList[_selectedGun].ammoCur > 0)
+        if (Input.GetButton("Fire1"))
         {
-            if (Time.time - _lastShotTime >= _shootRate && !_isShooting)
+            // If the gun has ammo
+            if (_gunList[_selectedGun].ammoCur > 0)
             {
-                StartCoroutine(shoot());
+                if (Time.time - _lastShotTime >= _shootRate && !_isShooting)
+                {
+                    StartCoroutine(shoot());
+                }
+
+                // Reset the empty sound flag if ammo is available
+                hasPlayedEmptySound = false;
             }
-        } 
+            else
+            {
+                // Only play the empty sound once if it hasn't been played already
+                if (!hasPlayedEmptySound)
+                {
+                    AudioSource.PlayClipAtPoint(emptySound, transform.position);
+                    hasPlayedEmptySound = true; // Set the flag so it doesn't play again
+                }
+            }
+        }
+        else
+        {
+            // Reset the flag when the fire button is released
+            hasPlayedEmptySound = false;
+        }
+
     }
     void Jump()
     {
@@ -295,6 +334,8 @@ public class playerController : MonoBehaviour, IDamage
         //Visual
         _gunModel.GetComponent<MeshFilter>().sharedMesh = gun.gunModel.GetComponent<MeshFilter>().sharedMesh;
         _gunModel.GetComponent<MeshRenderer>().sharedMaterial = gun.gunModel.GetComponent<MeshRenderer>().sharedMaterial;
+     //   _gameManager.UpdateUI();
+
     }
 
     void selectGun()
@@ -319,6 +360,7 @@ public class playerController : MonoBehaviour, IDamage
 
         _gunModel.GetComponent<MeshFilter>().sharedMesh = _gunList[_selectedGun].gunModel.GetComponent<MeshFilter>().sharedMesh;
         _gunModel.GetComponent<MeshRenderer>().sharedMaterial = _gunList[_selectedGun].gunModel.GetComponent<MeshRenderer>().sharedMaterial;
+        _gameManager.UpdateUI();
     }
 
     void reload()
@@ -383,46 +425,73 @@ public class playerController : MonoBehaviour, IDamage
         }
         _isPlayingSteps = false;
     }
+
     IEnumerator shoot()
     {
         _isShooting = true;
-
         _gunList[_selectedGun].ammoCur--;
         _gameManager.UpdateUI();
-
         _aud.PlayOneShot(_gunList[_selectedGun].shootSound[Random.Range(0, _gunList[_selectedGun].shootSound.Length)], _gunList[_selectedGun].shootVol);
         StartCoroutine(muzzleFlash());
-
-        GameObject bullet = Instantiate(_gunList[_selectedGun].bulletPrefab, _muzzlePosition.position, Camera.main.transform.rotation);
-        Rigidbody bulletRb = bullet.GetComponent<Rigidbody>();
-        if (bulletRb != null)
-        {
-            // Add forward force to the bullet to simulate its movement
-            bulletRb.AddForce(Camera.main.transform.forward * _shootDist, ForceMode.VelocityChange);
-        }
 
         RaycastHit hit;
         if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, _shootDist, ~_ignoreMask))
         {
+            Debug.Log(hit.collider.name);
             IDamage dmg = hit.collider.GetComponent<IDamage>();
 
             if (dmg != null)
             {
                 dmg.takeDamage(_shootDamage);
             }
+
         }
         Instantiate(_gunList[_selectedGun].hitEffect, hit.point, Quaternion.identity);
 
-       // Debug.Log(hit.collider.name);
-       // Debug.Log("Time between shots: " + (Time.time - _lastShotTime));
-
-        _lastShotTime = Time.time;
-
         yield return new WaitForSeconds(_shootRate);
+        _isShooting = false;
+
+    }
+    //IEnumerator shoot()
+    //{
+    //    _isShooting = true;
+
+    //    _gunList[_selectedGun].ammoCur--;
+    //    _gameManager.UpdateUI();
+
+    //    _aud.PlayOneShot(_gunList[_selectedGun].shootSound[Random.Range(0, _gunList[_selectedGun].shootSound.Length)], _gunList[_selectedGun].shootVol);
+    //    StartCoroutine(muzzleFlash());
+
+    //    GameObject bullet = Instantiate(_gunList[_selectedGun].bulletPrefab, _muzzlePosition.position, Camera.main.transform.rotation);
+    //    Rigidbody bulletRb = bullet.GetComponent<Rigidbody>();
+    //    if (bulletRb != null)
+    //    {
+    //        // Add forward force to the bullet to simulate its movement
+    //        bulletRb.AddForce(Camera.main.transform.forward * _shootDist, ForceMode.VelocityChange);
+    //    }
+
+    //    RaycastHit hit;
+    //    if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, _shootDist, ~_ignoreMask))
+    //    {
+    //        IDamage dmg = hit.collider.GetComponent<IDamage>();
+
+    //        if (dmg != null)
+    //        {
+    //            dmg.takeDamage(_shootDamage);
+    //        }
+    //    }
+    //    Instantiate(_gunList[_selectedGun].hitEffect, hit.point, Quaternion.identity);
+
+    //   // Debug.Log(hit.collider.name);
+    //   // Debug.Log("Time between shots: " + (Time.time - _lastShotTime));
+
+    //    _lastShotTime = Time.time;
+
+    //    yield return new WaitForSeconds(_shootRate);
 
         
-        _isShooting = false;
-    }
+    //    _isShooting = false;
+    //}
 
     IEnumerator muzzleFlash()
     {
