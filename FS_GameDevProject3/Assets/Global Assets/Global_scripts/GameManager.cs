@@ -141,12 +141,16 @@ public class GameManager : MonoBehaviour
 
     private void SetPlayerReference()
     {
-        // find the player
+        // Find the player
         _player = GameObject.FindWithTag("Player");
 
         if (_player == null)
         {
             Debug.LogError("Player does not exist!");
+        }
+        else
+        {
+            Debug.Log("Player found successfully!");
         }
 
         _player.TryGetComponent<playerController>(out _playerScript);
@@ -154,7 +158,12 @@ public class GameManager : MonoBehaviour
         {
             Debug.LogError("Player is missing PlayerController!");
         }
+        else
+        {
+            Debug.Log("PlayerController script assigned successfully!");
+        }
     }
+
 
     public void UpdateUI()
     {
