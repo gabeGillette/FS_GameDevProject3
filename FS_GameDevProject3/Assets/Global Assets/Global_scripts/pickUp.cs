@@ -12,8 +12,10 @@ public class pickUp : MonoBehaviour, IPickup
     [SerializeField] int ammoPickup;
     [SerializeField] int batteryRecharge;
 
+    public AudioClip batterySound;
     public AudioClip evidenceSound;
     public AudioClip ammoPickUpSound;
+    public AudioClip keyPickUpSound;
 
 
     // Start is called before the first frame update
@@ -79,6 +81,7 @@ public class pickUp : MonoBehaviour, IPickup
             }
             else if(type == pickupType.key)
             {
+                AudioSource.PlayClipAtPoint(keyPickUpSound, transform.position);
                 LevelRequirement levelRequirements = LevelController.GetComponent<LevelRequirement>();
                 levelRequirements.hasKey = true;
                 Destroy(gameObject);
@@ -86,6 +89,7 @@ public class pickUp : MonoBehaviour, IPickup
             }
             else if (type == pickupType.battery)
             {
+                AudioSource.PlayClipAtPoint(batterySound, transform.position);
                 FlashlightToggle batteryLevel = flashLight.GetComponent<FlashlightToggle>();
                 batteryLevel.batteryLife += batteryRecharge;
                 Destroy(gameObject);

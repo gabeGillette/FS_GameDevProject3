@@ -161,7 +161,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   _controller: {fileID: 945516029146817854}
-  _HP: 20
+  _HP: 100
   _moveSpeed: 4
   _sprintMod: 3
   _jumpMax: 1
@@ -187,6 +187,7 @@ MonoBehaviour:
   _defaultGun: {fileID: 11400000, guid: 7ceaea2ab0275224caeca105a2388aa4, type: 2}
   reloadSound: {fileID: 8300000, guid: 42f814318ccc27f4f9575414dde12a1e, type: 3}
   emptySound: {fileID: 8300000, guid: ce74b2e2af9b6a740aebd34f1643c641, type: 3}
+  changeGunSound: {fileID: 8300000, guid: 42f814318ccc27f4f9575414dde12a1e, type: 3}
 --- !u!33 &4977928010108839875
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -440,37 +441,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 551783456511802830}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &2308029636950882879
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 7588501585678100428}
-  m_Layer: 0
-  m_Name: FlashLightSpot
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &7588501585678100428
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2308029636950882879}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.44585794, y: -0.486, z: 0.556}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 5761123661771238113}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6935188812029657834
 GameObject:
   m_ObjectHideFlags: 0
@@ -628,7 +598,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 551783456511802830}
-  - {fileID: 7588501585678100428}
   - {fileID: 7133150364491037742}
   m_Father: {fileID: 220395456434575157}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -795,6 +764,10 @@ PrefabInstance:
     - target: {fileID: 1147965471979518, guid: 0ddea81a21def2441b61569e0a44ca14, type: 3}
       propertyPath: m_Name
       value: Flashlight
+      objectReference: {fileID: 0}
+    - target: {fileID: 1147965471979518, guid: 0ddea81a21def2441b61569e0a44ca14, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1147965471979518, guid: 0ddea81a21def2441b61569e0a44ca14, type: 3}
       propertyPath: m_TagString

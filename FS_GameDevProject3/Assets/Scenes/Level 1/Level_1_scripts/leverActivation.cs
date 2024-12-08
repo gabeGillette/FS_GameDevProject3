@@ -15,6 +15,9 @@ public class RotateOnActivate : MonoBehaviour, IInteractable
 
     private bool canInteract = true; // Track if the lever can still be interacted with
 
+    public AudioClip leverSound;
+
+
     // Implement Interact() method from IInteractable interface
     public void Interact()
     {
@@ -24,6 +27,8 @@ public class RotateOnActivate : MonoBehaviour, IInteractable
         // If the lever hasn't been interacted with yet, start the rotation and destruction process
         if (!isRotating)
         {
+            AudioSource.PlayClipAtPoint(leverSound, transform.position);
+
             initialRotation = transform.rotation.eulerAngles.x; // Store the initial rotation of the lever
             currentRotation = 0f; // Reset the current rotation
             isRotating = true; // Start rotating the lever

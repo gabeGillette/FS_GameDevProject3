@@ -53,8 +53,10 @@ MonoBehaviour:
   healthPackAmount: 5
   ammoPickup: 0
   batteryRecharge: 20
+  batterySound: {fileID: 8300000, guid: 808b1c1bb474b2e4e81f482b61c5af1f, type: 3}
   evidenceSound: {fileID: 0}
   ammoPickUpSound: {fileID: 8300000, guid: 7fe67f3d2511240d3a5ce7ddbd529b89, type: 3}
+  keyPickUpSound: {fileID: 0}
 --- !u!114 &5232950692008988821
 MonoBehaviour:
   m_ObjectHideFlags: 0
