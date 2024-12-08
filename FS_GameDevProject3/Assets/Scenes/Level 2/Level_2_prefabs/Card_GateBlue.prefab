@@ -9,6 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 641666649023016617}
+  - component: {fileID: -4032176334577807526}
+  - component: {fileID: 5974955853071661560}
   m_Layer: 0
   m_Name: Card_GateBlue
   m_TagString: Untagged
@@ -23,6 +25,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 593542545141281283}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -30,13 +33,49 @@ Transform:
   m_Children:
   - {fileID: 8647012528034581310}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-4032176334577807526
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 593542545141281283}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06afc2b95485e534dbaa91c87beb6899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  floatHeight: 1
+  floatSpeed: 2
+  spinSpeed: 100
+--- !u!114 &5974955853071661560
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 593542545141281283}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 049a0e3be63f48e488473712985a9f43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 8
+  gun: {fileID: 0}
+  healthPackAmount: 5
+  ammoPickup: 0
+  batteryRecharge: 0
+  batterySound: {fileID: 0}
+  evidenceSound: {fileID: 0}
+  ammoPickUpSound: {fileID: 0}
+  keyPickUpSound: {fileID: 8300000, guid: cc79351049d5005469f039d246c248ee, type: 3}
 --- !u!1001 &9190410232686701781
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 641666649023016617}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 4c774eacc8336154eb814ed9086f3df7, type: 3}
@@ -92,6 +131,9 @@ PrefabInstance:
       value: Card
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4c774eacc8336154eb814ed9086f3df7, type: 3}
 --- !u!4 &8647012528034581310 stripped
 Transform:
