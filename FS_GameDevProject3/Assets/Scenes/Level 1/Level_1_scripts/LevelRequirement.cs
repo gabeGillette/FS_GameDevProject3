@@ -16,64 +16,47 @@ public enum currentSceneSelected
 
 public class LevelRequirement : MonoBehaviour, IInteractable
 {
-    public bool hasKey = false;
-    private string sceneToLoad;
-
-    public TextMeshProUGUI messageText;  // Drag and drop the Text component from the UI in the inspector
+    public bool hasKey = false;  // Player state: does the player have the key?
+    public TextMeshProUGUI messageText;  // Reference to the message UI element
     public float displayDuration = 2f;  // Duration the message will be displayed
 
     private currentSceneSelected currentScene;  // Current scene tracker
-    private string messageForAccess;
-
-
     private string[] sceneNames = {
         "Level 1",   // Scene for Level1
         "Level 2",   // Scene for Level2
         "Level 3",   // Scene for Level3
         "Basement"   // Scene for Basement
     };
-    // Start is called before the first frame update
+
     void Start()
     {
-        
         messageText = GameObject.Find("Messages").GetComponent<TextMeshProUGUI>();
 
+        messageText.text = "";  // Clear the text initially
+        initializeCurrentScene();
         messageText.gameObject.SetActive(false);  // Ensure message text is hidden at the start
-
-
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 
     public void Interact()
     {
-
         if (hasKey)
         {
+            // Proceed to the next scene if the player has the key
             moveToNextScene();
-            
         }
         else
         {
-            if (currentScene == currentSceneSelected.Level1)
-            {
-                // Set the message text
-                messageText.text = "Looks like you need a KeyCard to activate this.";
+            // Show the message if the player doesn't have the key
+            messageText.gameObject.SetActive(true);
 
-                // Activate the message text
-                messageText.gameObject.SetActive(true);
+            // Set the appropriate message based on the current scene
+            initializeCurrentScene();
 
-                // Start a coroutine to hide the message after a delay
-                StartCoroutine(HideMessageAfterDelay(displayDuration));
-            }
+            // Start a coroutine to hide the message after the specified duration
+            StartCoroutine(HideMessageAfterDelay(displayDuration));
         }
-
     }
+
     private IEnumerator HideMessageAfterDelay(float delay)
     {
         // Wait for the specified duration
@@ -86,25 +69,32 @@ public class LevelRequirement : MonoBehaviour, IInteractable
     void initializeCurrentScene()
     {
         Scene currentActiveScene = SceneManager.GetActiveScene();
+
+        // Set the message for the current scene
         switch (currentActiveScene.name)
         {
             case "Level 1":
                 currentScene = currentSceneSelected.Level1;
+                messageText.text = "Looks like you need a KeyCard to activate this.";
                 break;
             case "Level 2":
                 currentScene = currentSceneSelected.Level2;
+                messageText.text = "Looks like you need a Code to activate this.";
                 break;
             case "Level 3":
                 currentScene = currentSceneSelected.Level3;
+                messageText.text = "Looks like you need an Old Key to activate this.";
                 break;
             case "Basement":
                 currentScene = currentSceneSelected.Basement;
+                messageText.text = "Looks like you need something special for the Basement.";
                 break;
             default:
                 Debug.LogWarning("Current scene not recognized.");
                 break;
         }
     }
+
     void moveToNextScene()
     {
         int currentSceneIndex = (int)currentScene;  // Get the current scene's enum index
@@ -114,24 +104,11 @@ public class LevelRequirement : MonoBehaviour, IInteractable
         string nextSceneName = sceneNames[nextIndex];  // Get the scene name from the array using the next index
 
         Debug.Log("Next Scene: " + nextSceneName);  // Log the scene name to the console
+
+        // Reset hasKey to false before transitioning to the next scene
         hasKey = false;
+
         // Load the next scene by its name
         SceneManager.LoadScene(nextSceneName);
-    }
-    void messages(int messageNumber)
-    {
-        switch(messageNumber)
-        {
-
-            case 0: //Access to the 2nd Floor
-                messageForAccess = "Looks like you need a KeyCard to activate this.";
-                break;
-            case 1: //Access to the 3rd Floor
-                messageForAccess = "Looks like you need a Code to activate this.";
-                break;
-            case 2: //Access to the basement
-                messageForAccess = "Looks like you need a Old Key to activate this.";
-                break;
-        }
     }
 }
