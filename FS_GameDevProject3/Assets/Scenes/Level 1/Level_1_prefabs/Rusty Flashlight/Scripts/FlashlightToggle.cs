@@ -22,7 +22,7 @@ public class FlashlightToggle : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log("Battery Life: " + batteryLife);
+       // Debug.Log("Battery Life: " + batteryLife);
 
         if (batteryLife > batteryLifeMax)
         {

@@ -283,10 +283,10 @@ public class playerController : MonoBehaviour, IDamage
 
         
         _gameManager.UpdateUI();
-        if (_HP <= 0)
-        {
-            death();
-        }
+        //if (_HP <= 0)
+        //{
+        //    death();
+        //}
     }
 
     public void death()
