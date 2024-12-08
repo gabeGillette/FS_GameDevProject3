@@ -161,7 +161,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   _controller: {fileID: 945516029146817854}
-  _HP: 20
+  _HP: 100
   _moveSpeed: 4
   _sprintMod: 3
   _jumpMax: 1
@@ -187,6 +187,7 @@ MonoBehaviour:
   _defaultGun: {fileID: 11400000, guid: 7ceaea2ab0275224caeca105a2388aa4, type: 2}
   reloadSound: {fileID: 8300000, guid: 42f814318ccc27f4f9575414dde12a1e, type: 3}
   emptySound: {fileID: 8300000, guid: ce74b2e2af9b6a740aebd34f1643c641, type: 3}
+  changeGunSound: {fileID: 8300000, guid: 42f814318ccc27f4f9575414dde12a1e, type: 3}
 --- !u!33 &4977928010108839875
 MeshFilter:
   m_ObjectHideFlags: 0

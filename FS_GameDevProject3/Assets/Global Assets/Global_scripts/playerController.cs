@@ -81,6 +81,7 @@ public class playerController : MonoBehaviour, IDamage
     private GameManager _gameManager;
     public AudioClip reloadSound;
     public AudioClip emptySound;
+    public AudioClip changeGunSound;
 
 
     void Awake()
@@ -344,6 +345,9 @@ public class playerController : MonoBehaviour, IDamage
 
     void changeGun()
     {
+
+        AudioSource.PlayClipAtPoint(changeGunSound, transform.position);
+
         _shootDamage = _gunList[_selectedGun].shootDamage;
         _shootDist = _gunList[_selectedGun].shootDistance;
         _shootRate = _gunList[_selectedGun].shootRate;
