@@ -20,6 +20,8 @@ public class enemyAI : MonoBehaviour, IDamage
     [SerializeField] private int animSpeedTrans;
 
     [SerializeField] private LayerMask detectionLayer;
+    [SerializeField] private string playerTag = "Player"; // Set this in Inspector
+
 
     [SerializeField] private float attackRate;
 
@@ -45,19 +47,35 @@ public class enemyAI : MonoBehaviour, IDamage
     {
         HandleAnimationSpeed();
 
-        if (playerInRange && !canSeePlayer())
+        if (playerInRange && canSeePlayer())
         {
-            Debug.Log("Player is near, but not visible. Enemy roaming.");
-            if (!isRoaming && agent.remainingDistance < 0.05f)
-                StartCoroutine(roam());
+            Debug.Log("Player detected. Chasing...");
+            agent.SetDestination(GameManager.Instance.Player.transform.position);
+
+            // Prevent the enemy from standing too close
+            if (agent.remainingDistance > agent.stoppingDistance)
+            {
+                anim.SetBool("isWalking", true); // Trigger walking animation
+            }
+            else
+            {
+                anim.SetBool("isWalking", false); // Stop walking animation
+                if (!isAttacking)
+                {
+                    StartCoroutine(meleeAttack()); // Start attack if close enough
+                }
+            }
         }
-        else if (!playerInRange)
+        else if (!playerInRange || !canSeePlayer())
         {
-            Debug.Log("Player is out of range. Enemy roaming.");
             if (!isRoaming && agent.remainingDistance < 0.05f)
+            {
+                Debug.Log("Player not detected. Enemy roaming.");
                 StartCoroutine(roam());
+            }
         }
     }
+
 
     private void HandleAnimationSpeed()
     {
@@ -70,21 +88,30 @@ public class enemyAI : MonoBehaviour, IDamage
         isRoaming = true;
         yield return new WaitForSeconds(roamTimer);
 
-        ResetStoppingDistance();
+        if (!playerInRange && !canSeePlayer()) // Only roam if the player isn't visible or in range
+        {
+            ResetStoppingDistance();
 
-        Vector3 randomDist = Random.insideUnitSphere * roamDist;
-        randomDist += startingPos;
+            Vector3 randomDist = Random.insideUnitSphere * roamDist;
+            randomDist += startingPos;
 
-        NavMeshHit hit;
-        NavMesh.SamplePosition(randomDist, out hit, roamDist, 1);
-        agent.SetDestination(hit.position);
+            NavMeshHit hit;
+            NavMesh.SamplePosition(randomDist, out hit, roamDist, 1);
+            agent.SetDestination(hit.position);
+        }
 
         isRoaming = false;
     }
 
     private bool canSeePlayer()
     {
-        if (GameManager.Instance.Player == null) return false; // Handle case where player is null
+        Debug.Log("Checking if the enemy can see the player...");
+
+        if (GameManager.Instance.Player == null)
+        {
+            Debug.LogError("GameManager.Instance.Player is null!");
+            return false;
+        }
 
         playerDir = GameManager.Instance.Player.transform.position - headPos.position;
         angleToPlayer = Vector3.Angle(playerDir, transform.forward);
@@ -94,23 +121,16 @@ public class enemyAI : MonoBehaviour, IDamage
         RaycastHit hit;
         if (Physics.Raycast(headPos.position, playerDir, out hit, Mathf.Infinity, detectionLayer))
         {
-            if (hit.collider.CompareTag("Player") && angleToPlayer <= viewAngle)
+            Debug.Log($"Raycast hit: {hit.collider.name}");
+
+            if (hit.collider.CompareTag(playerTag) && angleToPlayer <= viewAngle)
             {
-                agent.SetDestination(GameManager.Instance.Player.transform.position);
-
-                if (agent.remainingDistance <= agent.stoppingDistance)
-                {
-                    faceTarget();
-
-                    if (!isAttacking)
-                    {
-                        StartCoroutine(meleeAttack());
-                    }
-                }
-
+                Debug.Log("Player is visible!");
                 return true;
             }
         }
+
+        Debug.Log("Player is not visible.");
         return false;
     }
 
@@ -122,7 +142,7 @@ public class enemyAI : MonoBehaviour, IDamage
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag(playerTag))
         {
             playerInRange = true;
         }
@@ -130,10 +150,11 @@ public class enemyAI : MonoBehaviour, IDamage
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag(playerTag))
         {
             playerInRange = false;
             ResetStoppingDistance();
+            agent.ResetPath();
         }
     }
 
@@ -146,7 +167,7 @@ public class enemyAI : MonoBehaviour, IDamage
         Collider[] hitPlayers = Physics.OverlapSphere(AttackPos.position, agent.stoppingDistance);
         foreach (Collider player in hitPlayers)
         {
-            if (player.CompareTag("Player"))
+            if (player.CompareTag(playerTag))
             {
                 Debug.Log("Enemy attacks the player!");
                 player.GetComponent<playerController>()?.takeDamage(10); // Adjust damage value
