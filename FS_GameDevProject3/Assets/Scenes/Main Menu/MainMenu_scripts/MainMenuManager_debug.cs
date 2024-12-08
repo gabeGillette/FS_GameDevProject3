@@ -13,7 +13,7 @@ public class NewBehaviourScript : MonoBehaviour
     void Start()
     {
         _versionText.text = $"V {_versionFile.text}";
-        Instantiate(_levelSelectMenu);
+       // Instantiate(_levelSelectMenu);
     }
 
     // Update is called once per frame

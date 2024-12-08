@@ -81,11 +81,11 @@ public class GameManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (!_isPaused) {
-                pauseGame();
+                PauseGame();
             }
             else
             {
-                unpauseGame();
+                UnpauseGame();
             }
                    
         }
@@ -186,18 +186,20 @@ public class GameManager : MonoBehaviour
         _UIMessages.text = fullMessage;
     }
 
-    public void pauseGame()
+    public void PauseGame()
     {
         _isPaused = true;
         Time.timeScale = 0.0f;
         Cursor.lockState = CursorLockMode.Confined;
     }
 
-    public void unpauseGame()
+    public void UnpauseGame()
     {
         _isPaused = false;
         Time.timeScale = _timeScale;
         Cursor.lockState = CursorLockMode.Locked;
     }
+
+
 
 }
