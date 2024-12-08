@@ -46,7 +46,7 @@ public class MenuManager : MonoBehaviour
 
     
 
-    public enum MENU {PAUSE, SAVE, LOAD, MAIN, LEVEL_SELECT}
+    public enum MENU {PAUSE, SAVE, LOAD, MAIN, LEVEL_SELECT, OPTIONS}
 
     private Dictionary <string, AudioClip> _menuSounds;
     private Dictionary <string, UnityAction> _buttonActions;
@@ -62,7 +62,9 @@ public class MenuManager : MonoBehaviour
         
         _buttonActions.Add("load", () => Debug.Log("load game"));
 
-        _buttonActions.Add("options", () => Debug.Log("options menu"));
+        _buttonActions.Add("options", () => {
+            _optionsMenu.gameObject.SetActive(true);
+        });
 
         _buttonActions.Add("help", () => Debug.Log("help menu"));
 
@@ -80,11 +82,19 @@ public class MenuManager : MonoBehaviour
             () => CloseModal(), 
             () => CloseModal());
         });
+        
         _buttonActions.Add("options_cancel", () => {
             if(_OptionsDirty){
                 DisplayModal("Are you sure?", "You have unsaved changes", 
-                () => CloseModal(), 
+                () => {
+                    CloseModal();
+                    _optionsMenu.gameObject.SetActive(false);
+                }, 
                 () => CloseModal());
+            }
+            else
+            {
+                _optionsMenu.gameObject.SetActive(false);
             }
         });
 
