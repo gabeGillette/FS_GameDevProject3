@@ -9,21 +9,25 @@ public class enemyAI : MonoBehaviour, IDamage
     [SerializeField] private NavMeshAgent agent;
     [SerializeField] private Renderer model;
     [SerializeField] private Animator anim;
-    [SerializeField] private Transform AttackPos;
+    [SerializeField] private Transform attackPos;
     [SerializeField] private Transform headPos;
 
-    [SerializeField] private int HP;
-    [SerializeField] private int faceTargetSpeed;
-    [SerializeField] private int viewAngle;
-    [SerializeField] private int roamDist;
-    [SerializeField] private int roamTimer;
-    [SerializeField] private int animSpeedTrans;
+    [Header("Enemy Settings")]
+    [SerializeField] private int HP = 100;
+    [SerializeField] private float faceTargetSpeed = 5f;
+    [SerializeField] private float viewAngle = 120f;
+    [SerializeField] private float roamDist = 10f;
+    [SerializeField] private float roamTimer = 3f;
+    [SerializeField] private float animSpeedTrans = 2f;
 
+    [Header("Attack Settings")]
+    [SerializeField] private float stoppingDistance = 2f; // Adjustable attack range
+    [SerializeField] private int damage = 10; // Adjustable damage output
+    [SerializeField] private float attackRate = 3f;
+
+    [Header("Detection Settings")]
     [SerializeField] private LayerMask detectionLayer;
-    [SerializeField] private string playerTag = "Player"; // Set this in Inspector
-
-
-    [SerializeField] private float attackRate;
+    [SerializeField] private string playerTag = "Player"; // Ensure this matches the player's tag
 
     private bool isAttacking;
     private bool playerInRange;
@@ -33,13 +37,12 @@ public class enemyAI : MonoBehaviour, IDamage
     private Vector3 startingPos;
 
     private float angleToPlayer;
-    private float stoppingDistOrig;
 
     // Start is called before the first frame update
     void Start()
     {
-        stoppingDistOrig = agent.stoppingDistance;
         startingPos = transform.position;
+        agent.stoppingDistance = stoppingDistance; // Apply stopping distance
     }
 
     // Update is called once per frame
@@ -47,28 +50,31 @@ public class enemyAI : MonoBehaviour, IDamage
     {
         HandleAnimationSpeed();
 
-        if (canSeePlayer())
+        if (playerInRange && canSeePlayer())
         {
-            Debug.Log("Enemy is chasing the player."); // Logs when chase logic is triggered
+            Debug.Log("Enemy is chasing the player.");
             agent.SetDestination(GameManager.Instance.Player.transform.position);
 
             if (agent.remainingDistance > agent.stoppingDistance)
             {
-                anim.SetBool("isWalking", true); // Trigger walking animation
+                anim.SetBool("isWalking", true);
             }
             else
             {
-                anim.SetBool("isWalking", false); // Stop walking animation
+                anim.SetBool("isWalking", false);
                 if (!isAttacking)
                 {
-                    StartCoroutine(meleeAttack());
+                    StartCoroutine(MeleeAttack());
                 }
             }
         }
-        else if (!isRoaming)
+        else if (!playerInRange || !canSeePlayer())
         {
-            Debug.Log("Enemy is roaming."); // Logs when roaming logic starts
-            StartCoroutine(roam());
+            if (!isRoaming && agent.remainingDistance < 0.05f)
+            {
+                Debug.Log("Enemy roaming...");
+                StartCoroutine(roam());
+            }
         }
     }
 
@@ -116,7 +122,7 @@ public class enemyAI : MonoBehaviour, IDamage
             anim.SetBool("isWalking", false); // Stop walking animation
             if (!isAttacking)
             {
-                StartCoroutine(meleeAttack()); // Start melee attack
+                StartCoroutine(MeleeAttack()); // Start melee attack
             }
         }
     }
@@ -201,25 +207,25 @@ public class enemyAI : MonoBehaviour, IDamage
         }
     }
 
-    private IEnumerator meleeAttack()
+    private IEnumerator MeleeAttack()
     {
-        isAttacking = true; // Prevent multiple melee attacks
+        isAttacking = true;
         anim.SetTrigger("Attack");
 
-        // Apply damage if the player is within range
-        Collider[] hitPlayers = Physics.OverlapSphere(AttackPos.position, agent.stoppingDistance);
+        Collider[] hitPlayers = Physics.OverlapSphere(attackPos.position, stoppingDistance);
         foreach (Collider player in hitPlayers)
         {
             if (player.CompareTag(playerTag))
             {
-                Debug.Log("Enemy attacks the player!");
-                player.GetComponent<playerController>()?.takeDamage(10); // Adjust damage value
+                Debug.Log("Enemy is attacking the player!");
+                player.GetComponent<playerController>()?.takeDamage(damage);
             }
         }
 
         yield return new WaitForSeconds(attackRate);
         isAttacking = false;
     }
+
 
     public void takeDamage(int amount)
     {

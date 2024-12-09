@@ -280,14 +280,14 @@ public class playerController : MonoBehaviour, IDamage
 
     public void takeDamage(int amount)
     {
-        _HP -= amount;
+        _HP -= amount; // Deduct health
 
-        
-        _gameManager.UpdateUI();
-        //if (_HP <= 0)
-        //{
-        //    death();
-        //}
+        _gameManager.UpdateUI(); // Update the UI to reflect the new health
+
+        if (_HP <= 0) // Check if the player is dead
+        {
+            death();
+        }
     }
 
     public void death()
