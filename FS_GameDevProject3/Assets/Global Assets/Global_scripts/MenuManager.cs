@@ -178,7 +178,7 @@ public class MenuManager : MonoBehaviour
     public void StartNewGame()
     {
         // Load the first scene (you can replace with a specific scene name if necessary)
-        SceneManager.LoadScene(0); // Loads the first scene in the build settings
+        SceneManager.LoadScene(1); // Loads the first scene in the build settings
     }
 
 }
