@@ -6,6 +6,7 @@ using UnityEngine.Events;
 using System;
 using UnityEngine.UIElements;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class MenuManager : MonoBehaviour
 {
@@ -58,8 +59,8 @@ public class MenuManager : MonoBehaviour
         _menuSounds = new Dictionary<string, AudioClip>(){{"hover", _hover}, {"accept", _accept}, {"deny", _deny}, {"next", _next}, {"gunshot", _gunShot}};
         
         _buttonActions = new Dictionary<string, UnityAction>();
-        _buttonActions.Add("new", () => Debug.Log("new game"));
-        
+        _buttonActions.Add("new", () => StartNewGame()); // Starts new game
+
         _buttonActions.Add("load", () => Debug.Log("load game"));
 
         _buttonActions.Add("options", () => {
@@ -174,6 +175,10 @@ public class MenuManager : MonoBehaviour
     {
         _modalPopup.SetActive(false);
     }
-
+    public void StartNewGame()
+    {
+        // Load the first scene (you can replace with a specific scene name if necessary)
+        SceneManager.LoadScene(0); // Loads the first scene in the build settings
+    }
 
 }
