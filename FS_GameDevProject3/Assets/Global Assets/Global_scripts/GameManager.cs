@@ -73,6 +73,15 @@ public class GameManager : MonoBehaviour
         _evidenceCollected = 0;
         _evidenceTotal = _evidenceList.Count;
 
+        if (_instance == null)
+        {
+            _instance = this;
+        }
+        else
+        {
+            Destroy(gameObject); // Avoid multiple instances
+        }
+
         UpdateUI();
     }
 

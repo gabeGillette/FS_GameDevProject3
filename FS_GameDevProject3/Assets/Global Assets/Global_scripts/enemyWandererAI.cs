@@ -47,12 +47,11 @@ public class enemyAI : MonoBehaviour, IDamage
     {
         HandleAnimationSpeed();
 
-        if (playerInRange && canSeePlayer())
+        if (canSeePlayer())
         {
-            Debug.Log("Player detected. Chasing...");
+            Debug.Log("Enemy is chasing the player."); // Logs when chase logic is triggered
             agent.SetDestination(GameManager.Instance.Player.transform.position);
 
-            // Prevent the enemy from standing too close
             if (agent.remainingDistance > agent.stoppingDistance)
             {
                 anim.SetBool("isWalking", true); // Trigger walking animation
@@ -62,77 +61,121 @@ public class enemyAI : MonoBehaviour, IDamage
                 anim.SetBool("isWalking", false); // Stop walking animation
                 if (!isAttacking)
                 {
-                    StartCoroutine(meleeAttack()); // Start attack if close enough
+                    StartCoroutine(meleeAttack());
                 }
             }
         }
-        else if (!playerInRange || !canSeePlayer())
+        else if (!isRoaming)
         {
-            if (!isRoaming && agent.remainingDistance < 0.05f)
-            {
-                Debug.Log("Player not detected. Enemy roaming.");
-                StartCoroutine(roam());
-            }
+            Debug.Log("Enemy is roaming."); // Logs when roaming logic starts
+            StartCoroutine(roam());
         }
     }
+
 
 
     private void HandleAnimationSpeed()
     {
-        float agentSpeed = agent.velocity.magnitude; // Use actual magnitude
+        float agentSpeed = agent.velocity.magnitude; // Use the actual velocity magnitude of the NavMeshAgent
         anim.SetFloat("Speed", Mathf.Lerp(anim.GetFloat("Speed"), agentSpeed, Time.deltaTime * animSpeedTrans));
+        Debug.Log($"Animator Speed: {anim.GetFloat("Speed")}"); // Log the Animator's Speed parameter
     }
+
 
     private IEnumerator roam()
     {
         isRoaming = true;
         yield return new WaitForSeconds(roamTimer);
 
-        if (!playerInRange && !canSeePlayer()) // Only roam if the player isn't visible or in range
+        ResetStoppingDistance();
+
+        // Select a random position within roam distance
+        Vector3 randomDist = Random.insideUnitSphere * roamDist + startingPos;
+
+        NavMeshHit hit;
+        if (NavMesh.SamplePosition(randomDist, out hit, roamDist, NavMesh.AllAreas))
         {
-            ResetStoppingDistance();
-
-            Vector3 randomDist = Random.insideUnitSphere * roamDist;
-            randomDist += startingPos;
-
-            NavMeshHit hit;
-            NavMesh.SamplePosition(randomDist, out hit, roamDist, 1);
             agent.SetDestination(hit.position);
         }
 
         isRoaming = false;
     }
 
+
+    private void ChasePlayer()
+    {
+        Debug.Log("Player detected. Chasing...");
+        agent.SetDestination(GameManager.Instance.Player.transform.position);
+
+        if (agent.remainingDistance > agent.stoppingDistance)
+        {
+            anim.SetBool("isWalking", true); // Trigger walking animation
+        }
+        else
+        {
+            anim.SetBool("isWalking", false); // Stop walking animation
+            if (!isAttacking)
+            {
+                StartCoroutine(meleeAttack()); // Start melee attack
+            }
+        }
+    }
+
+
     private bool canSeePlayer()
     {
-        Debug.Log("Checking if the enemy can see the player...");
+        if (GameManager.Instance.Player == null) return false; // Ensure the player is assigned
 
-        if (GameManager.Instance.Player == null)
-        {
-            Debug.LogError("GameManager.Instance.Player is null!");
-            return false;
-        }
-
+        // Calculate direction to the player
         playerDir = GameManager.Instance.Player.transform.position - headPos.position;
         angleToPlayer = Vector3.Angle(playerDir, transform.forward);
 
-        Debug.DrawRay(headPos.position, playerDir * 50f, Color.red);
+        // Log the angle to the player for debugging
+        Debug.Log($"Angle to player: {angleToPlayer}");
 
-        RaycastHit hit;
-        if (Physics.Raycast(headPos.position, playerDir, out hit, Mathf.Infinity, detectionLayer))
+        // Check if the player is within the view angle
+        if (angleToPlayer <= viewAngle / 2f)
         {
-            Debug.Log($"Raycast hit: {hit.collider.name}");
+            Debug.Log("Player is within view angle.");
 
-            if (hit.collider.CompareTag(playerTag) && angleToPlayer <= viewAngle)
+            // Perform a raycast to check for obstacles
+            RaycastHit hit;
+            if (Physics.Raycast(headPos.position, playerDir, out hit, Mathf.Infinity, detectionLayer))
             {
-                Debug.Log("Player is visible!");
-                return true;
+                Debug.Log($"Raycast hit: {hit.collider.name}");
+
+                // Check if the raycast hit the player
+                if (hit.collider.CompareTag(playerTag))
+                {
+                    Debug.Log("Player detected. Enemy can see the player.");
+                    return true; // Player is visible
+                }
             }
         }
 
-        Debug.Log("Player is not visible.");
+        // Player not detected or outside view angle
+        Debug.Log("Player not detected or outside view angle.");
         return false;
     }
+
+
+
+
+
+    private void AlertMusicManager(bool playerDetected)
+    {
+        if (playerDetected)
+        {
+            Debug.Log("Switching to chase music...");
+            MusicManager.Instance.SwitchToChaseMusic();
+        }
+        else
+        {
+            Debug.Log("Switching to background music...");
+            MusicManager.Instance.SwitchToBackgroundMusic();
+        }
+    }
+
 
     private void faceTarget()
     {
@@ -202,11 +245,18 @@ public class enemyAI : MonoBehaviour, IDamage
 
     private void OnDrawGizmosSelected()
     {
-        // Visualize melee attack range in the Scene view
-        if (AttackPos != null)
+        if (headPos != null)
         {
+            // Visualize the view angle
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(headPos.position, 10f); // Adjust for detection range
+
+            Vector3 leftBoundary = Quaternion.Euler(0, -viewAngle / 2f, 0) * transform.forward;
+            Vector3 rightBoundary = Quaternion.Euler(0, viewAngle / 2f, 0) * transform.forward;
+
             Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(AttackPos.position, agent.stoppingDistance);
+            Gizmos.DrawRay(headPos.position, leftBoundary * 5f); // Adjust for range
+            Gizmos.DrawRay(headPos.position, rightBoundary * 5f); // Adjust for range
         }
     }
 }
