@@ -12,7 +12,7 @@ public class enemyAI : MonoBehaviour, IDamage
     [SerializeField] private Transform attackPos;
     [SerializeField] private Transform headPos;
 
-    [Header("Enemy Settings")]
+    [Header("-- Enemy Settings --")]
     [SerializeField] private int HP = 100;
     [SerializeField] private float faceTargetSpeed = 5f;
     [SerializeField] private float viewAngle = 120f;
@@ -20,12 +20,12 @@ public class enemyAI : MonoBehaviour, IDamage
     [SerializeField] private float roamTimer = 3f;
     [SerializeField] private float animSpeedTrans = 2f;
 
-    [Header("Attack Settings")]
+    [Header("-- Attack Settings --")]
     [SerializeField] private float stoppingDistance = 2f; // Adjustable attack range
     [SerializeField] private int damage = 10; // Adjustable damage output
     [SerializeField] private float attackRate = 3f;
 
-    [Header("Detection Settings")]
+    [Header("-- Detection Settings --")]
     [SerializeField] private LayerMask detectionLayer;
     [SerializeField] private string playerTag = "Player"; // Ensure this matches the player's tag
 
