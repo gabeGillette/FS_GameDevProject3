@@ -335,6 +335,63 @@ MonoBehaviour:
   _UIQuest: {fileID: 2400952024766912740}
   _messageDuration: 2.6
   _versionFile: {fileID: 4900000, guid: 35c4f19d0d371284189df6fdd20eebbc, type: 3}
+--- !u!1 &1979737846361046625
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5393219673095506606}
+  - component: {fileID: 765815565265519153}
+  m_Layer: 0
+  m_Name: ItemDropperManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5393219673095506606
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1979737846361046625}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2125699913754464336}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &765815565265519153
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1979737846361046625}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 345c0627669adb0489a70fcea79b1e86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  healthPrefab: {fileID: 4890502509183369617, guid: a1c29791da66d514a8a22f4d059584a9, type: 3}
+  pistolammoPrefab: {fileID: 3725697345226437007, guid: 7e250b2ad955f9e4d974178a51ee00a0, type: 3}
+  shotgunammoPrefab: {fileID: 5312910322011986632, guid: 65381929a18e7e24396c4a93f28c8aa0, type: 3}
+  batteryPrefab: {fileID: 7102379289996142891, guid: 95b31d5eff5cb904493679e58ee07d44, type: 3}
+  items:
+  - itemName: Health
+    weight: 60
+  - itemName: PistolAmmo
+    weight: 25
+  - itemName: ShotgunAmmo
+    weight: 5
+  - itemName: Battery
+    weight: 90
 --- !u!1 &2083922678288931191
 GameObject:
   m_ObjectHideFlags: 0
@@ -876,6 +933,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6719707582908764889}
+  - {fileID: 5393219673095506606}
   - {fileID: 4459208241054441096}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
