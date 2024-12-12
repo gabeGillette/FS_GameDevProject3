@@ -18,6 +18,7 @@ public class LevelRequirement : MonoBehaviour, IInteractable
     public bool hasKey = false;  // Player state: does the player have the key?
     public TextMeshProUGUI messageText;  // Reference to the message UI element
     public float displayDuration = 2f;  // Duration the message will be displayed
+    public TextMeshProUGUI questText;
 
     private currentSceneSelected currentScene;  // Current scene tracker
     private string[] sceneNames = {
@@ -75,18 +76,24 @@ public class LevelRequirement : MonoBehaviour, IInteractable
             case "Level 1":
                 currentScene = currentSceneSelected.Level1;
                 messageText.text = "Looks like you need a KeyCard to activate this.";
+                questText.text += "\nFind KeyCard.\n";
                 break;
             case "Level 2":
                 currentScene = currentSceneSelected.Level2;
                 messageText.text = "Looks like you need a Code to activate this.";
+                questText.text += "\nFind the 4 digit code.\n";
                 break;
             case "Level 3":
                 currentScene = currentSceneSelected.Level3;
                 messageText.text = "Looks like you need an Old Key to activate this.";
+                questText.text += "\nFind Old Key.\n";
                 break;
             case "Basement":
                 currentScene = currentSceneSelected.Basement;
-                messageText.text = "Looks like you need something special for the Basement.";
+                messageText.text = "The elevator is broken.";
+                questText.text = "";
+                questText.text = "ESCAPE!";
+               
                 break;
             default:
                 Debug.LogWarning("Current scene not recognized.");
@@ -106,6 +113,8 @@ public class LevelRequirement : MonoBehaviour, IInteractable
 
         // Reset hasKey to false before transitioning to the next scene
         hasKey = false;
+
+        questText.text = "";
 
         // Load the next scene by its name
         SceneManager.LoadScene(nextSceneName);

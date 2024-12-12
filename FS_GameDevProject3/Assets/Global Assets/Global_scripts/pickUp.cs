@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -16,6 +17,9 @@ public class pickUp : MonoBehaviour, IPickup
     public AudioClip evidenceSound;
     public AudioClip ammoPickUpSound;
     public AudioClip keyPickUpSound;
+
+    public TextMeshProUGUI questText;  // Reference to the message UI element
+
 
 
     // Start is called before the first frame update
@@ -84,6 +88,7 @@ public class pickUp : MonoBehaviour, IPickup
                 AudioSource.PlayClipAtPoint(keyPickUpSound, transform.position);
                 LevelRequirement levelRequirements = LevelController.GetComponent<LevelRequirement>();
                 levelRequirements.hasKey = true;
+                questText.text = "Return to Elevator";
                 Destroy(gameObject);
 
             }
