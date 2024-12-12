@@ -13,17 +13,17 @@ public class enemyAI : MonoBehaviour, IDamage
     [SerializeField] private Transform headPos;
 
     [Header("-- Enemy Settings --")]
-    [SerializeField] private int HP = 100;
-    [SerializeField] private float faceTargetSpeed = 5f;
-    [SerializeField] private float viewAngle = 120f;
-    [SerializeField] private float roamDist = 10f;
-    [SerializeField] private float roamTimer = 3f;
-    [SerializeField] private float animSpeedTrans = 2f;
+    [SerializeField] private int HP;
+    [SerializeField] private float faceTargetSpeed;
+    [SerializeField] private float viewAngle;
+    [SerializeField] private float roamDist;
+    [SerializeField] private float roamTimer;
+    [SerializeField] private float animSpeedTrans;
 
     [Header("-- Attack Settings --")]
-    [SerializeField] private float stoppingDistance = 2f; // Adjustable attack range
-    [SerializeField] private int damage = 10; // Adjustable damage output
-    [SerializeField] private float attackRate = 3f;
+    [SerializeField] private float stoppingDistance; // Adjustable attack range
+    [SerializeField] private int damage; // Adjustable damage output
+    [SerializeField] private float attackRate;
 
     [Header("-- Detection Settings --")]
     [SerializeField] private LayerMask detectionLayer;
@@ -37,12 +37,14 @@ public class enemyAI : MonoBehaviour, IDamage
     private Vector3 startingPos;
 
     private float angleToPlayer;
+    float stoppingDistOrig;
 
     // Start is called before the first frame update
     void Start()
     {
         startingPos = transform.position;
-        agent.stoppingDistance = stoppingDistance; // Apply stopping distance
+        agent.stoppingDistance = 0f; // Default stopping distance for roaming
+        stoppingDistOrig = agent.stoppingDistance;
     }
 
     // Update is called once per frame
@@ -92,6 +94,8 @@ public class enemyAI : MonoBehaviour, IDamage
     {
         isRoaming = true;
         yield return new WaitForSeconds(roamTimer);
+
+        agent.stoppingDistance = 0;
 
         ResetStoppingDistance();
 
@@ -157,6 +161,8 @@ public class enemyAI : MonoBehaviour, IDamage
                     return true; // Player is visible
                 }
             }
+
+            agent.stoppingDistance = stoppingDistOrig;
         }
 
         // Player not detected or outside view angle
