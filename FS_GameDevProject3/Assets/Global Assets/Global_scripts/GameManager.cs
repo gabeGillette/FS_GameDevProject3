@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System;
+using UnityEditor.ProBuilder;
 
 public class GameManager : MonoBehaviour
 {
@@ -17,6 +18,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] TMP_Text _UITopRight;
     [SerializeField] TMP_Text _UIMessages;
     [SerializeField] TMP_Text _UIQuest;
+
+    [Header("-----Menus-----")]
+    [SerializeField] GameObject _menuActive;
+    [SerializeField] GameObject _menuPause;
 
     [SerializeField] [Range(0, 20)] float _messageDuration;
 
@@ -105,14 +110,16 @@ public class GameManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (!_isPaused) {
+            if (_menuActive == null)
+            {
                 PauseGame();
+               
             }
-            else
+            else if (_menuActive == _menuPause)
             {
                 UnpauseGame();
             }
-                   
+
         }
     }
 
@@ -132,8 +139,29 @@ public class GameManager : MonoBehaviour
         // Save ammo reserves
         PlayerPrefs.SetInt("PlayerAmmoRes", player.SelectedGun.ammoRes);
 
+        // Save Evidence Collected
+        PlayerPrefs.SetInt("TotalEvidenceCollected", _evidenceCollected);
+
+        // Save player position
+        PlayerPrefs.SetFloat("PlayerPosX", player.transform.position.x);
+        PlayerPrefs.SetFloat("PlayerPosY", player.transform.position.y);
+        PlayerPrefs.SetFloat("PlayerPosZ", player.transform.position.z);
+
+        // Debug log for evidence collected
+        Debug.Log(_evidenceCollected);
+
         // Save the data to disk
         PlayerPrefs.Save();
+
+
+        Debug.Log("Player Health: " + PlayerPrefs.GetInt("PlayerHealth"));
+        Debug.Log("Player Gun Index: " + PlayerPrefs.GetInt("PlayerGunIndex"));
+        Debug.Log("Player Ammo Current: " + PlayerPrefs.GetInt("PlayerAmmoCur"));
+        Debug.Log("Player Ammo Reserves: " + PlayerPrefs.GetInt("PlayerAmmoRes"));
+        Debug.Log("Evidence Collected: " + PlayerPrefs.GetInt("TotalEvidenceCollected"));
+        Debug.Log("Player Position: " + PlayerPrefs.GetFloat("PlayerPosX") + ", " +
+                  PlayerPrefs.GetFloat("PlayerPosY") + ", " + PlayerPrefs.GetFloat("PlayerPosZ"));
+
     }
 
     // Add a method to load player data
@@ -145,18 +173,28 @@ public class GameManager : MonoBehaviour
         int loadedAmmoCur = PlayerPrefs.GetInt("PlayerAmmoCur", player.SelectedGun.ammoCur); // Default to current ammo if no saved value
         int loadedAmmoRes = PlayerPrefs.GetInt("PlayerAmmoRes", player.SelectedGun.ammoRes); // Default to current ammo reserve if no saved value
 
+        // Load player position
+        float loadedPosX = PlayerPrefs.GetFloat("PlayerPosX", player.transform.position.x); // Default to current position if no saved value
+        float loadedPosY = PlayerPrefs.GetFloat("PlayerPosY", player.transform.position.y);
+        float loadedPosZ = PlayerPrefs.GetFloat("PlayerPosZ", player.transform.position.z);
+
         // Debug logs to check loaded data
         Debug.Log("Loading Player Data:");
         Debug.Log("Loaded Health: " + loadedHP);
         Debug.Log("Loaded Gun Index: " + loadedGunIndex);
         Debug.Log("Loaded Ammo Current: " + loadedAmmoCur);
         Debug.Log("Loaded Ammo Reserve: " + loadedAmmoRes);
+        Debug.Log("Loaded Position: " + new Vector3(loadedPosX, loadedPosY, loadedPosZ));
 
         // Apply loaded data to the player
         player.SetHealth(loadedHP); // Apply the loaded health
         player.SetGun(loadedGunIndex); // Apply the loaded gun index
         player.SetAmmo(loadedAmmoCur, loadedAmmoRes); // Apply the loaded ammo counts
 
+        // Set player position
+        player.transform.position = new Vector3(loadedPosX, loadedPosY, loadedPosZ);
+       // Scene currentScene = SceneManager.GetActiveScene();
+        //SceneManager.LoadScene(_currentLevel);
         Debug.Log("Player data loaded successfully.");
     }
 
@@ -265,6 +303,8 @@ public class GameManager : MonoBehaviour
     public void PauseGame()
     {
         _isPaused = true;
+        _menuActive = _menuPause;
+        _menuActive.SetActive(true);
         Time.timeScale = 0.0f;
         Cursor.lockState = CursorLockMode.Confined;
     }
@@ -272,6 +312,8 @@ public class GameManager : MonoBehaviour
     public void UnpauseGame()
     {
         _isPaused = false;
+        _menuActive.SetActive(false);
+        _menuActive = null;
         Time.timeScale = _timeScale;
         Cursor.lockState = CursorLockMode.Locked;
     }
