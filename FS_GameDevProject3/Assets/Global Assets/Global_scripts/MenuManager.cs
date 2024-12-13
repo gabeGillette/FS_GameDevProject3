@@ -62,13 +62,16 @@ public class MenuManager : MonoBehaviour
         _buttonActions.Add("new", () => StartNewGame()); // Starts new game
 
         _buttonActions.Add("load", () => Debug.Log("load game"));
+       
 
         _buttonActions.Add("options", () => {
             _optionsMenu.gameObject.SetActive(true);
         });
 
-        _buttonActions.Add("help", () => Debug.Log("help menu"));
-
+        _buttonActions.Add("help", () => {
+            _helpMenu.gameObject.SetActive(true);
+        });
+        
         _buttonActions.Add("credits", () => Debug.Log("credits menu"));
 
         _buttonActions.Add("quit", () => {
@@ -96,7 +99,11 @@ public class MenuManager : MonoBehaviour
             else
             {
                 _optionsMenu.gameObject.SetActive(false);
+
             }
+        });
+        _buttonActions.Add("cancel", () => {
+            _helpMenu.gameObject.SetActive(false);
         });
 
     }
@@ -181,4 +188,19 @@ public class MenuManager : MonoBehaviour
         SceneManager.LoadScene(1); // Loads the first scene in the build settings
     }
 
+    //public void LoadGame()
+    //{
+    //    GameManager.Instance.LoadPlayerData();
+    //}
+
+    public void HowToPlay()
+    {
+
+    }
+    public void BackToMainMenu()
+    {
+        _helpMenu.gameObject.SetActive(false);
+
+
+    }
 }
