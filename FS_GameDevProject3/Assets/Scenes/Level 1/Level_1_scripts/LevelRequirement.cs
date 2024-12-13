@@ -31,7 +31,9 @@ public class LevelRequirement : MonoBehaviour, IInteractable
     void Start()
     {
         messageText = GameObject.Find("Messages").GetComponent<TextMeshProUGUI>();
+        questText = GameObject.Find("QuestTracker").GetComponent<TextMeshProUGUI>();
 
+        
         messageText.text = "";  // Clear the text initially
         initializeCurrentScene();
         messageText.gameObject.SetActive(false);  // Ensure message text is hidden at the start

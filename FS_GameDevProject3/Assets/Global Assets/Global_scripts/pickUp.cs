@@ -29,6 +29,9 @@ public class pickUp : MonoBehaviour, IPickup
         {
             gun.ammoCur = gun.ammoMax;
         }
+        questText = GameObject.Find("QuestTracker").GetComponent<TextMeshProUGUI>();
+
+
     }
 
     public void CollectEvent()
