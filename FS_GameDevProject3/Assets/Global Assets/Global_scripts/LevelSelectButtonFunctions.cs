@@ -57,6 +57,17 @@ public class ButtonFunctions : MonoBehaviour
         // After the scene is reloaded, apply the saved data
         SceneManager.sceneLoaded += OnSceneLoaded; // Subscribe to sceneLoaded event
     }
+    public void quit()
+    {
+        {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+    
+            Application.Quit();
+#endif
+        }
+    }
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         // When the scene is loaded, find the player and apply the saved data
