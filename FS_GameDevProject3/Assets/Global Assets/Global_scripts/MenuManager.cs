@@ -21,6 +21,7 @@ public class MenuManager : MonoBehaviour
     [SerializeField] GameObject _helpMenu;
 
     [SerializeField] GameObject _LoadMenu;
+    [SerializeField] GameObject _storyBoard;
 
     //[SerializeField] GameObject[] _allMenus;
 
@@ -71,7 +72,12 @@ public class MenuManager : MonoBehaviour
         _buttonActions.Add("help", () => {
             _helpMenu.gameObject.SetActive(true);
         });
-        
+
+        _buttonActions.Add("story", () =>
+        {
+            _storyBoard.gameObject.SetActive(true);
+        });
+            
         _buttonActions.Add("credits", () => Debug.Log("credits menu"));
 
         _buttonActions.Add("quit", () => {
@@ -102,8 +108,16 @@ public class MenuManager : MonoBehaviour
 
             }
         });
-        _buttonActions.Add("cancel", () => {
-            _helpMenu.gameObject.SetActive(false);
+        _buttonActions.Add("cancel", () =>
+        {
+            if (_helpMenu != null)
+            {
+                _helpMenu.gameObject.SetActive(false); // Disable the help menu
+            }
+            else
+            {
+                Debug.LogError("_helpMenu is not assigned in the Inspector!");
+            }
         });
 
     }
