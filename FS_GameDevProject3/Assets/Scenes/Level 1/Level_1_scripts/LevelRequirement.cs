@@ -9,7 +9,7 @@ public enum currentSceneSelected
     Level1,
     Level2,
     Level3,
-    Basement,
+    Level4,
 }
 
 
@@ -19,21 +19,22 @@ public class LevelRequirement : MonoBehaviour, IInteractable
     public TextMeshProUGUI messageText;  // Reference to the message UI element
     public float displayDuration = 2f;  // Duration the message will be displayed
     public TextMeshProUGUI questText;
+   // private GameObject _playerSpawn;
 
     private currentSceneSelected currentScene;  // Current scene tracker
     private string[] sceneNames = {
         "Level 1",   // Scene for Level1
         "Level 2",   // Scene for Level2
         "Level 3",   // Scene for Level3
-        "Basement"   // Scene for Basement
+        "Level 4"   // Scene for Basement
     };
 
     void Start()
     {
         messageText = GameObject.Find("Messages").GetComponent<TextMeshProUGUI>();
         questText = GameObject.Find("QuestTracker").GetComponent<TextMeshProUGUI>();
+      //  _playerSpawn = GameObject.FindWithTag("PlayerSpawn");
 
-        
         messageText.text = "";  // Clear the text initially
         initializeCurrentScene();
         messageText.gameObject.SetActive(false);  // Ensure message text is hidden at the start
@@ -90,8 +91,8 @@ public class LevelRequirement : MonoBehaviour, IInteractable
                 messageText.text = "Looks like you need an Old Key to activate this.";
                 questText.text += "\nFind Old Key.\n";
                 break;
-            case "Basement":
-                currentScene = currentSceneSelected.Basement;
+            case "Level 4":
+                currentScene = currentSceneSelected.Level4;
                 messageText.text = "The elevator is broken.";
                 questText.text = "";
                 questText.text = "ESCAPE!";
@@ -120,5 +121,6 @@ public class LevelRequirement : MonoBehaviour, IInteractable
 
         // Load the next scene by its name
         SceneManager.LoadScene(nextSceneName);
+        GameManager.Instance.RespawnPlayer(GameManager.Instance._playerSpawn.transform);
     }
 }

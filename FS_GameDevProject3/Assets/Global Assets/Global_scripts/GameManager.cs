@@ -35,7 +35,7 @@ public class GameManager : MonoBehaviour
     private GameObject _player;
     private playerController _playerScript;
     private List<GameObject> _evidenceList;
-    private GameObject _playerSpawn;
+    public GameObject _playerSpawn;
 
     private int _evidenceTotal;
     private int _evidenceCollected;
@@ -318,5 +318,32 @@ public class GameManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
     }
 
-   
+    void OnEnable()
+    {
+        // Subscribe to the sceneLoaded event
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDisable()
+    {
+        // Unsubscribe from the sceneLoaded event to prevent memory leaks
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    // This method is called after a new scene is loaded
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // Find the PlayerSpawn object in the new scene
+        _playerSpawn = GameObject.FindWithTag("PlayerSpawn");
+
+        if (_playerSpawn != null)
+        {
+            // Respawn the player at the PlayerSpawn position
+            RespawnPlayer(_playerSpawn.transform);
+        }
+        else
+        {
+            Debug.LogError("Player spawn point not found in the scene!");
+        }
+    }
 }
