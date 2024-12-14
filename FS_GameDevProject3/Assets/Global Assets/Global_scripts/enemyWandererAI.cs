@@ -86,6 +86,9 @@ public class EnemyAI : MonoBehaviour
         Debug.DrawRay(headPos.position, playerDir, Color.red);
 
         RaycastHit hit;
+
+        int layerMask = ~LayerMask.GetMask("EnemyArmor"); // Ignore the EnemyArmor layer
+
         if (Physics.Raycast(headPos.position, playerDir, out hit))
         {
             if (hit.collider.CompareTag("Player") && angleToPlayer <= viewAngle)
