@@ -14,6 +14,7 @@ TagManager:
   - MoveAbleBookCase
   - FlashLight
   - InteractText
+  - LoadingScreen
   layers:
   - Default
   - TransparentFX
