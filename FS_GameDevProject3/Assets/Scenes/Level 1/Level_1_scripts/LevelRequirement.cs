@@ -15,6 +15,8 @@ public enum currentSceneSelected
 
 public class LevelRequirement : MonoBehaviour, IInteractable
 {
+
+
     public bool hasKey = false;  // Player state: does the player have the key?
     public TextMeshProUGUI messageText;  // Reference to the message UI element
     public float displayDuration = 2f;  // Duration the message will be displayed
@@ -28,9 +30,14 @@ public class LevelRequirement : MonoBehaviour, IInteractable
         "Level 3",   // Scene for Level3
         "Level 4"   // Scene for Basement
     };
+    public LoadingScreen loadingScreen;
 
+   
     void Start()
     {
+        GameObject loadingScreenObject = GameObject.FindGameObjectWithTag("LoadingScreen");
+        loadingScreen = loadingScreenObject.GetComponent<LoadingScreen>();  // Assign the LoadingScreen component
+
         messageText = GameObject.Find("Messages").GetComponent<TextMeshProUGUI>();
         questText = GameObject.Find("QuestTracker").GetComponent<TextMeshProUGUI>();
       //  _playerSpawn = GameObject.FindWithTag("PlayerSpawn");
@@ -38,6 +45,11 @@ public class LevelRequirement : MonoBehaviour, IInteractable
         messageText.text = "";  // Clear the text initially
         initializeCurrentScene();
         messageText.gameObject.SetActive(false);  // Ensure message text is hidden at the start
+    }
+
+    public void ChangeScene(string sceneName)
+    {
+        loadingScreen.LoadSceneAsync(sceneName);
     }
 
     public void Interact()
@@ -106,21 +118,27 @@ public class LevelRequirement : MonoBehaviour, IInteractable
 
     void moveToNextScene()
     {
-        int currentSceneIndex = (int)currentScene;  // Get the current scene's enum index
-        int nextIndex = (currentSceneIndex + 1) % sceneNames.Length; // Get the next scene's index
-        currentScene = (currentSceneSelected)nextIndex; // Set the current scene to the next one in the enum
+        // Get the current scene index (from enum)
+        int currentSceneIndex = (int)currentScene;
 
-        string nextSceneName = sceneNames[nextIndex];  // Get the scene name from the array using the next index
+        // Get the next scene index. If we're at the last scene, it will loop back to the first one.
+        int nextIndex = (currentSceneIndex + 1) % sceneNames.Length;
 
-        Debug.Log("Next Scene: " + nextSceneName);  // Log the scene name to the console
+        // Update the current scene variable with the next scene
+        currentScene = (currentSceneSelected)nextIndex;
 
-        // Reset hasKey to false before transitioning to the next scene
-        hasKey = false;
+        // Get the name of the next scene from the sceneNames array
+        string nextSceneName = sceneNames[nextIndex];
 
-        questText.text = "";
+        // Log to the console for debugging
+        Debug.Log("Current Scene: " + sceneNames[currentSceneIndex]);
+        Debug.Log("Next Scene: " + nextSceneName);
 
-        // Load the next scene by its name
-        SceneManager.LoadScene(nextSceneName);
-        GameManager.Instance.RespawnPlayer(GameManager.Instance._playerSpawn.transform);
+        // Reset any game state before loading the next scene (e.g., resetting keys or objectives)
+        hasKey = false; // Example of resetting the key state, if needed
+        questText.text = ""; // Reset the quest text
+
+        // Load the next scene by its name, not index
+        ChangeScene(nextSceneName);
     }
 }
