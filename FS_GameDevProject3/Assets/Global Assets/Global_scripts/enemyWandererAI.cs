@@ -1,274 +1,195 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class enemyAI : MonoBehaviour, IDamage
+public class EnemyAI : MonoBehaviour
 {
+    [Header("References")]
     [SerializeField] private NavMeshAgent agent;
-    [SerializeField] private Renderer model;
     [SerializeField] private Animator anim;
-    [SerializeField] private Transform attackPos;
-    [SerializeField] private Transform headPos;
+    [SerializeField] private Transform headPos; // For raycasting vision
+    [SerializeField] private Transform meleePos; // Position to spawn melee hitbox
+    [SerializeField] private GameObject meleeHit; // Melee attack object prefab
 
-    [Header("-- Enemy Settings --")]
+    [Header("Stats")]
     [SerializeField] private int HP;
+    [SerializeField] private float meleeRate; // Time between attacks
+    [SerializeField] private float roamDist; // Roaming range
+    [SerializeField] private float viewAngle; // Field of view angle
     [SerializeField] private float faceTargetSpeed;
-    [SerializeField] private float viewAngle;
-    [SerializeField] private float roamDist;
+
+    [Header("Roaming Settings")]
     [SerializeField] private float roamTimer;
-    [SerializeField] private float animSpeedTrans;
 
-    [Header("-- Attack Settings --")]
-    [SerializeField] private float stoppingDistance; // Adjustable attack range
-    [SerializeField] private int damage; // Adjustable damage output
-    [SerializeField] private float attackRate;
+    private Vector3 startingPos; // Initial position for roaming
+    private bool isAttacking = false; // Attack state
+    private bool isRoaming = false; // Roaming state
+    private bool playerInRange = false; // If player is within trigger
+    private float stoppingDistOrig; // Store original stopping distance
+    private Vector3 playerDir; // Direction to player
+    private float angleToPlayer; // Angle to player
 
-    [Header("-- Detection Settings --")]
-    [SerializeField] private LayerMask detectionLayer;
-    [SerializeField] private string playerTag = "Player"; // Ensure this matches the player's tag
-
-    private bool isAttacking;
-    private bool playerInRange;
-    private bool isRoaming;
-
-    private Vector3 playerDir;
-    private Vector3 startingPos;
-
-    private float angleToPlayer;
-    float stoppingDistOrig;
-
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        startingPos = transform.position;
-        agent.stoppingDistance = 0f; // Default stopping distance for roaming
         stoppingDistOrig = agent.stoppingDistance;
+        startingPos = transform.position;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        HandleAnimationSpeed();
+        // Smoothly update animator speed parameter
+        float agentSpeed = agent.velocity.magnitude;
+        anim.SetFloat("Speed", agentSpeed);
 
-        if (playerInRange && canSeePlayer())
+        // Roam if no player in range or visible
+        if (!playerInRange || !CanSeePlayer())
         {
-            Debug.Log("Enemy is chasing the player.");
-            agent.SetDestination(GameManager.Instance.Player.transform.position);
-
-            if (agent.remainingDistance > agent.stoppingDistance)
+            if (!isRoaming && agent.remainingDistance <= agent.stoppingDistance)
             {
-                anim.SetBool("isWalking", true);
-            }
-            else
-            {
-                anim.SetBool("isWalking", false);
-                if (!isAttacking)
-                {
-                    StartCoroutine(MeleeAttack());
-                }
-            }
-        }
-        else if (!playerInRange || !canSeePlayer())
-        {
-            if (!isRoaming && agent.remainingDistance < 0.05f)
-            {
-                Debug.Log("Enemy roaming...");
-                StartCoroutine(roam());
+                StartCoroutine(Roam());
             }
         }
     }
 
-
-
-    private void HandleAnimationSpeed()
-    {
-        float agentSpeed = agent.velocity.magnitude; // Use the actual velocity magnitude of the NavMeshAgent
-        anim.SetFloat("Speed", Mathf.Lerp(anim.GetFloat("Speed"), agentSpeed, Time.deltaTime * animSpeedTrans));
-        Debug.Log($"Animator Speed: {anim.GetFloat("Speed")}"); // Log the Animator's Speed parameter
-    }
-
-
-    private IEnumerator roam()
+    private IEnumerator Roam()
     {
         isRoaming = true;
+
+        if (MusicManager.Instance != null)
+        {
+            MusicManager.Instance.PlayBackgroundMusic();
+        }
+
         yield return new WaitForSeconds(roamTimer);
 
         agent.stoppingDistance = 0;
-
-        ResetStoppingDistance();
-
-        // Select a random position within roam distance
-        Vector3 randomDist = Random.insideUnitSphere * roamDist + startingPos;
-
+        Vector3 randomPoint = Random.insideUnitSphere * roamDist + startingPos;
         NavMeshHit hit;
-        if (NavMesh.SamplePosition(randomDist, out hit, roamDist, NavMesh.AllAreas))
-        {
-            agent.SetDestination(hit.position);
-        }
+        NavMesh.SamplePosition(randomPoint, out hit, roamDist, 1);
+        agent.SetDestination(hit.position);
 
         isRoaming = false;
     }
 
-
-    private void ChasePlayer()
+    private bool CanSeePlayer()
     {
-        Debug.Log("Player detected. Chasing...");
-        agent.SetDestination(GameManager.Instance.Player.transform.position);
-
-        if (agent.remainingDistance > agent.stoppingDistance)
+        if (GameManager.Instance.Player == null || headPos == null)
         {
-            anim.SetBool("isWalking", true); // Trigger walking animation
+            Debug.LogWarning("Player reference is missing in GameManager!");
+            return false;
         }
-        else
-        {
-            anim.SetBool("isWalking", false); // Stop walking animation
-            if (!isAttacking)
-            {
-                StartCoroutine(MeleeAttack()); // Start melee attack
-            }
-        }
-    }
 
-
-    private bool canSeePlayer()
-    {
-        if (GameManager.Instance.Player == null) return false; // Ensure the player is assigned
-
-        // Calculate direction to the player
         playerDir = GameManager.Instance.Player.transform.position - headPos.position;
         angleToPlayer = Vector3.Angle(playerDir, transform.forward);
 
-        // Log the angle to the player for debugging
-        Debug.Log($"Angle to player: {angleToPlayer}");
+        Debug.DrawRay(headPos.position, playerDir, Color.red);
 
-        // Check if the player is within the view angle
-        if (angleToPlayer <= viewAngle / 2f)
+        RaycastHit hit;
+        if (Physics.Raycast(headPos.position, playerDir, out hit))
         {
-            Debug.Log("Player is within view angle.");
-
-            // Perform a raycast to check for obstacles
-            RaycastHit hit;
-            if (Physics.Raycast(headPos.position, playerDir, out hit, Mathf.Infinity, detectionLayer))
+            if (hit.collider.CompareTag("Player") && angleToPlayer <= viewAngle)
             {
-                Debug.Log($"Raycast hit: {hit.collider.name}");
+                agent.stoppingDistance = stoppingDistOrig; // Set appropriate stopping distance
+                // Player is visible, move towards them
+                agent.SetDestination(GameManager.Instance.Player.transform.position);
 
-                // Check if the raycast hit the player
-                if (hit.collider.CompareTag(playerTag))
+                // Play chase music if not already playing
+                if (MusicManager.Instance != null)
                 {
-                    Debug.Log("Player detected. Enemy can see the player.");
-                    return true; // Player is visible
+                    Debug.Log("Enemy sees the player, switching to chase music");
+                    MusicManager.Instance.PlayChaseMusic();
                 }
-            }
 
-            agent.stoppingDistance = stoppingDistOrig;
+                // Attack when close enough
+                if (agent.remainingDistance <= agent.stoppingDistance)
+                {
+                    agent.isStopped = true;
+                    FaceTarget();
+                    if (!isAttacking)
+                    {
+                        StartCoroutine(Attack());
+                    }
+                }
+                else
+                {
+                    agent.isStopped = false;
+                }
+
+                return true;
+            }
         }
 
-        // Player not detected or outside view angle
-        Debug.Log("Player not detected or outside view angle.");
+        // Reset stopping distance and play background music when player is not visible
+        agent.stoppingDistance = 0;
+        if (MusicManager.Instance != null)
+        {
+            MusicManager.Instance.PlayBackgroundMusic();
+        }
+
+        agent.stoppingDistance = 0;
         return false;
     }
 
-
-
-
-
-    private void AlertMusicManager(bool playerDetected)
+    private void FaceTarget()
     {
-        if (playerDetected)
-        {
-            Debug.Log("Switching to chase music...");
-            MusicManager.Instance.SwitchToChaseMusic();
-        }
-        else
-        {
-            Debug.Log("Switching to background music...");
-            MusicManager.Instance.SwitchToBackgroundMusic();
-        }
+        Quaternion targetRotation = Quaternion.LookRotation(playerDir);
+        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * faceTargetSpeed);
     }
 
-
-    private void faceTarget()
+    private IEnumerator Attack()
     {
-        Quaternion rot = Quaternion.LookRotation(playerDir);
-        transform.rotation = Quaternion.Lerp(transform.rotation, rot, Time.deltaTime * faceTargetSpeed);
+        isAttacking = true;
+        anim.SetTrigger("Attack");
+
+        // Create the melee hit object
+        createMeleeHit();
+
+        // Wait for the attack cooldown
+        yield return new WaitForSeconds(meleeRate);
+
+        anim.ResetTrigger("Attack");
+        isAttacking = false;
+    }
+
+    public void createMeleeHit()
+    {
+        Quaternion spawnRotation = Quaternion.LookRotation(transform.forward); // Face forward
+        GameObject hit = Instantiate(meleeHit, meleePos.position, spawnRotation);
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag(playerTag))
+        if (other.CompareTag("Player"))
         {
             playerInRange = true;
+            agent.stoppingDistance = stoppingDistOrig; // Restore stopping distance
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag(playerTag))
+        if (other.CompareTag("Player"))
         {
             playerInRange = false;
-            ResetStoppingDistance();
-            agent.ResetPath();
+            agent.stoppingDistance = 0;
+            agent.isStopped = false;
         }
     }
 
-    private IEnumerator MeleeAttack()
+    public void TakeDamage(int damage)
     {
-        isAttacking = true;
-        anim.SetTrigger("Attack");
-
-        Collider[] hitPlayers = Physics.OverlapSphere(attackPos.position, stoppingDistance);
-        foreach (Collider player in hitPlayers)
-        {
-            if (player.CompareTag(playerTag))
-            {
-                Debug.Log("Enemy is attacking the player!");
-                player.GetComponent<playerController>()?.takeDamage(damage);
-            }
-        }
-
-        yield return new WaitForSeconds(attackRate);
-        isAttacking = false;
-    }
-
-
-    public void takeDamage(int amount)
-    {
-        HP -= amount;
-
-        if (HP > 0) // Only stagger if still alive
-        {
-            anim.SetTrigger("Hit"); // Play hit animation
-        }
-
+        HP -= damage;
         if (HP <= 0)
         {
-            anim.SetTrigger("Die"); // Play death animation
-            Destroy(gameObject, 2f); // Delay destruction for animation
+            Die();
         }
     }
 
-    private void ResetStoppingDistance()
+    private void Die()
     {
-        agent.stoppingDistance = 0;
-        isAttacking = false;
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-        if (headPos != null)
-        {
-            // Visualize the view angle
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(headPos.position, 10f); // Adjust for detection range
-
-            Vector3 leftBoundary = Quaternion.Euler(0, -viewAngle / 2f, 0) * transform.forward;
-            Vector3 rightBoundary = Quaternion.Euler(0, viewAngle / 2f, 0) * transform.forward;
-
-            Gizmos.color = Color.red;
-            Gizmos.DrawRay(headPos.position, leftBoundary * 5f); // Adjust for range
-            Gizmos.DrawRay(headPos.position, rightBoundary * 5f); // Adjust for range
-        }
+        anim.SetTrigger("Death");
+        agent.isStopped = true;
+        Destroy(gameObject, 2f); // Delay to allow death animation to play
     }
 }

@@ -4,11 +4,15 @@ using UnityEngine;
 
 public class MusicManager : MonoBehaviour
 {
-    public static MusicManager Instance { get; private set; } // Singleton instance
+    // Singleton Instance
+    public static MusicManager Instance { get; private set; }
 
+    [Header("References")]
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip backgroundMusic;
     [SerializeField] private AudioClip chaseMusic;
+
+    private bool isChaseMusicPlaying = false;
 
     private void Awake()
     {
@@ -25,34 +29,44 @@ public class MusicManager : MonoBehaviour
 
     private void Start()
     {
-        PlayBackgroundMusic();
+        PlayBackgroundMusic(); // Play background music on start
     }
 
-    public void SwitchToChaseMusic()
-    {
-        if (audioSource.clip != chaseMusic)
-        {
-            audioSource.clip = chaseMusic;
-            audioSource.Play();
-        }
-    }
-
-    public void SwitchToBackgroundMusic()
-    {
-        if (audioSource.clip != backgroundMusic)
-        {
-            audioSource.clip = backgroundMusic;
-            audioSource.Play();
-        }
-    }
-
-    private void PlayBackgroundMusic()
+    // Method to play background music
+    public void PlayBackgroundMusic()
     {
         audioSource.clip = backgroundMusic;
+        audioSource.loop = true;
         audioSource.Play();
     }
 
-    // Method to pause music
+    // Method to switch to chase music
+    public void PlayChaseMusic()
+    {
+        if (!isChaseMusicPlaying || audioSource.clip != chaseMusic)
+        {
+            Debug.Log("Switching to Chase Music"); // Debug log for chase music
+            audioSource.clip = chaseMusic;
+            audioSource.loop = true;
+            audioSource.Play();
+            isChaseMusicPlaying = true;
+        }
+    }
+
+    // Method to stop chase music and return to background music
+    public void StopChaseMusic()
+    {
+        if (isChaseMusicPlaying)
+        {
+            Debug.Log("Switching to Chase Music"); // Debug log for chase music
+            audioSource.clip = backgroundMusic;
+            audioSource.loop = true;
+            audioSource.Play();
+            isChaseMusicPlaying = false;
+        }
+    }
+
+    // Method to pause the music
     public void PauseMusic()
     {
         if (audioSource.isPlaying)
