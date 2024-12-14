@@ -13,6 +13,7 @@ TagManager:
   - LevelController
   - MoveAbleBookCase
   - FlashLight
+  - InteractText
   layers:
   - Default
   - TransparentFX

@@ -13,7 +13,7 @@ public class playerController : MonoBehaviour, IDamage
 
     [Header("-----Stats-----")]
     [SerializeField][Range(0, 100)] int _HP;
-    [SerializeField][Range(1, 5)] int _moveSpeed;
+    [SerializeField][Range(1, 5)] float _moveSpeed;
     [SerializeField][Range(2, 5)] int _sprintMod;
     [SerializeField][Range(1, 3)] int _jumpMax;
     [SerializeField][Range(5, 20)] int _jumpSpeed;
@@ -58,12 +58,13 @@ public class playerController : MonoBehaviour, IDamage
     bool _isShooting;
     bool _isPlayingSteps;
     bool hasPlayedEmptySound = false; // Flag to track if the empty sound has been played
+    bool displayQuest;
 
 
     int _jumpCount;
     int _HPOriginal;
     int _HPMax = 100;
-    int _selectedGun;
+    public int _selectedGun;
     int _shootDamage;
     int _shootDist;
 
@@ -82,6 +83,14 @@ public class playerController : MonoBehaviour, IDamage
     public AudioClip reloadSound;
     public AudioClip emptySound;
     public AudioClip changeGunSound;
+
+    private int _savedHP;
+    private int _savedGunIndex;
+    private int _savedAmmoCur;
+    private int _savedAmmoRes;
+    private GameObject _playerSpawn;
+
+
 
 
     void Awake()
@@ -102,8 +111,7 @@ public class playerController : MonoBehaviour, IDamage
 
     void Start()
     {
-        _HPOriginal = _HPMax;
-
+ 
         if (_gunList[_selectedGun].ammoCur > _gunList[_selectedGun].ammoMax)
         {
             _gunList[_selectedGun].ammoCur = _gunList[_selectedGun].ammoMax;
@@ -135,23 +143,31 @@ public class playerController : MonoBehaviour, IDamage
 
 
         movement();
-        crouch();
+      //  crouch();
         selectGun();
         reload();
         sprint();
     }
 
-    /// <summary>
-    /// Uncomment when the gameManger is implemented
-    /// </summary>
-    //public void spawnPlayer()
-    //{
-    //    controller.enabled = false;
-    //    transform.position = gameManager.instance.playerSpawnPos.transform.position;
-    //    controller.enabled = true;
-    //    HP = HPOriginal;
-    //    updatePlayerUI();
-    //}
+    public void SetHealth(int health)
+    {
+        _HP = health;
+    }
+
+    public void SetGun(int gunIndex)
+    {
+        _selectedGun = gunIndex;
+        // Reload gun data
+        getGunStats(_gunList[_selectedGun]);
+    }
+
+    public void SetAmmo(int ammoCur, int ammoRes)
+    {
+        _gunList[_selectedGun].ammoCur = ammoCur;
+        _gunList[_selectedGun].ammoRes = ammoRes;
+    }
+
+    
 
     public void restoreHealth(int amount)
     {
@@ -215,7 +231,9 @@ public class playerController : MonoBehaviour, IDamage
         _moveDir = (transform.forward * Input.GetAxis("Vertical")) + (transform.right * Input.GetAxis("Horizontal"));
         _controller.Move(_moveDir * _moveSpeed * Time.deltaTime);
 
+      
         Jump();
+        crouch();
 
         _controller.Move(_playerVel * Time.deltaTime);
         _playerVel.y -= _gravity * Time.deltaTime;
@@ -259,6 +277,7 @@ public class playerController : MonoBehaviour, IDamage
         }
     }
 
+   
     void sprint()
     {
         if (Input.GetButtonDown("Sprint"))
@@ -275,7 +294,62 @@ public class playerController : MonoBehaviour, IDamage
 
     void crouch()
     {
+        // Toggle crouch when the player presses the crouch button (e.g., Left Control key)
+        if (Input.GetKeyDown(KeyCode.LeftControl) && !_isCrouching)
+        {
+            // Start crouching
+            _isCrouching = true;
+            StartCoroutine(CrouchStand());
+        }
+        else if (Input.GetKeyDown(KeyCode.LeftControl) && _isCrouching)
+        {
+            // Stand up
+            _isCrouching = false;
+            StartCoroutine(CrouchStand());
+        }
+    }
 
+    IEnumerator CrouchStand()
+    {
+        // If crouching, gradually reduce the height
+        if (_isCrouching)
+        {
+            // Smoothly transition to crouch height
+            float timeElapsed = 0f;
+            float targetHeight = _crouchHeight;
+            float currentHeight = _controller.height;
+
+            while (timeElapsed < 0.25f) // 0.25f is the smooth transition time
+            {
+                _controller.height = Mathf.Lerp(currentHeight, targetHeight, timeElapsed / 0.25f);
+                timeElapsed += Time.deltaTime;
+                yield return null;
+            }
+
+            _controller.height = targetHeight; // Ensure final height is set
+        }
+        else
+        {
+            // If standing, gradually increase height to normal
+            float timeElapsed = 0f;
+            float targetHeight = _normalHeight;
+            float currentHeight = _controller.height;
+
+            // Check for obstruction (if the player is standing up into something)
+            if (Physics.Raycast(transform.position, Vector3.up, 1f)) // Check if something is above the player
+            {
+                yield break; // If there's an obstruction, prevent standing
+            }
+
+            while (timeElapsed < 0.25f) // 0.25f is the smooth transition time
+            {
+                _controller.height = Mathf.Lerp(currentHeight, targetHeight, timeElapsed / 0.25f);
+                timeElapsed += Time.deltaTime;
+                yield return null;
+            }
+
+            _controller.height = targetHeight; // Ensure final height is set
+        }
     }
 
     public void takeDamage(int amount)
@@ -286,16 +360,21 @@ public class playerController : MonoBehaviour, IDamage
 
         if (_HP <= 0) // Check if the player is dead
         {
-            death();
+            Death();
         }
     }
 
-    public void death()
+    public void Death()
     {
-        // Get the current scene
-        Scene currentScene = SceneManager.GetActiveScene();
+        // Save player data before respawn
+        GameManager.Instance.SavePlayerData(this);
+        _playerSpawn = GameObject.FindWithTag("PlayerSpawn");
 
-        // Reload the scene by name or build index
+
+       
+        // Reload scene (you could also load a specific respawn scene if desired)
+        GameManager.Instance.RespawnPlayer(_playerSpawn.transform);
+        Scene currentScene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(currentScene.name);
     }
 

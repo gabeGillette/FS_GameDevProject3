@@ -13,6 +13,6 @@ public class FallingDeath : MonoBehaviour
 
         playerController playerControllerScript = player.GetComponent<playerController>();
 
-        playerControllerScript.death();
+        playerControllerScript.Death();
     }
 }

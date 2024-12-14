@@ -13351,6 +13351,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1723198070995274697, guid: 3a213fc4949690c459d43b3990ea5f75, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4978945867348188997, guid: 3a213fc4949690c459d43b3990ea5f75, type: 3}
       propertyPath: m_Name
       value: PlayerSpawn
@@ -13397,6 +13401,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5959670276302952943, guid: 3a213fc4949690c459d43b3990ea5f75, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8000883779235740350, guid: 3a213fc4949690c459d43b3990ea5f75, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

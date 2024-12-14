@@ -2,10 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;  
+using UnityEngine.UI;
 
-
-public class playerCheckInteraction : MonoBehaviour
+public class PlayerCheckInteraction : MonoBehaviour
 {
     public float interactionRange = 3f;  // The range at which the player can interact
     private IInteractable interactableObject;  // The object the player can interact with
@@ -13,23 +12,29 @@ public class playerCheckInteraction : MonoBehaviour
     // UI elements to display the "Press E to interact" message
     public TextMeshProUGUI interactText;  // Drag and drop the Text component from the UI in the inspector
 
-  
     void Start()
     {
-        interactText = GameObject.Find("InteractText").GetComponent<TextMeshProUGUI>();  
-
-
-        if (interactText != null)
+        GameObject interactTextObject = GameObject.Find("InteractText");
+        if (interactTextObject != null)
         {
+            interactText = interactTextObject.GetComponent<TextMeshProUGUI>();
             interactText.gameObject.SetActive(false);  // Make sure the text is initially hidden
         }
-        
+        else
+        {
+            Debug.LogWarning("InteractText GameObject not found in the scene.");
+        }
+
+        //interactText = GameObject.Find("InteractText").GetComponent<TextMeshProUGUI>();
+
+        //if (interactText != null)
+        //{
+        //    interactText.gameObject.SetActive(false);  // Make sure the text is initially hidden
+        //}
     }
 
     void Update()
     {
-     
-
         // Check for nearby interactable objects
         CheckForInteractableObjects();
 
@@ -39,7 +44,6 @@ public class playerCheckInteraction : MonoBehaviour
             if (interactText != null)
             {
                 interactText.gameObject.SetActive(true);  // Show the text
-
             }
 
             // If the player presses "E", interact with the object
@@ -53,7 +57,6 @@ public class playerCheckInteraction : MonoBehaviour
             if (interactText != null)
             {
                 interactText.gameObject.SetActive(false);  // Hide the text if no interactable object is nearby
-
             }
         }
     }

@@ -9,7 +9,7 @@ public enum currentSceneSelected
     Level1,
     Level2,
     Level3,
-    Basement,
+    Level4,
 }
 
 
@@ -18,18 +18,22 @@ public class LevelRequirement : MonoBehaviour, IInteractable
     public bool hasKey = false;  // Player state: does the player have the key?
     public TextMeshProUGUI messageText;  // Reference to the message UI element
     public float displayDuration = 2f;  // Duration the message will be displayed
+    public TextMeshProUGUI questText;
+   // private GameObject _playerSpawn;
 
     private currentSceneSelected currentScene;  // Current scene tracker
     private string[] sceneNames = {
         "Level 1",   // Scene for Level1
         "Level 2",   // Scene for Level2
         "Level 3",   // Scene for Level3
-        "Basement"   // Scene for Basement
+        "Level 4"   // Scene for Basement
     };
 
     void Start()
     {
         messageText = GameObject.Find("Messages").GetComponent<TextMeshProUGUI>();
+        questText = GameObject.Find("QuestTracker").GetComponent<TextMeshProUGUI>();
+      //  _playerSpawn = GameObject.FindWithTag("PlayerSpawn");
 
         messageText.text = "";  // Clear the text initially
         initializeCurrentScene();
@@ -75,18 +79,24 @@ public class LevelRequirement : MonoBehaviour, IInteractable
             case "Level 1":
                 currentScene = currentSceneSelected.Level1;
                 messageText.text = "Looks like you need a KeyCard to activate this.";
+                questText.text += "\nFind KeyCard.\n";
                 break;
             case "Level 2":
                 currentScene = currentSceneSelected.Level2;
                 messageText.text = "Looks like you need a Code to activate this.";
+                questText.text += "\nFind the 4 digit code.\n";
                 break;
             case "Level 3":
                 currentScene = currentSceneSelected.Level3;
                 messageText.text = "Looks like you need an Old Key to activate this.";
+                questText.text += "\nFind Old Key.\n";
                 break;
-            case "Basement":
-                currentScene = currentSceneSelected.Basement;
-                messageText.text = "Looks like you need something special for the Basement.";
+            case "Level 4":
+                currentScene = currentSceneSelected.Level4;
+                messageText.text = "The elevator is broken.";
+                questText.text = "";
+                questText.text = "ESCAPE!";
+               
                 break;
             default:
                 Debug.LogWarning("Current scene not recognized.");
@@ -107,7 +117,10 @@ public class LevelRequirement : MonoBehaviour, IInteractable
         // Reset hasKey to false before transitioning to the next scene
         hasKey = false;
 
+        questText.text = "";
+
         // Load the next scene by its name
         SceneManager.LoadScene(nextSceneName);
+        GameManager.Instance.RespawnPlayer(GameManager.Instance._playerSpawn.transform);
     }
 }
