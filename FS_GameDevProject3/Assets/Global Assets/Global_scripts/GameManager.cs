@@ -210,19 +210,19 @@ public class GameManager : MonoBehaviour
 
 
         // Debug log for evidence collected
-        Debug.Log(_evidenceCollected);
+      //  Debug.Log(_evidenceCollected);
 
         // Save the data to disk
         PlayerPrefs.Save();
 
 
-        Debug.Log("Player Health: " + PlayerPrefs.GetInt("PlayerHealth"));
-        Debug.Log("Player Gun Index: " + PlayerPrefs.GetInt("PlayerGunIndex"));
-        Debug.Log("Player Ammo Current: " + PlayerPrefs.GetInt("PlayerAmmoCur"));
-        Debug.Log("Player Ammo Reserves: " + PlayerPrefs.GetInt("PlayerAmmoRes"));
-        Debug.Log("Evidence Collected: " + PlayerPrefs.GetInt("TotalEvidenceCollected"));
-        Debug.Log("Player Position: " + PlayerPrefs.GetFloat("PlayerPosX") + ", " +
-                  PlayerPrefs.GetFloat("PlayerPosY") + ", " + PlayerPrefs.GetFloat("PlayerPosZ"));
+        //Debug.Log("Player Health: " + PlayerPrefs.GetInt("PlayerHealth"));
+        //Debug.Log("Player Gun Index: " + PlayerPrefs.GetInt("PlayerGunIndex"));
+        //Debug.Log("Player Ammo Current: " + PlayerPrefs.GetInt("PlayerAmmoCur"));
+        //Debug.Log("Player Ammo Reserves: " + PlayerPrefs.GetInt("PlayerAmmoRes"));
+        //Debug.Log("Evidence Collected: " + PlayerPrefs.GetInt("TotalEvidenceCollected"));
+        //Debug.Log("Player Position: " + PlayerPrefs.GetFloat("PlayerPosX") + ", " +
+        //          PlayerPrefs.GetFloat("PlayerPosY") + ", " + PlayerPrefs.GetFloat("PlayerPosZ"));
 
     }
     //private string sceneToLoad;
@@ -301,12 +301,12 @@ public class GameManager : MonoBehaviour
         string savedSceneName = PlayerPrefs.GetString("CurrentScene", "Level 1"); // Default to "Level 1" if no saved scene value
 
         // Debug logs to check loaded data
-        Debug.Log("Loading Player Data:");
-        Debug.Log("Loaded Health: " + loadedHP);
-        Debug.Log("Loaded Gun Index: " + loadedGunIndex);
-        Debug.Log("Loaded Ammo Current: " + loadedAmmoCur);
-        Debug.Log("Loaded Ammo Reserve: " + loadedAmmoRes);
-        Debug.Log("Loaded Position: " + new Vector3(loadedPosX, loadedPosY, loadedPosZ));
+        //Debug.Log("Loading Player Data:");
+        //Debug.Log("Loaded Health: " + loadedHP);
+        //Debug.Log("Loaded Gun Index: " + loadedGunIndex);
+        //Debug.Log("Loaded Ammo Current: " + loadedAmmoCur);
+        //Debug.Log("Loaded Ammo Reserve: " + loadedAmmoRes);
+        //Debug.Log("Loaded Position: " + new Vector3(loadedPosX, loadedPosY, loadedPosZ));
 
         // Apply loaded data to the player
         player.SetHealth(loadedHP); // Apply the loaded health
@@ -319,7 +319,7 @@ public class GameManager : MonoBehaviour
         //SceneManager.LoadScene(savedSceneName);
         // Scene currentScene = SceneManager.GetActiveScene();
         //SceneManager.LoadScene(_currentLevel);
-        Debug.Log("Player data loaded successfully.");
+       // Debug.Log("Player data loaded successfully.");
     }
 
     public void CollectEvidence()
@@ -333,7 +333,7 @@ public class GameManager : MonoBehaviour
         // TODO display ui message
 
         // just logging for now
-        Debug.Log("Collected " + pickup.name);
+      //  Debug.Log("Collected " + pickup.name);
 
         // get component
         pickup.TryGetComponent<IPickup>(out IPickup pickupScript);
@@ -382,21 +382,21 @@ public class GameManager : MonoBehaviour
 
         if (_player == null)
         {
-            Debug.LogError("Player does not exist!");
+           // Debug.LogError("Player does not exist!");
         }
         else
         {
-            Debug.Log("Player found successfully!");
+         //   Debug.Log("Player found successfully!");
         }
 
         _player.TryGetComponent<playerController>(out _playerScript);
         if (_playerScript == null)
         {
-            Debug.LogError("Player is missing PlayerController!");
+          //  Debug.LogError("Player is missing PlayerController!");
         }
         else
         {
-            Debug.Log("PlayerController script assigned successfully!");
+          //  Debug.Log("PlayerController script assigned successfully!");
         }
     }
 
@@ -467,7 +467,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            Debug.LogError("Player spawn point not found in the scene!");
+          //  Debug.LogError("Player spawn point not found in the scene!");
         }
     }
 }

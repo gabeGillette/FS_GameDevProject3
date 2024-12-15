@@ -48,7 +48,7 @@ public class pickUp : MonoBehaviour, IPickup
 
             if (type == pickupType.HP)
             {
-                Debug.Log("Player Cur Health" + playerControllerScript.HP + "  Player Max Health:" + playerControllerScript.HPOriginal);
+             //   Debug.Log("Player Cur Health" + playerControllerScript.HP + "  Player Max Health:" + playerControllerScript.HPOriginal);
                 
                 if (playerControllerScript.HP < playerControllerScript.HPMax)
                 {

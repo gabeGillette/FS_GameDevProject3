@@ -59,7 +59,7 @@ public class playerController : MonoBehaviour, IDamage
     bool _isPlayingSteps;
     bool hasPlayedEmptySound = false; // Flag to track if the empty sound has been played
     bool displayQuest;
-
+    bool _journalDisplayed;
 
     int _jumpCount;
     int _HPOriginal;
@@ -90,7 +90,7 @@ public class playerController : MonoBehaviour, IDamage
     private int _savedAmmoRes;
     private GameObject _playerSpawn;
 
-
+   // public GameObject _journal;
 
 
     void Awake()
@@ -116,8 +116,7 @@ public class playerController : MonoBehaviour, IDamage
         {
             _gunList[_selectedGun].ammoCur = _gunList[_selectedGun].ammoMax;
         }
-
-
+        //_journal.gameObject.SetActive(false);
 
 
         _gameManager.UpdateUI();
@@ -141,7 +140,7 @@ public class playerController : MonoBehaviour, IDamage
 
         }
 
-
+        //journal();
         movement();
       //  crouch();
         selectGun();
@@ -214,7 +213,7 @@ public class playerController : MonoBehaviour, IDamage
                 // Update the UI with the new ammo count
                 _gameManager.UpdateUI();
 
-                Debug.Log($"Added {amount} ammo to {ammoType} reserves.");
+            //    Debug.Log($"Added {amount} ammo to {ammoType} reserves.");
                 return; // Exit the method once the ammo is added to the matching gun
             }
         }
@@ -510,7 +509,7 @@ public class playerController : MonoBehaviour, IDamage
         RaycastHit hit;
         if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, _shootDist, ~_ignoreMask))
         {
-            Debug.Log(hit.collider.name);
+       //     Debug.Log(hit.collider.name);
             IDamage dmg = hit.collider.GetComponent<IDamage>();
 
             if (dmg != null)
@@ -573,11 +572,28 @@ public class playerController : MonoBehaviour, IDamage
         _muzzleFlashLgt.SetActive(false);
     }
 
-    ///Uncomment when gameManager is implemented for flash damage on the player///
-    //IEnumerator flashDamage()
+   //Way for the player to open their Journal
+   //void journal()
+   // {
+   //     if(Input.GetButtonDown("Journal"))
+   //     {
+   //         _journalDisplayed = !_journalDisplayed;
+   //         displayJournal();
+   //     }
+   // }
+    
+
+    //void displayJournal()
     //{
-    //    gameManager.instance.playerDamageScreen.SetActive(true);
-    //    yield return new WaitForSeconds(0.1f);
-    //    gameManager.instance.playerDamageScreen.SetActive(true);
+    //    //Turn off the quest display
+    //    if (_journalDisplayed)
+    //    {
+    //       _journal.gameObject.SetActive(false);
+    //    }
+    //    else
+    //    {
+    //        _journal.gameObject.SetActive(true);
+    //    }
+
     //}
 }

@@ -42,7 +42,7 @@ public class itemDropOnDeath : MonoBehaviour
 
             if (randomValue <= currentWeight)
             {
-                Debug.Log("Dropped item: " + item.itemName);
+            //    Debug.Log("Dropped item: " + item.itemName);
                 // Here you can instantiate or do whatever you need to do with the item
                 DropItem(item, dropPosition);
                 break;
@@ -63,11 +63,11 @@ public class itemDropOnDeath : MonoBehaviour
         {
             // Instantiate the prefab at the current position of the ItemDropper
             Instantiate(itemPrefab, raisedPosition, Quaternion.identity);
-            Debug.Log(itemPrefab + "Was Generated");
+        //    Debug.Log(itemPrefab + "Was Generated");
         }
         else
         {
-            Debug.LogWarning("No prefab found for item: " + item.itemName);
+         //   Debug.LogWarning("No prefab found for item: " + item.itemName);
         }
     }
 

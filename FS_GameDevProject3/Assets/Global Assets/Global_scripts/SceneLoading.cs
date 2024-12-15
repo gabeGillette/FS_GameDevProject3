@@ -43,11 +43,11 @@ public class LoadingScreen: MonoBehaviour
             {
                 if (loadingText != null)
                 {
-                    loadingText.text = "Press any key to continue...";  // Update message
+                    loadingText.text = "Press Space to continue...";  // Update message
                 }
 
-                // Wait for user input before allowing scene activation
-                if (Input.anyKeyDown)
+                // Wait for Space key press to continue
+                if (Input.GetKeyDown(KeyCode.Space))
                 {
                     asyncLoad.allowSceneActivation = true;
                 }
