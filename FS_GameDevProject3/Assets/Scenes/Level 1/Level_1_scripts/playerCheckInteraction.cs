@@ -44,6 +44,8 @@ public class PlayerCheckInteraction : MonoBehaviour
             if (interactText != null)
             {
                 interactText.gameObject.SetActive(true);  // Show the text
+                interactText.text = "Press E to Interact"; // Update the text message
+
             }
 
             // If the player presses "E", interact with the object

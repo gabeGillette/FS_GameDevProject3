@@ -49,7 +49,9 @@ public class LevelRequirement : MonoBehaviour, IInteractable
 
     public void ChangeScene(string sceneName)
     {
-        loadingScreen.LoadSceneAsync(sceneName);
+        SceneManager.LoadScene(sceneName);
+
+      //  loadingScreen.LoadSceneAsync(sceneName);
     }
 
     public void Interact()
