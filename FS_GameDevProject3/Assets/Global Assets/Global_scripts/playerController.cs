@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 public class playerController : MonoBehaviour, IDamage
@@ -10,6 +11,8 @@ public class playerController : MonoBehaviour, IDamage
     [Header("-----Components-----")]
     [SerializeField] LayerMask _ignoreMask;
     [SerializeField] CharacterController _controller;
+    [SerializeField] private InputActionReference moveActionToUse;
+    [SerializeField] private float speed;
 
     [Header("-----Stats-----")]
     [SerializeField][Range(0, 100)] int _HP;
@@ -132,6 +135,8 @@ public class playerController : MonoBehaviour, IDamage
         //    selectGun();
         //    reload();
         //}
+
+        //Vector2 moveDirection = moveActionToUse.action.ReadValue<Vector2>();
 
         if (_gunList[_selectedGun].ammoRes < 0)
         {

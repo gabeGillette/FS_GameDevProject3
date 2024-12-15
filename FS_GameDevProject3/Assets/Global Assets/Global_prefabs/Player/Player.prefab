@@ -163,6 +163,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   _controller: {fileID: 945516029146817854}
+  moveActionToUse: {fileID: -7542588594875702382, guid: b3a941a85adab564eb0269edbf6e1022, type: 3}
   _HP: 100
   _moveSpeed: 4
   _sprintMod: 3
