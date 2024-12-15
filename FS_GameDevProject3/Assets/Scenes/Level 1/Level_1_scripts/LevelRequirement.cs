@@ -21,7 +21,9 @@ public class LevelRequirement : MonoBehaviour, IInteractable
     public TextMeshProUGUI messageText;  // Reference to the message UI element
     public float displayDuration = 2f;  // Duration the message will be displayed
     public TextMeshProUGUI questText;
-   // private GameObject _playerSpawn;
+    // private GameObject _playerSpawn;
+
+    public Journal _journal;
 
     private currentSceneSelected currentScene;  // Current scene tracker
     private string[] sceneNames = {
@@ -30,7 +32,6 @@ public class LevelRequirement : MonoBehaviour, IInteractable
         "Level 3",   // Scene for Level3
         "Level 4"   // Scene for Basement
     };
-    public LoadingScreen loadingScreen;
     public GameManager _gameManager;
 
   //  public playerController _playerScript;
@@ -39,7 +40,6 @@ public class LevelRequirement : MonoBehaviour, IInteractable
     void Start()
     {
         GameObject loadingScreenObject = GameObject.FindGameObjectWithTag("LoadingScreen");
-        loadingScreen = loadingScreenObject.GetComponent<LoadingScreen>();  // Assign the LoadingScreen component
 
         messageText = GameObject.Find("Messages").GetComponent<TextMeshProUGUI>();
         questText = GameObject.Find("QuestTracker").GetComponent<TextMeshProUGUI>();
@@ -48,12 +48,12 @@ public class LevelRequirement : MonoBehaviour, IInteractable
         messageText.text = "";  // Clear the text initially
         initializeCurrentScene();
         messageText.gameObject.SetActive(false);  // Ensure message text is hidden at the start
+      //  updateJournal();
     }
 
     public void ChangeScene(string sceneName)
     {
         SceneManager.LoadScene(sceneName);
-
         //loadingScreen.LoadSceneAsync(sceneName);
     }
 
@@ -64,6 +64,7 @@ public class LevelRequirement : MonoBehaviour, IInteractable
             //_gameManager.SavePlayerData(_playerScript);
             // Proceed to the next scene if the player has the key
             moveToNextScene();
+          //  updateJournal();
         }
         else
         {
@@ -120,6 +121,28 @@ public class LevelRequirement : MonoBehaviour, IInteractable
                 Debug.LogWarning("Current scene not recognized.");
                 break;
         }
+    }
+
+    void updateJournal()
+    {
+        Scene currentActiveScene = SceneManager.GetActiveScene();
+        switch (currentActiveScene.name)
+        {
+            
+            case "Level 2":
+                _journal.journalone = true;
+                break;
+            case "Level 3":
+                _journal.journaltwo = true;
+                break;
+            case "Level 4":
+                _journal.journalthree = true;
+                break;
+            default:
+                Debug.LogWarning("Current scene not recognized.");
+                break;
+        }
+
     }
 
     void moveToNextScene()

@@ -40,7 +40,7 @@ public class GameManager : MonoBehaviour
     private int _evidenceTotal;
     private int _evidenceCollected;
 
-    private int _currentLevel;
+    public int _currentLevel;
 
     private List<string> _messageList = new List<string>();
 
@@ -124,7 +124,10 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
+    public int GetCurrentLevel()
+    {
+        return _currentLevel;
+    }
     // Add a method to store player data
     public void SavePlayerData(playerController player)
     {
@@ -148,6 +151,7 @@ public class GameManager : MonoBehaviour
         PlayerPrefs.SetFloat("PlayerPosY", player.transform.position.y);
         PlayerPrefs.SetFloat("PlayerPosZ", player.transform.position.z);
 
+        PlayerPrefs.SetInt("CurrentLevel", _currentLevel);
         // Debug log for evidence collected
       //  Debug.Log(_evidenceCollected);
 
@@ -168,6 +172,10 @@ public class GameManager : MonoBehaviour
     // Add a method to load player data
     public void LoadPlayerData(playerController player)
     {
+        //int curLevel = PlayerPrefs.GetInt("CurrentLevel", 1);
+
+        //SceneManager.LoadScene(curLevel);
+
         // Load saved player data from PlayerPrefs
         int loadedHP = PlayerPrefs.GetInt("PlayerHealth", player.HP); // Default to current health if no saved value
         int loadedGunIndex = PlayerPrefs.GetInt("PlayerGunIndex", player._selectedGun); // Default to current gun index if no saved value
@@ -195,7 +203,6 @@ public class GameManager : MonoBehaviour
         // Set player position
         player.transform.position = new Vector3(loadedPosX, loadedPosY, loadedPosZ);
        // Scene currentScene = SceneManager.GetActiveScene();
-        //SceneManager.LoadScene(_currentLevel);
        // Debug.Log("Player data loaded successfully.");
     }
 
@@ -246,7 +253,7 @@ public class GameManager : MonoBehaviour
 
 
         SetPlayerReference();
-        LoadPlayerData(_player.GetComponent<playerController>());
+       // LoadPlayerData(_player.GetComponent<playerController>());
 
     }
 

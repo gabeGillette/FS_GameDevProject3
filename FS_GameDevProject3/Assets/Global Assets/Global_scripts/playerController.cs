@@ -151,6 +151,8 @@ public class playerController : MonoBehaviour, IDamage
     public void SetHealth(int health)
     {
         _HP = health;
+        _gameManager.UpdateUI();
+
     }
 
     public void SetGun(int gunIndex)
@@ -383,9 +385,12 @@ public class playerController : MonoBehaviour, IDamage
 
             // Optionally set minBloodAmount to reflect cumulative damage
             BleedBehavior.minBloodAmount = 0.5f * (1.0f - normalizedHealth);
+            _gameManager.UpdateUI();
+
         }
         else
         {
+            Debug.LogError("BleedBehavior script is missing on the main camera!");
             Debug.LogError("BleedBehavior script is missing on the main camera!");
         }
     }
@@ -403,6 +408,8 @@ public class playerController : MonoBehaviour, IDamage
         GameManager.Instance.RespawnPlayer(_playerSpawn.transform);
         Scene currentScene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(currentScene.name);
+        _gameManager.UpdateUI();
+
     }
 
     /// <summary>
@@ -506,6 +513,7 @@ public class playerController : MonoBehaviour, IDamage
 
             }
 
+            _gameManager.UpdateUI();
 
         }
     }
@@ -552,46 +560,7 @@ public class playerController : MonoBehaviour, IDamage
         _isShooting = false;
 
     }
-    //IEnumerator shoot()
-    //{
-    //    _isShooting = true;
-
-    //    _gunList[_selectedGun].ammoCur--;
-    //    _gameManager.UpdateUI();
-
-    //    _aud.PlayOneShot(_gunList[_selectedGun].shootSound[Random.Range(0, _gunList[_selectedGun].shootSound.Length)], _gunList[_selectedGun].shootVol);
-    //    StartCoroutine(muzzleFlash());
-
-    //    GameObject bullet = Instantiate(_gunList[_selectedGun].bulletPrefab, _muzzlePosition.position, Camera.main.transform.rotation);
-    //    Rigidbody bulletRb = bullet.GetComponent<Rigidbody>();
-    //    if (bulletRb != null)
-    //    {
-    //        // Add forward force to the bullet to simulate its movement
-    //        bulletRb.AddForce(Camera.main.transform.forward * _shootDist, ForceMode.VelocityChange);
-    //    }
-
-    //    RaycastHit hit;
-    //    if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, _shootDist, ~_ignoreMask))
-    //    {
-    //        IDamage dmg = hit.collider.GetComponent<IDamage>();
-
-    //        if (dmg != null)
-    //        {
-    //            dmg.takeDamage(_shootDamage);
-    //        }
-    //    }
-    //    Instantiate(_gunList[_selectedGun].hitEffect, hit.point, Quaternion.identity);
-
-    //   // Debug.Log(hit.collider.name);
-    //   // Debug.Log("Time between shots: " + (Time.time - _lastShotTime));
-
-    //    _lastShotTime = Time.time;
-
-    //    yield return new WaitForSeconds(_shootRate);
-
-        
-    //    _isShooting = false;
-    //}
+    
 
     IEnumerator muzzleFlash()
     {

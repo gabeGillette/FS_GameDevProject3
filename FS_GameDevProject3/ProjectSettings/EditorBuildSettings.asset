@@ -20,4 +20,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Level 4/Level 4.unity
     guid: 247283f425b67784fabf2ccef3986a38
+  - enabled: 1
+    path: Assets/Scenes/GameEnd/WinningScreen.unity
+    guid: 2ee2695a024a4d041b8d333956d5e460
   m_configObjects: {}
