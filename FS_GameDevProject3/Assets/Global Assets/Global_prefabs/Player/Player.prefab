@@ -123,6 +123,7 @@ GameObject:
   - component: {fileID: 945516029146817854}
   - component: {fileID: -1681259036518238073}
   - component: {fileID: 7583015894347864247}
+  - component: {fileID: 1479478631330541612}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -168,9 +169,6 @@ MonoBehaviour:
   _jumpMax: 1
   _jumpSpeed: 13
   _gravity: 28
-  _crouchHeight: 0.5
-  _normalHeight: 1
-  _crouchSpeedModifier: 0.5
   _gunList: []
   _gunModel: {fileID: 928731692731131764}
   _muzzleFlashLgt: {fileID: 1733554781026060419}
@@ -205,6 +203,7 @@ MonoBehaviour:
   _audHealthPickUpVol: 1
   _defaultGun: {fileID: 11400000, guid: 7ceaea2ab0275224caeca105a2388aa4, type: 2}
   _selectedGun: 0
+  _gameManager: {fileID: 0}
   reloadSound: {fileID: 8300000, guid: 42f814318ccc27f4f9575414dde12a1e, type: 3}
   emptySound: {fileID: 8300000, guid: ce74b2e2af9b6a740aebd34f1643c641, type: 3}
   changeGunSound: {fileID: 8300000, guid: 42f814318ccc27f4f9575414dde12a1e, type: 3}
@@ -442,6 +441,36 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 2
+--- !u!114 &1479478631330541612
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2034240814404013845}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: b3a941a85adab564eb0269edbf6e1022, type: 3}
+  m_NotificationBehavior: 0
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents: []
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: Player
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
 --- !u!1 &2184826311040026435
 GameObject:
   m_ObjectHideFlags: 0
