@@ -653,7 +653,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94d3ee749c8b9aa4cbd2b4a452128967, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerPrefab: {fileID: 0}
+  _playerPrefab: {fileID: 2034240814404013845, guid: 002b9f50985cfba419af3d060891a4ef, type: 3}
   _reticle: {fileID: 8269258617594728424}
   _UITopLeft: {fileID: 3612713292389211926}
   _UITopRight: {fileID: 6838099876380327575}
@@ -663,6 +663,7 @@ MonoBehaviour:
   _menuPause: {fileID: 6264180825703910734}
   _messageDuration: 2.6
   _versionFile: {fileID: 4900000, guid: 35c4f19d0d371284189df6fdd20eebbc, type: 3}
+  _player: {fileID: 0}
   _playerSpawn: {fileID: 0}
   _currentLevel: 0
 --- !u!1 &1979737846361046625

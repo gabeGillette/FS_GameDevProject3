@@ -566,7 +566,12 @@ public class playerController : MonoBehaviour, IDamage
 
             if (dmg != null)
             {
+                Debug.Log("Damage Amount:  " + dmg);
                 dmg.TakeDamage(_shootDamage);
+            }
+            else
+            {
+                Debug.Log("Damage is Null");
             }
 
         }
