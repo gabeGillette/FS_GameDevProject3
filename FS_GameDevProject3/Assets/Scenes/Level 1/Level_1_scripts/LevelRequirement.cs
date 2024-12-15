@@ -31,8 +31,11 @@ public class LevelRequirement : MonoBehaviour, IInteractable
         "Level 4"   // Scene for Basement
     };
     public LoadingScreen loadingScreen;
+    public GameManager _gameManager;
 
-   
+  //  public playerController _playerScript;
+
+
     void Start()
     {
         GameObject loadingScreenObject = GameObject.FindGameObjectWithTag("LoadingScreen");
@@ -49,13 +52,16 @@ public class LevelRequirement : MonoBehaviour, IInteractable
 
     public void ChangeScene(string sceneName)
     {
-        loadingScreen.LoadSceneAsync(sceneName);
+        SceneManager.LoadScene(sceneName);
+
+      //  loadingScreen.LoadSceneAsync(sceneName);
     }
 
     public void Interact()
     {
         if (hasKey)
         {
+            //_gameManager.SavePlayerData(_playerScript);
             // Proceed to the next scene if the player has the key
             moveToNextScene();
         }

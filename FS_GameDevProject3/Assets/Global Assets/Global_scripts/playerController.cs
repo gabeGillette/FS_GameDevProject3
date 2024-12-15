@@ -233,7 +233,7 @@ public class playerController : MonoBehaviour, IDamage
 
       
         Jump();
-        crouch();
+       // crouch();
 
         _controller.Move(_playerVel * Time.deltaTime);
         _playerVel.y -= _gravity * Time.deltaTime;
@@ -292,65 +292,65 @@ public class playerController : MonoBehaviour, IDamage
         }
     }
 
-    void crouch()
-    {
-        // Toggle crouch when the player presses the crouch button (e.g., Left Control key)
-        if (Input.GetKeyDown(KeyCode.LeftControl) && !_isCrouching)
-        {
-            // Start crouching
-            _isCrouching = true;
-            StartCoroutine(CrouchStand());
-        }
-        else if (Input.GetKeyDown(KeyCode.LeftControl) && _isCrouching)
-        {
-            // Stand up
-            _isCrouching = false;
-            StartCoroutine(CrouchStand());
-        }
-    }
+    //void crouch()
+    //{
+    //    // Toggle crouch when the player presses the crouch button (e.g., Left Control key)
+    //    if (Input.GetKeyDown(KeyCode.LeftControl) && !_isCrouching)
+    //    {
+    //        // Start crouching
+    //        _isCrouching = true;
+    //        StartCoroutine(CrouchStand());
+    //    }
+    //    else if (Input.GetKeyDown(KeyCode.LeftControl) && _isCrouching)
+    //    {
+    //        // Stand up
+    //        _isCrouching = false;
+    //        StartCoroutine(CrouchStand());
+    //    }
+    //}
 
-    IEnumerator CrouchStand()
-    {
-        // If crouching, gradually reduce the height
-        if (_isCrouching)
-        {
-            // Smoothly transition to crouch height
-            float timeElapsed = 0f;
-            float targetHeight = _crouchHeight;
-            float currentHeight = _controller.height;
+    //IEnumerator CrouchStand()
+    //{
+    //    // If crouching, gradually reduce the height
+    //    if (_isCrouching)
+    //    {
+    //        // Smoothly transition to crouch height
+    //        float timeElapsed = 0f;
+    //        float targetHeight = _crouchHeight;
+    //        float currentHeight = _controller.height;
 
-            while (timeElapsed < 0.25f) // 0.25f is the smooth transition time
-            {
-                _controller.height = Mathf.Lerp(currentHeight, targetHeight, timeElapsed / 0.25f);
-                timeElapsed += Time.deltaTime;
-                yield return null;
-            }
+    //        while (timeElapsed < 0.25f) // 0.25f is the smooth transition time
+    //        {
+    //            _controller.height = Mathf.Lerp(currentHeight, targetHeight, timeElapsed / 0.25f);
+    //            timeElapsed += Time.deltaTime;
+    //            yield return null;
+    //        }
 
-            _controller.height = targetHeight; // Ensure final height is set
-        }
-        else
-        {
-            // If standing, gradually increase height to normal
-            float timeElapsed = 0f;
-            float targetHeight = _normalHeight;
-            float currentHeight = _controller.height;
+    //        _controller.height = targetHeight; // Ensure final height is set
+    //    }
+    //    else
+    //    {
+    //        // If standing, gradually increase height to normal
+    //        float timeElapsed = 0f;
+    //        float targetHeight = _normalHeight;
+    //        float currentHeight = _controller.height;
 
-            // Check for obstruction (if the player is standing up into something)
-            if (Physics.Raycast(transform.position, Vector3.up, 1f)) // Check if something is above the player
-            {
-                yield break; // If there's an obstruction, prevent standing
-            }
+    //        // Check for obstruction (if the player is standing up into something)
+    //        if (Physics.Raycast(transform.position, Vector3.up, 1f)) // Check if something is above the player
+    //        {
+    //            yield break; // If there's an obstruction, prevent standing
+    //        }
 
-            while (timeElapsed < 0.25f) // 0.25f is the smooth transition time
-            {
-                _controller.height = Mathf.Lerp(currentHeight, targetHeight, timeElapsed / 0.25f);
-                timeElapsed += Time.deltaTime;
-                yield return null;
-            }
+    //        while (timeElapsed < 0.25f) // 0.25f is the smooth transition time
+    //        {
+    //            _controller.height = Mathf.Lerp(currentHeight, targetHeight, timeElapsed / 0.25f);
+    //            timeElapsed += Time.deltaTime;
+    //            yield return null;
+    //        }
 
-            _controller.height = targetHeight; // Ensure final height is set
-        }
-    }
+    //        _controller.height = targetHeight; // Ensure final height is set
+    //    }
+    //}
 
     public void takeDamage(int amount)
     {
