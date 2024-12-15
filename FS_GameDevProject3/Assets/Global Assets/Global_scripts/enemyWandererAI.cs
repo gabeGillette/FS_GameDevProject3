@@ -30,8 +30,14 @@ public class EnemyAI : MonoBehaviour, IDamage
     private Vector3 playerDir; // Direction to player
     private float angleToPlayer; // Angle to player
 
+    public itemDropOnDeath itemDrop;
+
+
     private void Start()
     {
+        GameObject itemDropObject = GameObject.FindGameObjectWithTag("ItemDropper");
+        itemDrop = itemDropObject.GetComponent<itemDropOnDeath>();
+
         stoppingDistOrig = agent.stoppingDistance;
         startingPos = transform.position;
     }
@@ -191,6 +197,7 @@ public class EnemyAI : MonoBehaviour, IDamage
     {
         anim.SetTrigger("Death");
         agent.isStopped = true;
+        itemDrop.DropRandomItem(transform.position);
         Destroy(gameObject, 2f); // Delay to allow death animation to play
     }
 }

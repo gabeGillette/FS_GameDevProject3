@@ -16,6 +16,7 @@ TagManager:
   - InteractText
   - LoadingScreen
   - MovingPlatform
+  - ItemDropper
   layers:
   - Default
   - TransparentFX
