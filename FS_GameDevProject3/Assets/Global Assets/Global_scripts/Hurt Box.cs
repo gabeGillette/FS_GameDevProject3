@@ -10,7 +10,7 @@ public class HurtBox : MonoBehaviour
     {
         if(other.GetComponent<IDamage>() != null)
         {
-            other.GetComponent<IDamage>().takeDamage(_dmg_amt);
+            other.GetComponent<IDamage>().TakeDamage(_dmg_amt);
         }
     }
 }

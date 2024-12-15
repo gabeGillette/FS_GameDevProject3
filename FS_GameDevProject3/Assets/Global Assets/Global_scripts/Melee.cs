@@ -31,7 +31,7 @@ public class Melee : MonoBehaviour
 
         if (dmg != null)
         {
-            dmg.takeDamage(damageAmount);
+            dmg.TakeDamage(damageAmount);
         }
 
         if (type == damageType.meleeAttack)

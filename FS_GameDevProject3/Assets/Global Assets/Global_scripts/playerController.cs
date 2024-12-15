@@ -363,7 +363,7 @@ public class playerController : MonoBehaviour, IDamage
     //    }
     //}
 
-    public void takeDamage(int amount)
+    public void TakeDamage(int amount)
     {
         // Deduct health
         _HP -= amount;
@@ -556,17 +556,17 @@ public class playerController : MonoBehaviour, IDamage
         _gunList[_selectedGun].ammoCur--;
         _gameManager.UpdateUI();
         _aud.PlayOneShot(_gunList[_selectedGun].shootSound[Random.Range(0, _gunList[_selectedGun].shootSound.Length)], _gunList[_selectedGun].shootVol);
-        StartCoroutine(muzzleFlash());
+       StartCoroutine(muzzleFlash());
 
         RaycastHit hit;
         if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, _shootDist, ~_ignoreMask))
         {
-       //     Debug.Log(hit.collider.name);
+            Debug.Log(hit.collider.name);
             IDamage dmg = hit.collider.GetComponent<IDamage>();
 
             if (dmg != null)
             {
-                dmg.takeDamage(_shootDamage);
+                dmg.TakeDamage(_shootDamage);
             }
 
         }

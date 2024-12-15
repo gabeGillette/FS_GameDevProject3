@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gunModel: {fileID: 2033351791597178668, guid: b69425ea75a69cd49998b1dca3eacbbc, type: 3}
   shootDamage: 1
-  shootDistance: 10
+  shootDistance: 50
   shootRate: 2
-  ammoCur: 6
+  ammoCur: 5
   ammoMax: 6
-  ammoRes: 18
+  ammoRes: 24
   hitEffect: {fileID: 743155560472071913, guid: 39849a6c9ff32f24ca96f34fd2b6ee49, type: 3}
   shootSound:
   - {fileID: 8300000, guid: 53cab649ec210cb4ab01168aabf212a0, type: 3}

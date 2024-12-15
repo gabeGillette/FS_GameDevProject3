@@ -18,7 +18,7 @@ public class spikeDamage : MonoBehaviour
 
             if (playerControllerScript != null)
             {
-                playerControllerScript.takeDamage(damageAmount);
+                playerControllerScript.TakeDamage(damageAmount);
                 Debug.Log("Player took " + damageAmount + " damage");
             }
             else

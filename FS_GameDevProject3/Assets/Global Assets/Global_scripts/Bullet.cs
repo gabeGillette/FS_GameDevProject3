@@ -55,7 +55,7 @@ public class Bullet : MonoBehaviour
         IDamage dmg = collision.collider.GetComponent<IDamage>();
         if (dmg != null)
         {
-            dmg.takeDamage(damage);
+            dmg.TakeDamage(damage);
         }
 
         // Destroy the bullet after the collision
@@ -72,7 +72,7 @@ public class Bullet : MonoBehaviour
         IDamage dmg = other.GetComponent<IDamage>();
         if (dmg != null)
         {
-            dmg.takeDamage(damage);
+            dmg.TakeDamage(damage);
         }
 
         // Destroy the bullet after the trigger event

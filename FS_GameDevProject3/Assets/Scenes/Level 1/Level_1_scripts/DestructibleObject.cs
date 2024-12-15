@@ -7,7 +7,7 @@ public class DestructibleObject : MonoBehaviour, IDamage
     public itemDropOnDeath itemDrop;
     [SerializeField] int baseHealth;
 
-    public void takeDamage(int amount)
+    public void TakeDamage(int amount)
     {
         baseHealth -= amount;
     }
