@@ -50,7 +50,7 @@ public class pickUp : MonoBehaviour, IPickup
             {
              //   Debug.Log("Player Cur Health" + playerControllerScript.HP + "  Player Max Health:" + playerControllerScript.HPOriginal);
                 
-                if (playerControllerScript.HP < playerControllerScript.HPMax)
+                if (playerControllerScript.HPCurrent < playerControllerScript.HPMax)
                 {
                     playerControllerScript.restoreHealth(healthPackAmount);  // Restore health to the player
                     Destroy(gameObject);

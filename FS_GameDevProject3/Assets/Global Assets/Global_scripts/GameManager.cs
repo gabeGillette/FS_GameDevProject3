@@ -132,7 +132,7 @@ public class GameManager : MonoBehaviour
     public void SavePlayerData(playerController player)
     {
         // Save health
-        PlayerPrefs.SetInt("PlayerHealth", player.HP);
+        PlayerPrefs.SetInt("PlayerHealth", player.HPCurrent);
 
         // Save selected gun index
         PlayerPrefs.SetInt("PlayerGunIndex", player._selectedGun);
@@ -153,7 +153,7 @@ public class GameManager : MonoBehaviour
 
         PlayerPrefs.SetInt("CurrentLevel", _currentLevel);
         // Debug log for evidence collected
-      //  Debug.Log(_evidenceCollected);
+        //  Debug.Log(_evidenceCollected);
 
         // Save the data to disk
         PlayerPrefs.Save();
@@ -177,7 +177,7 @@ public class GameManager : MonoBehaviour
         //SceneManager.LoadScene(curLevel);
 
         // Load saved player data from PlayerPrefs
-        int loadedHP = PlayerPrefs.GetInt("PlayerHealth", player.HP); // Default to current health if no saved value
+        int loadedHP = PlayerPrefs.GetInt("PlayerHealth", player.HPCurrent); // Default to current health if no saved value
         int loadedGunIndex = PlayerPrefs.GetInt("PlayerGunIndex", player._selectedGun); // Default to current gun index if no saved value
         int loadedAmmoCur = PlayerPrefs.GetInt("PlayerAmmoCur", player.SelectedGun.ammoCur); // Default to current ammo if no saved value
         int loadedAmmoRes = PlayerPrefs.GetInt("PlayerAmmoRes", player.SelectedGun.ammoRes); // Default to current ammo reserve if no saved value
@@ -202,8 +202,8 @@ public class GameManager : MonoBehaviour
 
         // Set player position
         player.transform.position = new Vector3(loadedPosX, loadedPosY, loadedPosZ);
-       // Scene currentScene = SceneManager.GetActiveScene();
-       // Debug.Log("Player data loaded successfully.");
+        // Scene currentScene = SceneManager.GetActiveScene();
+        // Debug.Log("Player data loaded successfully.");
     }
 
     public void CollectEvidence()
@@ -287,11 +287,11 @@ public class GameManager : MonoBehaviour
 
     public void UpdateUI()
     {
-        _UITopLeft.text = ($"Health: {PlayerScript.HP}\n" +
-            $"Ammo: {PlayerScript.SelectedGun.ammoCur} / {PlayerScript.SelectedGun.ammoRes}\n" +
-            $"Evidence: {_evidenceCollected}/{_evidenceTotal}\n" +
-            $"Monsters Spawned: {0}/{0}\n" +
-            $"Monsters Killed: {0}/{0}");
+        _UITopLeft.text = ($"Health: {PlayerScript.HPCurrent}\n" +
+       $"Ammo: {PlayerScript.SelectedGun.ammoCur} / {PlayerScript.SelectedGun.ammoRes}\n" +
+       $"Evidence: {_evidenceCollected}/{_evidenceTotal}\n" +
+       $"Monsters Spawned: {0}/{0}\n" +
+       $"Monsters Killed: {0}/{0}");
 
         _UITopRight.text = ($"Level: {_currentLevel}\n" +
             $"Version: {_versionFile.text}");

@@ -19,11 +19,11 @@ public class playerController : MonoBehaviour, IDamage
     [SerializeField][Range(5, 20)] int _jumpSpeed;
     [SerializeField][Range(15, 40)] int _gravity;
 
-    [Header("-----Crouch-----")]
-    [SerializeField] float _crouchHeight = 0.5f; // Height of the character while crouching
-    [SerializeField] float _normalHeight = 2.0f; // Normal height when standing
-    [SerializeField] float _crouchSpeedModifier = 0.5f; // Speed modifier when crouching
-    private bool _isCrouching = false; // Track crouch state
+    //[Header("-----Crouch-----")]
+    //[SerializeField] float _crouchHeight = 0.5f; // Height of the character while crouching
+    //[SerializeField] float _normalHeight = 2.0f; // Normal height when standing
+    //[SerializeField] float _crouchSpeedModifier = 0.5f; // Speed modifier when crouching
+    //private bool _isCrouching = false; // Track crouch state
 
     [Header("-----Guns-----")]
     [SerializeField] List<gunStats> _gunList = new List<gunStats>();
@@ -71,7 +71,7 @@ public class playerController : MonoBehaviour, IDamage
     float _shootRate;
     float _lastShotTime = 0f; // Time when the player last shot
 
-    public int HP => _HP;
+    public int HPCurrent => _HP;
     public int HPMax => _HPMax;
     public int HPOriginal => _HPOriginal;
     public List<gunStats> GunList => _gunList;
@@ -79,7 +79,7 @@ public class playerController : MonoBehaviour, IDamage
 
     public int ReserveAmmo => _gunList[_selectedGun].ammoRes;
 
-    private GameManager _gameManager;
+    public GameManager _gameManager;
     public AudioClip reloadSound;
     public AudioClip emptySound;
     public AudioClip changeGunSound;
@@ -101,7 +101,7 @@ public class playerController : MonoBehaviour, IDamage
             // Freeze rotation on all axes (prevents spinning)
             rb.freezeRotation = true; // This will prevent the player from rotating due to physics forces
         }
-        _gameManager = FindAnyObjectByType<GameManager>();
+        _gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
         // Add the default gun to the player's inventory (gunList)
         _gunList.Add(_defaultGun);
         _selectedGun = _gunList.Count - 1;  // Set the selected gun to the default gun
@@ -140,18 +140,17 @@ public class playerController : MonoBehaviour, IDamage
 
         }
 
-        //journal();
         movement();
       //  crouch();
         selectGun();
         reload();
         sprint();
+
     }
 
     public void SetHealth(int health)
     {
         _HP = health;
-        _gameManager.UpdateUI();
 
     }
 
@@ -364,10 +363,9 @@ public class playerController : MonoBehaviour, IDamage
         // Deduct health
         _HP -= amount;
         _HP = Mathf.Clamp(_HP, 0, _HPMax); // Ensure HP is within bounds
-        _gameManager.UpdateUI();
         _aud.PlayOneShot(_audHurt[Random.Range(0, _audHurt.Length)], _audHurtVol);
 
-        Debug.Log("Player HP is: " +  _HP);
+        Debug.Log("Player HP is: " + _HP);
         // Update the blood overlay effect
         UpdateBloodOverlay();
 
@@ -378,7 +376,10 @@ public class playerController : MonoBehaviour, IDamage
         {
             Death();
         }
+        _gameManager.UpdateUI();
+
     }
+
 
     private void UpdateBloodOverlay()
     {
@@ -393,7 +394,7 @@ public class playerController : MonoBehaviour, IDamage
 
             // Optionally set minBloodAmount to reflect cumulative damage
             BleedBehavior.minBloodAmount = 0.5f * (1.0f - normalizedHealth);
-            _gameManager.UpdateUI();
+           // _gameManager.UpdateUI();
 
         }
         else
