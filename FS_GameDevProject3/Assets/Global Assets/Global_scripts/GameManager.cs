@@ -74,7 +74,7 @@ public class GameManager : MonoBehaviour
 
         // find the playerspawner
         _playerSpawn = GameObject.FindWithTag("PlayerSpawn");
-        _player = GameObject.FindWithTag("Player");
+       // _player = GameObject.FindWithTag("Player");
 
         if (_playerSpawn != null)
         {
@@ -122,6 +122,8 @@ public class GameManager : MonoBehaviour
             }
 
         }
+        _player = GameObject.FindWithTag("Player");
+
     }
 
     public int GetCurrentLevel()
