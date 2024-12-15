@@ -353,15 +353,43 @@ public class playerController : MonoBehaviour, IDamage
 
     public void takeDamage(int amount)
     {
-        _HP -= amount; // Deduct health
+        // Deduct health
+        _HP -= amount;
+        _HP = Mathf.Clamp(_HP, 0, _HPMax); // Ensure HP is within bounds
 
-        _gameManager.UpdateUI(); // Update the UI to reflect the new health
+        // Update the blood overlay effect
+        UpdateBloodOverlay();
 
-        if (_HP <= 0) // Check if the player is dead
+        // Update the UI to reflect the new health
+        _gameManager.UpdateUI();
+
+        // Check if the player is dead
+        if (_HP <= 0)
         {
             Death();
         }
     }
+
+    private void UpdateBloodOverlay()
+    {
+        // Ensure BleedBehavior is attached to the camera
+        if (Camera.main.TryGetComponent<BleedBehavior>(out var bleedBehavior))
+        {
+            // Calculate normalized health (0 = dead, 1 = full health)
+            float normalizedHealth = (float)_HP / _HPMax;
+
+            // Set BloodAmount (higher when health is lower)
+            BleedBehavior.BloodAmount = 1.0f - normalizedHealth;
+
+            // Optionally set minBloodAmount to reflect cumulative damage
+            BleedBehavior.minBloodAmount = 0.5f * (1.0f - normalizedHealth);
+        }
+        else
+        {
+            Debug.LogError("BleedBehavior script is missing on the main camera!");
+        }
+    }
+
 
     public void Death()
     {

@@ -70,37 +70,23 @@ public class GameManager : MonoBehaviour
         _isPaused = false;
         _timeScale = 1.0f;
 
-        // Get the current scene
         _currentLevel = SceneManager.GetActiveScene().buildIndex;
-        string sceneName = SceneManager.GetActiveScene().name;
 
-        // Check if the scene is the menu scene
-        if (sceneName == "MainMenu") // Replace with your actual menu scene name
+        // find the playerspawner
+        _playerSpawn = GameObject.FindWithTag("PlayerSpawn");
+        _player = GameObject.FindWithTag("Player");
+
+        if (_playerSpawn != null)
         {
-            Debug.Log("Menu scene loaded, player will not spawn.");
-        }
-        else
-        {
-            // Only spawn player if it's not the menu scene
             if (_player == null)
             {
-                // Find the PlayerSpawn point
-                _playerSpawn = GameObject.FindWithTag("PlayerSpawn");
+                RespawnPlayer(_playerSpawn.transform);
 
-                // If the spawn point is found, spawn the player at it, otherwise spawn at a default position
-                if (_playerSpawn != null)
-                {
-                    RespawnPlayer(_playerSpawn.transform);
-                }
-                else
-                {
-                    Debug.LogWarning("Player spawn point not found, spawning at default location.");
-                    RespawnPlayer(null); // null will trigger the default spawn at (0,0,0)
-                }
+                SetPlayerReference();
             }
         }
 
-        // Find all the evidence interactables
+        // find all the evidence interactables
         _evidenceList = new List<GameObject>();
         _evidenceList.AddRange(GameObject.FindGameObjectsWithTag("Evidence"));
 
@@ -116,52 +102,9 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        LoadPlayerData(_playerScript);
 
         UpdateUI();
     }
-
-
-
-    //{
-    //    _isPaused = false;
-    //    _timeScale = 1.0f;
-
-    //    _currentLevel = SceneManager.GetActiveScene().buildIndex;
-
-    //    // find the playerspawner
-    //    _playerSpawn = GameObject.FindWithTag("PlayerSpawn");
-
-    //    if (_playerSpawn != null)
-    //    {
-    //        if (_player == null)
-    //        {
-    //            RespawnPlayer(_playerSpawn.transform);
-
-    //            SetPlayerReference();
-    //        }
-    //    }
-
-    //    // find all the evidence interactables
-    //    _evidenceList = new List<GameObject>();
-    //    _evidenceList.AddRange(GameObject.FindGameObjectsWithTag("Evidence"));
-
-    //    _evidenceCollected = 0;
-    //    _evidenceTotal = _evidenceList.Count;
-
-    //    if (_instance == null)
-    //    {
-    //        _instance = this;
-    //        DontDestroyOnLoad(gameObject); // Persist across scenes
-    //    }
-    //    else
-    //    {
-    //        Destroy(gameObject);
-    //    }
-    //    LoadPlayerData(_playerScript);
-
-    //    UpdateUI();
-    //}
 
     public void Update()
     {
@@ -205,10 +148,6 @@ public class GameManager : MonoBehaviour
         PlayerPrefs.SetFloat("PlayerPosY", player.transform.position.y);
         PlayerPrefs.SetFloat("PlayerPosZ", player.transform.position.z);
 
-        string currentSceneName = SceneManager.GetActiveScene().name;  // Get the current scene name
-        PlayerPrefs.SetString("CurrentScene", currentSceneName);  // Save the scene name
-
-
         // Debug log for evidence collected
       //  Debug.Log(_evidenceCollected);
 
@@ -225,64 +164,6 @@ public class GameManager : MonoBehaviour
         //          PlayerPrefs.GetFloat("PlayerPosY") + ", " + PlayerPrefs.GetFloat("PlayerPosZ"));
 
     }
-    //private string sceneToLoad;
-
-    //public void LoadPlayerData(playerController player)
-    //{
-    //    // Load saved player data from PlayerPrefs
-    //    int loadedHP = PlayerPrefs.GetInt("PlayerHealth", player.HP); // Default to current health if no saved value
-    //    int loadedGunIndex = PlayerPrefs.GetInt("PlayerGunIndex", player._selectedGun); // Default to current gun index if no saved value
-    //    int loadedAmmoCur = PlayerPrefs.GetInt("PlayerAmmoCur", player.SelectedGun.ammoCur); // Default to current ammo if no saved value
-    //    int loadedAmmoRes = PlayerPrefs.GetInt("PlayerAmmoRes", player.SelectedGun.ammoRes); // Default to current ammo reserve if no saved value
-
-    //    // Load player position
-    //    float loadedPosX = PlayerPrefs.GetFloat("PlayerPosX", player.transform.position.x); // Default to current position if no saved value
-    //    float loadedPosY = PlayerPrefs.GetFloat("PlayerPosY", player.transform.position.y);
-    //    float loadedPosZ = PlayerPrefs.GetFloat("PlayerPosZ", player.transform.position.z);
-
-    //    string savedSceneName = PlayerPrefs.GetString("CurrentScene", "Level 1"); // Default to "Level 1" if no saved scene value
-
-    //    // Debug logs to check loaded data
-    //    Debug.Log("Loading Player Data:");
-    //    Debug.Log("Loaded Health: " + loadedHP);
-    //    Debug.Log("Loaded Gun Index: " + loadedGunIndex);
-    //    Debug.Log("Loaded Ammo Current: " + loadedAmmoCur);
-    //    Debug.Log("Loaded Ammo Reserve: " + loadedAmmoRes);
-    //    Debug.Log("Loaded Position: " + new Vector3(loadedPosX, loadedPosY, loadedPosZ));
-
-    //    // Apply loaded data to the player
-    //    player.SetHealth(loadedHP); // Apply the loaded health
-    //    player.SetGun(loadedGunIndex); // Apply the loaded gun index
-    //    player.SetAmmo(loadedAmmoCur, loadedAmmoRes); // Apply the loaded ammo counts
-
-    //    // Set player position
-    //    player.transform.position = new Vector3(loadedPosX, loadedPosY, loadedPosZ);
-
-    //    // Store the scene name to load after the player data has been applied
-    //    sceneToLoad = savedSceneName;
-
-    //    Debug.Log("Player data loaded successfully.");
-
-    //    // Optionally, you can trigger a scene load after applying player data.
-    //    StartCoroutine(LoadSceneAfterDataApplied(savedSceneName));
-    //}
-
-    //private IEnumerator LoadSceneAfterDataApplied(string sceneName)
-    //{
-    //    // Ensure everything has settled before loading a new scene
-    //    yield return new WaitForEndOfFrame(); // Wait until the current frame has finished processing
-
-    //    // Prevent reloading the current scene
-    //    if (SceneManager.GetActiveScene().name != sceneName)
-    //    {
-    //        Debug.Log("Loading scene: " + sceneName);
-    //        SceneManager.LoadScene(sceneName);
-    //    }
-    //    else
-    //    {
-    //        Debug.Log("Already in the target scene, skipping load.");
-    //    }
-    //}
 
     // Add a method to load player data
     public void LoadPlayerData(playerController player)
@@ -297,8 +178,6 @@ public class GameManager : MonoBehaviour
         float loadedPosX = PlayerPrefs.GetFloat("PlayerPosX", player.transform.position.x); // Default to current position if no saved value
         float loadedPosY = PlayerPrefs.GetFloat("PlayerPosY", player.transform.position.y);
         float loadedPosZ = PlayerPrefs.GetFloat("PlayerPosZ", player.transform.position.z);
-
-        string savedSceneName = PlayerPrefs.GetString("CurrentScene", "Level 1"); // Default to "Level 1" if no saved scene value
 
         // Debug logs to check loaded data
         //Debug.Log("Loading Player Data:");
@@ -315,9 +194,7 @@ public class GameManager : MonoBehaviour
 
         // Set player position
         player.transform.position = new Vector3(loadedPosX, loadedPosY, loadedPosZ);
-
-        //SceneManager.LoadScene(savedSceneName);
-        // Scene currentScene = SceneManager.GetActiveScene();
+       // Scene currentScene = SceneManager.GetActiveScene();
         //SceneManager.LoadScene(_currentLevel);
        // Debug.Log("Player data loaded successfully.");
     }
