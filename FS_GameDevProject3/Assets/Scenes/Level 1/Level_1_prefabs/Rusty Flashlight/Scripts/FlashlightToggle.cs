@@ -29,7 +29,7 @@ public class FlashlightToggle : MonoBehaviour
             batteryLife = batteryLifeMax;
         }
         // Toggle flashlight on key press (F key)
-        if (Input.GetButton("FlashLight") && batteryLife > 0)
+        if (Input.GetButtonDown("FlashLight") && batteryLife > 0)
         {
             // Toggle light state
             isOn = !isOn;

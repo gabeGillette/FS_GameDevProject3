@@ -32,7 +32,7 @@ public class GameManager : MonoBehaviour
 
     static private GameManager _instance;
 
-    private GameObject _player;
+    public GameObject _player;
     private playerController _playerScript;
     private List<GameObject> _evidenceList;
     public GameObject _playerSpawn;
