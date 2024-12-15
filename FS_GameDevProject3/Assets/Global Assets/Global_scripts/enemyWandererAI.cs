@@ -185,7 +185,7 @@ public class EnemyAI : MonoBehaviour, IDamage
 
     public void TakeDamage(int damage)
     {
-        Debug.Log("Enemy Health: " + HP);
+       // Debug.Log("Enemy Health: " + HP);
         HP -= damage;
         if (HP <= 0)
         {
