@@ -82,7 +82,7 @@ public class GameManager : MonoBehaviour
             {
                 RespawnPlayer(_playerSpawn.transform);
 
-                SetPlayerReference();
+              //  SetPlayerReference();
             }
         }
 
@@ -96,7 +96,7 @@ public class GameManager : MonoBehaviour
         if (_instance == null)
         {
             _instance = this;
-            DontDestroyOnLoad(gameObject); // Persist across scenes
+         //   DontDestroyOnLoad(gameObject); // Persist across scenes
         }
         else
         {

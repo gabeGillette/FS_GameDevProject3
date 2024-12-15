@@ -358,12 +358,12 @@ public class playerController : MonoBehaviour, IDamage
         // Deduct health
         _HP -= amount;
         _HP = Mathf.Clamp(_HP, 0, _HPMax); // Ensure HP is within bounds
-
+        _gameManager.UpdateUI();
+        Debug.Log("Player HP is: " +  _HP);
         // Update the blood overlay effect
         UpdateBloodOverlay();
 
         // Update the UI to reflect the new health
-        _gameManager.UpdateUI();
 
         // Check if the player is dead
         if (_HP <= 0)

@@ -76,7 +76,7 @@ public class EnemyAI : MonoBehaviour
     {
         if (GameManager.Instance.Player == null || headPos == null)
         {
-            Debug.LogWarning("Player reference is missing in GameManager!");
+        //    Debug.LogWarning("Player reference is missing in GameManager!");
             return false;
         }
 

@@ -7,7 +7,7 @@ public class ButtonFunctions : MonoBehaviour
 {
     private void Awake()
     {
-        DontDestroyOnLoad(gameObject); // Keep this object across scenes
+   //     DontDestroyOnLoad(gameObject); // Keep this object across scenes
     }
 
     /// <summary>
