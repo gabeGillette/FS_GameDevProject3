@@ -36,6 +36,10 @@ public class LevelRequirement : MonoBehaviour, IInteractable
 
   //  public playerController _playerScript;
 
+    void Awake()
+    {
+        _gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
+    }
 
     void Start()
     {
@@ -104,18 +108,20 @@ public class LevelRequirement : MonoBehaviour, IInteractable
                 currentScene = currentSceneSelected.Level2;
                 messageText.text = "Looks like you need a Code to activate this.";
                 questText.text += "\nFind the 4 digit code.\n";
+
                 break;
             case "Level 3":
                 currentScene = currentSceneSelected.Level3;
                 messageText.text = "Looks like you need an Old Key to activate this.";
                 questText.text += "\nFind Old Key.\n";
+
                 break;
             case "Level 4":
                 currentScene = currentSceneSelected.Level4;
                 messageText.text = "The elevator is broken.";
                 questText.text = "";
                 questText.text = "ESCAPE!";
-               
+
                 break;
             default:
                 Debug.LogWarning("Current scene not recognized.");
