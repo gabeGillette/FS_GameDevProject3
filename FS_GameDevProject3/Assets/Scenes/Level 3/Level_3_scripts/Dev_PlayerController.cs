@@ -58,7 +58,7 @@ namespace gabe_indev
 
         private void FixedUpdate()
         {
-            Movement();
+            //Movement();
         }
 
 
@@ -76,33 +76,33 @@ namespace gabe_indev
             }
         }
 
-        void Movement()
-        {
-            //if the player is on the ground then reset some values.
-            if (_controller.isGrounded)
-            {
-                _jumpCount = 0;
-                _playerVelocity.y = 0;
-                if (_feet.IsColliding)
-                {
-                    transform.SetParent(_feet.What.transform, true);
+        //void Movement()
+        //{
+        //    //if the player is on the ground then reset some values.
+        //    //if (_controller.isGrounded)
+        //    //{
+        //    //    _jumpCount = 0;
+        //    //    _playerVelocity.y = 0;
+        //    //    if (_feet.IsColliding)
+        //    //    {
+        //    //        transform.SetParent(_feet.What.transform, true);
 
 
-                }
+        //    //    }
 
-            }
-            else
-            {
-                /*if (!_feet.IsColliding)
-                {
-                    transform.SetParent(null, true);
-                }*/
+        //    //}
+        //    else
+        //    {
+        //        /*if (!_feet.IsColliding)
+        //        {
+        //            transform.SetParent(null, true);
+        //        }*/
 
-                transform.SetParent(null, true);
-            }
+        //        transform.SetParent(null, true);
+        //    }
 
-            _controller.Move(_playerVelocity);
-        }
+        //    _controller.Move(_playerVelocity);
+        //}
 
         void CalcMovement()
         {

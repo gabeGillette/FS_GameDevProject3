@@ -232,7 +232,7 @@ public class playerController : MonoBehaviour, IDamage
         _moveDir = (transform.forward * Input.GetAxis("Vertical")) + (transform.right * Input.GetAxis("Horizontal"));
         _controller.Move(_moveDir * _moveSpeed * Time.deltaTime);
 
-      
+
         Jump();
        // crouch();
 
@@ -267,6 +267,10 @@ public class playerController : MonoBehaviour, IDamage
             // Reset the flag when the fire button is released
             hasPlayedEmptySound = false;
         }
+        if (_controller.isGrounded && _moveDir.magnitude > 0.3f && !_isPlayingSteps)
+        {
+            StartCoroutine(playStep());
+        }
 
     }
     void Jump()
@@ -275,6 +279,8 @@ public class playerController : MonoBehaviour, IDamage
         {
             _jumpCount++;
             _playerVel.y = _jumpSpeed;
+            _aud.PlayOneShot(_audJump[Random.Range(0, _audJump.Length)], _audJumpVol);
+
         }
     }
 
@@ -359,6 +365,8 @@ public class playerController : MonoBehaviour, IDamage
         _HP -= amount;
         _HP = Mathf.Clamp(_HP, 0, _HPMax); // Ensure HP is within bounds
         _gameManager.UpdateUI();
+        _aud.PlayOneShot(_audHurt[Random.Range(0, _audHurt.Length)], _audHurtVol);
+
         Debug.Log("Player HP is: " +  _HP);
         // Update the blood overlay effect
         UpdateBloodOverlay();

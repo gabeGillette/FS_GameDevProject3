@@ -116,6 +116,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5224899640447746486}
   - component: {fileID: 797710619978494021}
+  - component: {fileID: 3836856877165091716}
   - component: {fileID: 4977928010108839875}
   - component: {fileID: 3730332855700540946}
   - component: {fileID: 4125279239549347911}
@@ -175,12 +176,30 @@ MonoBehaviour:
   _muzzleFlashLgt: {fileID: 1733554781026060419}
   _muzzlePosition: {fileID: 5221351691570569604}
   _aud: {fileID: -1681259036518238073}
-  _audJump: []
-  _audJumpVol: 0
-  _audHurt: []
-  _audHurtVol: 0
-  _audSteps: []
-  _audStepsVol: 0
+  _audJump:
+  - {fileID: 8300000, guid: 0f35941972c7ba0409302792426d5da7, type: 3}
+  - {fileID: 8300000, guid: 7a99fee336bc257408b177ee88faef7d, type: 3}
+  - {fileID: 8300000, guid: 3a7b08417df14534c9fddd6079a647dd, type: 3}
+  _audJumpVol: 1
+  _audHurt:
+  - {fileID: 8300000, guid: d1efc482d351b2840bd883bcae38cdf8, type: 3}
+  - {fileID: 8300000, guid: a0621d0574bb3b14db4fadca8273c3fb, type: 3}
+  - {fileID: 8300000, guid: f3d964e9a6435aa42a6b3005f282d92c, type: 3}
+  - {fileID: 8300000, guid: 2e522c0b4a965f24e96db41d276a183f, type: 3}
+  - {fileID: 8300000, guid: 6658e7faf0c20594881c614e47a1f2b4, type: 3}
+  - {fileID: 8300000, guid: ad9ea5381311fc14aad9362edbd422c5, type: 3}
+  _audHurtVol: 1
+  _audSteps:
+  - {fileID: 8300000, guid: ada874a513ff88e44816cb2ee2483744, type: 3}
+  - {fileID: 8300000, guid: 5ac632478fcc5bc4d8882ba36f11579d, type: 3}
+  - {fileID: 8300000, guid: aa8f5c1cb7340ff42b6f55c7dfd38143, type: 3}
+  - {fileID: 8300000, guid: db6a3fc02e350f445bbb3ac6d93c8792, type: 3}
+  - {fileID: 8300000, guid: 53032b085acf8804196d0a249ccfa2cf, type: 3}
+  - {fileID: 8300000, guid: ee695bd05d10a9845aefff6e65fe673b, type: 3}
+  - {fileID: 8300000, guid: d9ef20450dea21646a8169e07e239b30, type: 3}
+  - {fileID: 8300000, guid: c75056be8595d5a4895a08dc65ccb12a, type: 3}
+  - {fileID: 8300000, guid: 8c08cef36dbb2cf4f836416eede3b6f3, type: 3}
+  _audStepsVol: 1
   _audHealthPickUp:
   - {fileID: 8300000, guid: 4bc21899eae7448ccaf4ebdd49cfcd9f, type: 3}
   _audHealthPickUpVol: 1
@@ -189,6 +208,18 @@ MonoBehaviour:
   reloadSound: {fileID: 8300000, guid: 42f814318ccc27f4f9575414dde12a1e, type: 3}
   emptySound: {fileID: 8300000, guid: ce74b2e2af9b6a740aebd34f1643c641, type: 3}
   changeGunSound: {fileID: 8300000, guid: 42f814318ccc27f4f9575414dde12a1e, type: 3}
+--- !u!114 &3836856877165091716
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2034240814404013845}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd09035910c9ffb48affa27593704bc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!33 &4977928010108839875
 MeshFilter:
   m_ObjectHideFlags: 0

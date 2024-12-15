@@ -4,22 +4,34 @@ using UnityEngine;
 
 public class PlayerFeet : MonoBehaviour
 {
-    private bool _isColliding;
-    private Collider _collider;
+    private Vector3 platformOffset;
 
-    public bool IsColliding { get { return _isColliding; } }
-
-    public Collider What { get { return _collider; } }
-
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionStay(Collision collision)
     {
-        _isColliding = true;
-        _collider = other;
+        if (collision.gameObject.CompareTag("MovingPlatform"))
+        {
+            // Save the offset of the player relative to the platform
+            platformOffset = collision.transform.position - transform.position;
+
+            // Lock the player to the platform by setting it as the child
+            transform.SetParent(collision.transform);
+        }
     }
 
-    private void OnTriggerExit(Collider other)
+    private void OnCollisionExit(Collision collision)
     {
-        _isColliding = false;
-        _collider = other;
+        if (collision.gameObject.CompareTag("MovingPlatform"))
+        {
+            transform.SetParent(null);
+        }
+    }
+
+    void Update()
+    {
+        if (transform.parent != null)
+        {
+            // Keep the player in the same relative position to the platform
+            transform.position = transform.parent.position - platformOffset;
+        }
     }
 }

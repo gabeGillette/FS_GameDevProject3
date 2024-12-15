@@ -15,6 +15,7 @@ TagManager:
   - FlashLight
   - InteractText
   - LoadingScreen
+  - MovingPlatform
   layers:
   - Default
   - TransparentFX
