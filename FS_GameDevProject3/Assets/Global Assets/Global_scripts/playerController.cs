@@ -398,18 +398,20 @@ public class playerController : MonoBehaviour, IDamage
 
     public void Death()
     {
-        // Save player data before respawn
-        GameManager.Instance.SavePlayerData(this);
-        _playerSpawn = GameObject.FindWithTag("PlayerSpawn");
+        // Save player data if necessary
+        // GameManager.Instance.SavePlayerData(this);
+        // _playerSpawn = GameObject.FindWithTag("PlayerSpawn");
 
+        // Perform any death-related logic (e.g., showing a death screen, etc.)
 
-       
-        // Reload scene (you could also load a specific respawn scene if desired)
-        GameManager.Instance.RespawnPlayer(_playerSpawn.transform);
-        Scene currentScene = SceneManager.GetActiveScene();
-        SceneManager.LoadScene(currentScene.name);
-        _gameManager.UpdateUI();
+        // Unlock the mouse cursor and make it visible
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
 
+        // Load the proper scene (in this case, scene with index 6)
+        SceneManager.LoadScene(6);
+
+        // If you have other death-related logic (e.g., show death screen), you can place it here
     }
 
     /// <summary>
