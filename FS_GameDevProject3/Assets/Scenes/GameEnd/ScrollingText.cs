@@ -14,6 +14,8 @@ public class ScrollingText : MonoBehaviour
     void Start()
     {
         textRectTransform = GetComponent<RectTransform>(); // Get the RectTransform of the text
+        Cursor.visible = true;  // Ensure the mouse cursor is visible
+        Cursor.lockState = CursorLockMode.None;
     }
 
     void Update()
