@@ -255,6 +255,7 @@ public class GameManager : MonoBehaviour
 
 
         SetPlayerReference();
+        UpdateUI();
        // LoadPlayerData(_player.GetComponent<playerController>());
 
     }

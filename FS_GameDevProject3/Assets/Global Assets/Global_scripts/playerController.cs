@@ -399,8 +399,8 @@ public class playerController : MonoBehaviour, IDamage
 
             // Optionally set minBloodAmount to reflect cumulative damage
             BleedBehavior.minBloodAmount = 0.5f * (1.0f - normalizedHealth);
-           // _gameManager.UpdateUI();
-
+            // _gameManager.UpdateUI();
+            _gameManager.UpdateUI();
         }
         else
         {
