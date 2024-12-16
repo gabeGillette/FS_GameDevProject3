@@ -37,14 +37,14 @@ public class GameManager : MonoBehaviour
     private List<GameObject> _evidenceList;
     public GameObject _playerSpawn;
 
-    private int _evidenceTotal;
+    public int _evidenceTotal;
     private int _evidenceCollected;
 
     public int _currentLevel;
 
     private List<string> _messageList = new List<string>();
 
-    private bool _isPaused;
+    private bool _isPaused = false;
     private bool isDisplayed;
     private float _timeScale;
 
@@ -255,6 +255,7 @@ public class GameManager : MonoBehaviour
 
 
         SetPlayerReference();
+        UpdateUI();
        // LoadPlayerData(_player.GetComponent<playerController>());
 
     }
@@ -289,7 +290,7 @@ public class GameManager : MonoBehaviour
 
     public void UpdateUI()
     {
-        _UITopLeft.text = ($"Health: {PlayerScript.HPCurrent}\n" +
+        _UITopLeft.text = (
        $"Ammo: {PlayerScript.SelectedGun.ammoCur} / {PlayerScript.SelectedGun.ammoRes}\n" +
        $"Evidence: {_evidenceCollected}/{_evidenceTotal}\n" +
        $"Monsters Spawned: {0}/{0}\n" +

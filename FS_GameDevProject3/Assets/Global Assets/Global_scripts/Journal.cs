@@ -14,6 +14,12 @@ public class Journal : MonoBehaviour
     public TextMeshProUGUI secondJournal; // Reference to the second journal UI element
     public TextMeshProUGUI thirdJournal;  // Reference to the third journal UI element
 
+    public GameObject _redacted1;
+    public GameObject _redacted2;
+    public GameObject _redacted3;
+    public GameObject _redacted4;
+
+
     public GameObject _mainPanel;  // The panel that contains the journal UI
 
     public playerController _playerController;  // Reference to the player controller (if needed)
@@ -26,6 +32,9 @@ public class Journal : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
+
+
         _mainPanel.SetActive(false);  // Hide the journal panel initially
         _timeScale = 1.0f;  // Normal time scale (game not paused)
         _playerController = FindObjectOfType<playerController>();  // Find player controller (if needed)
@@ -40,6 +49,9 @@ public class Journal : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        ToggleRedacted();
+
         // Listen for keyboard input to toggle the journal display
         if (Input.GetButtonDown("Journal"))
         {
@@ -108,5 +120,25 @@ public class Journal : MonoBehaviour
         firstJournal.gameObject.SetActive(journalone);
         secondJournal.gameObject.SetActive(journaltwo);
         thirdJournal.gameObject.SetActive(journalthree);
+    }
+
+    void ToggleRedacted()
+    {
+        // Create an array of the redacted objects
+        GameObject[] redactedObjects = { _redacted1.gameObject, _redacted2.gameObject, _redacted3.gameObject, _redacted4.gameObject };
+
+        // Iterate through the redacted objects and toggle their visibility based on evidence total
+        for (int i = 0; i < redactedObjects.Length; i++)
+        {
+            // Check if the current evidence is greater than or equal to the threshold for the redacted object
+            if (_gameManager._evidenceTotal >= (i + 1) * 2)
+            {
+                redactedObjects[i].SetActive(false); // Deactivate redacted object
+            }
+            else
+            {
+                redactedObjects[i].SetActive(true);  // Activate redacted object
+            }
+        }
     }
 }
