@@ -186,12 +186,13 @@ MonoBehaviour:
   headPos: {fileID: 4674899387255056533}
   meleePos: {fileID: 2041994045486386759}
   meleeHit: {fileID: 6763187765272334323, guid: 98ae80ff96f98a8468b2d4742a4e22a8, type: 3}
-  HP: 5
+  HP: 10
   meleeRate: 0.6
   roamDist: 15
   viewAngle: 120
   faceTargetSpeed: 5
   roamTimer: 3
+  itemDrop: {fileID: 0}
 --- !u!195 &2750417339490686521
 NavMeshAgent:
   m_ObjectHideFlags: 0
