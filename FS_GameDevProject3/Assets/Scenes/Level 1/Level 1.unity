@@ -4999,6 +4999,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -267.011
       objectReference: {fileID: 0}
+    - target: {fileID: 23967991916645226, guid: 5989ab8b158243445aef3657bfd64840, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: cc03ae1ac5f726643ad481b57b648171, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -11130,6 +11134,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemDrop: {fileID: 122093412}
   baseHealth: 2
+  glowColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  minGlowIntensity: 0
+  maxGlowIntensity: 5
+  pulseSpeed: 2
 --- !u!1001 &503996727
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -27428,7 +27436,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!65 &1393448570
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -32437,6 +32445,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -9.725
       objectReference: {fileID: 0}
+    - target: {fileID: 23967991916645226, guid: 5989ab8b158243445aef3657bfd64840, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: cc03ae1ac5f726643ad481b57b648171, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -32464,6 +32476,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemDrop: {fileID: 122093412}
   baseHealth: 1
+  glowColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  minGlowIntensity: 0
+  maxGlowIntensity: 5
+  pulseSpeed: 2
 --- !u!1001 &1643759811
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -34126,6 +34142,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -89.691
       objectReference: {fileID: 0}
+    - target: {fileID: 23967991916645226, guid: 5989ab8b158243445aef3657bfd64840, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: cc03ae1ac5f726643ad481b57b648171, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -34153,6 +34173,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemDrop: {fileID: 122093412}
   baseHealth: 2
+  glowColor: {r: 0.8301887, g: 0.79123044, b: 0.3485226, a: 0.57254905}
+  minGlowIntensity: 0
+  maxGlowIntensity: 0.2
+  pulseSpeed: 0.05
 --- !u!1001 &1747235394
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -38535,6 +38559,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -9.725
       objectReference: {fileID: 0}
+    - target: {fileID: 23967991916645226, guid: 5989ab8b158243445aef3657bfd64840, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: cc03ae1ac5f726643ad481b57b648171, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -38562,6 +38590,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemDrop: {fileID: 122093412}
   baseHealth: 1
+  glowColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  minGlowIntensity: 0
+  maxGlowIntensity: 5
+  pulseSpeed: 2
 --- !u!1001 &2008799305
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -41665,6 +41697,7 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 1168087560}
+  - {fileID: 1393448573}
   - {fileID: 1352083783}
   - {fileID: 402712865}
   - {fileID: 1502018044}
@@ -41701,7 +41734,6 @@ SceneRoots:
   - {fileID: 893862065}
   - {fileID: 641122395}
   - {fileID: 1872446006}
-  - {fileID: 1393448573}
   - {fileID: 745295829}
   - {fileID: 6780816093192428348}
   - {fileID: 1272030861}
