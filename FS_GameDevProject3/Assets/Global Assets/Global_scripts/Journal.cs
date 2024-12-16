@@ -18,6 +18,27 @@ public class Journal : MonoBehaviour
     public GameObject _redacted2;
     public GameObject _redacted3;
     public GameObject _redacted4;
+    public GameObject _redacted5;
+    public GameObject _redacted6;
+    public GameObject _redacted7;
+    public GameObject _redacted8;
+    public GameObject _redacted9;
+    public GameObject _redacted10;
+    public GameObject _redacted11;
+    public GameObject _redacted12;
+    public GameObject _redacted13;
+    public GameObject _redacted14;
+    public GameObject _redacted15;
+    public GameObject _redacted16;
+    public GameObject _redacted17;
+    public GameObject _redacted18;
+    public GameObject _redacted19;
+    public GameObject _redacted20;
+    //public GameObject _redacted21;
+    //public GameObject _redacted22;
+    //public GameObject _redacted23;
+    //public GameObject _redacted24;
+    //public GameObject _redacted25;
 
 
     public GameObject _mainPanel;  // The panel that contains the journal UI
@@ -125,7 +146,10 @@ public class Journal : MonoBehaviour
     void ToggleRedacted()
     {
         // Create an array of the redacted objects
-        GameObject[] redactedObjects = { _redacted1.gameObject, _redacted2.gameObject, _redacted3.gameObject, _redacted4.gameObject };
+        GameObject[] redactedObjects = { _redacted1.gameObject, _redacted2.gameObject, _redacted3.gameObject, _redacted4.gameObject,
+        _redacted5.gameObject,_redacted6.gameObject,_redacted7.gameObject,_redacted8.gameObject,_redacted9.gameObject,_redacted10.gameObject,
+        _redacted11.gameObject,_redacted12.gameObject,_redacted13.gameObject,_redacted14.gameObject,_redacted15.gameObject,_redacted16.gameObject,_redacted17.gameObject,_redacted18.gameObject,
+        _redacted19.gameObject,_redacted20.gameObject};
 
         // Iterate through the redacted objects and toggle their visibility based on evidence total
         for (int i = 0; i < redactedObjects.Length; i++)
