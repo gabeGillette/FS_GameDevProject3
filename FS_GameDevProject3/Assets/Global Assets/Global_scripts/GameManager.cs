@@ -44,7 +44,7 @@ public class GameManager : MonoBehaviour
 
     private List<string> _messageList = new List<string>();
 
-    private bool _isPaused;
+    private bool _isPaused = false;
     private bool isDisplayed;
     private float _timeScale;
 
@@ -290,7 +290,7 @@ public class GameManager : MonoBehaviour
 
     public void UpdateUI()
     {
-        _UITopLeft.text = ($"Health: {PlayerScript.HPCurrent}\n" +
+        _UITopLeft.text = (
        $"Ammo: {PlayerScript.SelectedGun.ammoCur} / {PlayerScript.SelectedGun.ammoRes}\n" +
        $"Evidence: {_evidenceCollected}/{_evidenceTotal}\n" +
        $"Monsters Spawned: {0}/{0}\n" +

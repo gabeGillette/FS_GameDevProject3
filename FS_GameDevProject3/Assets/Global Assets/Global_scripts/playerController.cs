@@ -150,6 +150,8 @@ public class playerController : MonoBehaviour, IDamage
         selectGun();
         reload();
         sprint();
+        _gameManager.UpdateUI();
+
 
     }
 
@@ -561,7 +563,7 @@ public class playerController : MonoBehaviour, IDamage
         RaycastHit hit;
         if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, _shootDist, ~_ignoreMask))
         {
-            Debug.Log(hit.collider.name);
+          //  Debug.Log(hit.collider.name);
             IDamage dmg = hit.collider.GetComponent<IDamage>();
 
             if (dmg != null)
