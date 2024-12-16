@@ -37,7 +37,7 @@ public class GameManager : MonoBehaviour
     private List<GameObject> _evidenceList;
     public GameObject _playerSpawn;
 
-    private int _evidenceTotal;
+    public int _evidenceTotal;
     private int _evidenceCollected;
 
     public int _currentLevel;

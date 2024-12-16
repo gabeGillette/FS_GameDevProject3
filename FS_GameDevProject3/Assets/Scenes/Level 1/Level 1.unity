@@ -23362,17 +23362,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3612713292389211926, guid: ec3664c7d2a2e7541bef8fc7d72a23b8, type: 3}
-      propertyPath: m_text
-      value: 'Ammo: 0/0
-
-        Evidence: 0/0
-
-        Monsters Spawned: 0/0
-
-        Monsters
-        Killed: 0'
-      objectReference: {fileID: 0}
     - target: {fileID: 5102530766408527463, guid: ec3664c7d2a2e7541bef8fc7d72a23b8, type: 3}
       propertyPath: m_Name
       value: UI
