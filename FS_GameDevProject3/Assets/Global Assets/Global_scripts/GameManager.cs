@@ -161,6 +161,8 @@ public class GameManager : MonoBehaviour
         // Save Evidence Collected
         PlayerPrefs.SetInt("TotalEvidenceCollected", _evidenceCollected);
 
+
+      //  Instance._playerSpawn.transform.position = transform.position;
         // Save player position
         PlayerPrefs.SetFloat("PlayerPosX", player.transform.position.x);
         PlayerPrefs.SetFloat("PlayerPosY", player.transform.position.y);
@@ -186,9 +188,15 @@ public class GameManager : MonoBehaviour
         int loadedAmmoRes = PlayerPrefs.GetInt("PlayerAmmoRes", player.SelectedGun.ammoRes); // Default to current ammo reserve if no saved value
 
         // Load player position
-        float loadedPosX = PlayerPrefs.GetFloat("PlayerPosX", player.transform.position.x); // Default to current position if no saved value
-        float loadedPosY = PlayerPrefs.GetFloat("PlayerPosY", player.transform.position.y);
-        float loadedPosZ = PlayerPrefs.GetFloat("PlayerPosZ", player.transform.position.z);
+        //float loadedPosX = PlayerPrefs.GetFloat("PlayerPosX", player.transform.position.x); // Default to current position if no saved value
+        //float loadedPosY = PlayerPrefs.GetFloat("PlayerPosY", player.transform.position.y);
+        //float loadedPosZ = PlayerPrefs.GetFloat("PlayerPosZ", player.transform.position.z);
+
+        float posX = PlayerPrefs.GetFloat("PlayerPosX", _playerSpawn.transform.position.x);  // Default to spawn position if not saved
+        float posY = PlayerPrefs.GetFloat("PlayerPosY", _playerSpawn.transform.position.y);
+        float posZ = PlayerPrefs.GetFloat("PlayerPosZ", _playerSpawn.transform.position.z);
+        //RespawnPlayer(_playerSpawn.transform);
+
 
         // Debug logs to check loaded data (optional)
         Debug.Log("Loading Player Data:");
@@ -196,15 +204,14 @@ public class GameManager : MonoBehaviour
         Debug.Log("Loaded Gun Index: " + loadedGunIndex);
         Debug.Log("Loaded Ammo Current: " + loadedAmmoCur);
         Debug.Log("Loaded Ammo Reserve: " + loadedAmmoRes);
-        Debug.Log("Loaded Position: " + new Vector3(loadedPosX, loadedPosY, loadedPosZ));
+        //Debug.Log("Loaded Position: " + new Vector3(loadedPosX, loadedPosY, loadedPosZ));
 
         // Apply loaded data to the player
         player.SetHealth(loadedHP); // Apply the loaded health
         player.SetGun(loadedGunIndex); // Apply the loaded gun index
         player.SetAmmo(loadedAmmoCur, loadedAmmoRes); // Apply the loaded ammo counts
 
-        // Set player position
-        player.transform.position = new Vector3(loadedPosX, loadedPosY, loadedPosZ);
+       
 
         // Optionally, you may want to reload the scene to match the loaded level data
         int currentLevel = PlayerPrefs.GetInt("CurrentLevel", 1);
@@ -215,8 +222,14 @@ public class GameManager : MonoBehaviour
             // Asynchronously load the new scene
             StartCoroutine(LoadSceneAsync(currentLevel));
         }
+        RespawnPlayer(_playerSpawn.transform);
+
+        // Set player position
+        //   player.transform.position = new Vector3(loadedPosX, loadedPosY, loadedPosZ);
         UpdateUI();
         // Debug log for confirming the data was applied
+
+
         Debug.Log("Player data loaded successfully.");
     }
 
