@@ -19,7 +19,7 @@ public class LevelRequirement : MonoBehaviour, IInteractable
 
     public bool hasKey = false;  // Player state: does the player have the key?
     public TextMeshProUGUI messageText;  // Reference to the message UI element
-    public float displayDuration = 2f;  // Duration the message will be displayed
+    public float displayDuration = 10f;  // Duration the message will be displayed
     public TextMeshProUGUI questText;
     // private GameObject _playerSpawn;
 
@@ -49,7 +49,7 @@ public class LevelRequirement : MonoBehaviour, IInteractable
         questText = GameObject.Find("QuestTracker").GetComponent<TextMeshProUGUI>();
       //  _playerSpawn = GameObject.FindWithTag("PlayerSpawn");
 
-        messageText.text = "";  // Clear the text initially
+       // messageText.text = "";  // Clear the text initially
         initializeCurrentScene();
         messageText.gameObject.SetActive(false);  // Ensure message text is hidden at the start
       //  updateJournal();
@@ -79,19 +79,30 @@ public class LevelRequirement : MonoBehaviour, IInteractable
             initializeCurrentScene();
 
             // Start a coroutine to hide the message after the specified duration
-            StartCoroutine(HideMessageAfterDelay(displayDuration));
+            //  StartCoroutine(HideMessageAfterDelay(displayDuration));
+            StartCoroutine(WaitForPlayerToCloseMessage());
         }
     }
 
-    private IEnumerator HideMessageAfterDelay(float delay)
-    {
-        // Wait for the specified duration
-        yield return new WaitForSeconds(delay);
+    //private IEnumerator HideMessageAfterDelay(float delay)
+    //{
+    //    // Wait for the specified duration
+    //    yield return new WaitForSeconds(delay);
 
-        // Deactivate the message text
+    //    // Deactivate the message text
+    //    messageText.gameObject.SetActive(false);
+    //}
+    private IEnumerator WaitForPlayerToCloseMessage()
+    {
+        // Wait until the player presses the Escape key
+        while (!Input.GetKeyDown(KeyCode.Escape))
+        {
+            yield return null;
+        }
+
+        // Deactivate the message text when the player presses Escape
         messageText.gameObject.SetActive(false);
     }
-
     void initializeCurrentScene()
     {
         Scene currentActiveScene = SceneManager.GetActiveScene();
@@ -106,8 +117,8 @@ public class LevelRequirement : MonoBehaviour, IInteractable
                 break;
             case "Level 2":
                 currentScene = currentSceneSelected.Level2;
-                messageText.text = "Looks like you need a Code to activate this.";
-                questText.text += "\nFind the 4 digit code.\n";
+                messageText.text = "Looks like you need a blue KeyCard to activate the next level.";
+                questText.text += "\nFind the Blue KeyCard.\n";
 
                 break;
             case "Level 3":
@@ -166,12 +177,12 @@ public class LevelRequirement : MonoBehaviour, IInteractable
         string nextSceneName = sceneNames[nextIndex];
 
         // Log to the console for debugging
-        Debug.Log("Current Scene: " + sceneNames[currentSceneIndex]);
-        Debug.Log("Next Scene: " + nextSceneName);
+        //Debug.Log("Current Scene: " + sceneNames[currentSceneIndex]);
+        //Debug.Log("Next Scene: " + nextSceneName);
 
         // Reset any game state before loading the next scene (e.g., resetting keys or objectives)
         hasKey = false; // Example of resetting the key state, if needed
-        questText.text = ""; // Reset the quest text
+       // questText.text = ""; // Reset the quest text
 
         // Load the next scene by its name, not index
         ChangeScene(nextSceneName);

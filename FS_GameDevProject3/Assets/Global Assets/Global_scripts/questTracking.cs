@@ -7,6 +7,8 @@ public class questTracking : MonoBehaviour
 {
 
     public TextMeshProUGUI questText;  // Reference to the message UI element
+    public GameManager _gameManager;
+
 
     private bool isDisplayed;
 
@@ -14,7 +16,7 @@ public class questTracking : MonoBehaviour
     void Start()
     {
       //  questText.text = "Find what's causing the disturbance in the Old Mansion.";
-
+      
     }
 
     // Update is called once per frame
@@ -26,6 +28,7 @@ public class questTracking : MonoBehaviour
             isDisplayed = !isDisplayed;
             displayQuest();
         }
+        JournalReminder();
     }
 
     void displayQuest()
@@ -41,4 +44,16 @@ public class questTracking : MonoBehaviour
             }
 
     }
+
+    void JournalReminder()
+    {
+        if(_gameManager._evidenceCollected >= _gameManager._evidenceTotal)
+        {
+            _gameManager._UIQuest.text = "Get to the Elevator and Get to the next Level";
+            _gameManager.UpdateUI();
+        }
+
+    }
+
+    
 }

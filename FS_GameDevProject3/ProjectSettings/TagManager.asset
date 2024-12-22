@@ -17,6 +17,7 @@ TagManager:
   - LoadingScreen
   - MovingPlatform
   - ItemDropper
+  - Reticle
   layers:
   - Default
   - TransparentFX

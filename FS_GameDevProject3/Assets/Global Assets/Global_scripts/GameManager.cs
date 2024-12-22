@@ -17,11 +17,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] TMP_Text _UITopLeft;
     [SerializeField] TMP_Text _UITopRight;
     [SerializeField] TMP_Text _UIMessages;
-    [SerializeField] TMP_Text _UIQuest;
+    [SerializeField] public TMP_Text _UIQuest;
 
     [Header("-----Menus-----")]
     [SerializeField] GameObject _menuActive;
     [SerializeField] GameObject _menuPause;
+    private GameObject _reticleObject;
 
     [SerializeField] [Range(0, 20)] float _messageDuration;
 
@@ -36,11 +37,13 @@ public class GameManager : MonoBehaviour
     private playerController _playerScript;
     private List<GameObject> _evidenceList;
     public GameObject _playerSpawn;
+    public GlobalSaveChecker _saveChecker;
 
     public int _evidenceTotal;
-    private int _evidenceCollected;
+    public int _evidenceCollected;
 
     public int _currentLevel;
+    public TextMeshProUGUI messageText;  // Reference to the message UI element
 
     private List<string> _messageList = new List<string>();
 
@@ -54,6 +57,7 @@ public class GameManager : MonoBehaviour
     private int savedAmmoCur;
     private int savedAmmoRes;
 
+   // private bool remindAboutJournal;
 
 
     /*------------------------------------------ PUBLIC ACCESSORS */
@@ -67,9 +71,14 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
+        GameObject globalSaveObject = GameObject.Find("GlobalSaveChecker");
+        GlobalSaveChecker globalSaveChecker = globalSaveObject.GetComponent<GlobalSaveChecker>();
+
+        _reticleObject = GameObject.FindGameObjectWithTag("Reticle");
         _isPaused = false;
         _timeScale = 1.0f;
-
+        messageText = GameObject.Find("Messages").GetComponent<TextMeshProUGUI>();
+     //   GameObject globalSaveObject = GameObject.Find("GlobalSaveObject");
         _currentLevel = SceneManager.GetActiveScene().buildIndex;
 
         // find the playerspawner
@@ -80,7 +89,14 @@ public class GameManager : MonoBehaviour
         {
             if (_player == null)
             {
-                RespawnPlayer(_playerSpawn.transform);
+                if (globalSaveChecker._isLoad)
+                {
+                    LoadPlayerData(_playerScript); 
+                }
+                else
+                {
+                    RespawnPlayer(_playerSpawn.transform);
+                }
 
               //  SetPlayerReference();
             }
@@ -124,6 +140,8 @@ public class GameManager : MonoBehaviour
         }
         _player = GameObject.FindWithTag("Player");
 
+       
+
     }
 
     public int GetCurrentLevel()
@@ -133,7 +151,7 @@ public class GameManager : MonoBehaviour
     // Add a method to store player data
     public void SavePlayerData(playerController player)
     {
-        // Save health
+        // Save player health
         PlayerPrefs.SetInt("PlayerHealth", player.HPCurrent);
 
         // Save selected gun index
@@ -153,31 +171,19 @@ public class GameManager : MonoBehaviour
         PlayerPrefs.SetFloat("PlayerPosY", player.transform.position.y);
         PlayerPrefs.SetFloat("PlayerPosZ", player.transform.position.z);
 
+        // Save current level index (if needed for scene tracking)
         PlayerPrefs.SetInt("CurrentLevel", _currentLevel);
-        // Debug log for evidence collected
-        //  Debug.Log(_evidenceCollected);
 
-        // Save the data to disk
+        // Save all data to disk
         PlayerPrefs.Save();
 
-
-        //Debug.Log("Player Health: " + PlayerPrefs.GetInt("PlayerHealth"));
-        //Debug.Log("Player Gun Index: " + PlayerPrefs.GetInt("PlayerGunIndex"));
-        //Debug.Log("Player Ammo Current: " + PlayerPrefs.GetInt("PlayerAmmoCur"));
-        //Debug.Log("Player Ammo Reserves: " + PlayerPrefs.GetInt("PlayerAmmoRes"));
-        //Debug.Log("Evidence Collected: " + PlayerPrefs.GetInt("TotalEvidenceCollected"));
-        //Debug.Log("Player Position: " + PlayerPrefs.GetFloat("PlayerPosX") + ", " +
-        //          PlayerPrefs.GetFloat("PlayerPosY") + ", " + PlayerPrefs.GetFloat("PlayerPosZ"));
-
+        // Debug log to check if saving worked (optional)
+        Debug.Log("Player Data Saved: Health = " + player.HPCurrent + ", Gun Index = " + player._selectedGun);
     }
 
     // Add a method to load player data
     public void LoadPlayerData(playerController player)
     {
-        //int curLevel = PlayerPrefs.GetInt("CurrentLevel", 1);
-
-        //SceneManager.LoadScene(curLevel);
-
         // Load saved player data from PlayerPrefs
         int loadedHP = PlayerPrefs.GetInt("PlayerHealth", player.HPCurrent); // Default to current health if no saved value
         int loadedGunIndex = PlayerPrefs.GetInt("PlayerGunIndex", player._selectedGun); // Default to current gun index if no saved value
@@ -189,13 +195,13 @@ public class GameManager : MonoBehaviour
         float loadedPosY = PlayerPrefs.GetFloat("PlayerPosY", player.transform.position.y);
         float loadedPosZ = PlayerPrefs.GetFloat("PlayerPosZ", player.transform.position.z);
 
-        // Debug logs to check loaded data
-        //Debug.Log("Loading Player Data:");
-        //Debug.Log("Loaded Health: " + loadedHP);
-        //Debug.Log("Loaded Gun Index: " + loadedGunIndex);
-        //Debug.Log("Loaded Ammo Current: " + loadedAmmoCur);
-        //Debug.Log("Loaded Ammo Reserve: " + loadedAmmoRes);
-        //Debug.Log("Loaded Position: " + new Vector3(loadedPosX, loadedPosY, loadedPosZ));
+        // Debug logs to check loaded data (optional)
+        Debug.Log("Loading Player Data:");
+        Debug.Log("Loaded Health: " + loadedHP);
+        Debug.Log("Loaded Gun Index: " + loadedGunIndex);
+        Debug.Log("Loaded Ammo Current: " + loadedAmmoCur);
+        Debug.Log("Loaded Ammo Reserve: " + loadedAmmoRes);
+        Debug.Log("Loaded Position: " + new Vector3(loadedPosX, loadedPosY, loadedPosZ));
 
         // Apply loaded data to the player
         player.SetHealth(loadedHP); // Apply the loaded health
@@ -204,8 +210,45 @@ public class GameManager : MonoBehaviour
 
         // Set player position
         player.transform.position = new Vector3(loadedPosX, loadedPosY, loadedPosZ);
-        // Scene currentScene = SceneManager.GetActiveScene();
-        // Debug.Log("Player data loaded successfully.");
+
+        // Optionally, you may want to reload the scene to match the loaded level data
+        int currentLevel = PlayerPrefs.GetInt("CurrentLevel", 1);
+
+        // Avoid scene reload while applying player data
+        if (currentLevel != SceneManager.GetActiveScene().buildIndex)
+        {
+            // Asynchronously load the new scene
+            StartCoroutine(LoadSceneAsync(currentLevel));
+        }
+        UpdateUI();
+        // Debug log for confirming the data was applied
+        Debug.Log("Player data loaded successfully.");
+    }
+
+    private IEnumerator LoadSceneAsync(int sceneIndex)
+    {
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneIndex);
+
+        // Don't let the scene activate until everything is loaded
+        asyncLoad.allowSceneActivation = false;
+
+        // Wait until the scene has fully loaded
+        while (!asyncLoad.isDone)
+        {
+            // Optionally, you could show a progress bar here, or log the loading progress
+            // Debug.Log("Loading Progress: " + asyncLoad.progress);
+
+            // The scene is fully loaded when the `progress` is at 0.9f
+            if (asyncLoad.progress >= 0.9f)
+            {
+                // Activate the scene now that it's fully loaded
+                asyncLoad.allowSceneActivation = true;
+            }
+
+            yield return null;
+        }
+
+        Debug.Log("Scene loaded and activated successfully.");
     }
 
     public void CollectEvidence()
@@ -255,6 +298,7 @@ public class GameManager : MonoBehaviour
 
 
         SetPlayerReference();
+        _playerScript.restoreHealth(100);
         UpdateUI();
        // LoadPlayerData(_player.GetComponent<playerController>());
 
@@ -292,9 +336,9 @@ public class GameManager : MonoBehaviour
     {
         _UITopLeft.text = (
        $"Ammo: {PlayerScript.SelectedGun.ammoCur} / {PlayerScript.SelectedGun.ammoRes}\n" +
-       $"Evidence: {_evidenceCollected}/{_evidenceTotal}\n" +
-       $"Monsters Spawned: {0}/{0}\n" +
-       $"Monsters Killed: {0}/{0}");
+       $"Evidence: {_evidenceCollected}/{_evidenceTotal}\n");
+      // $"Monsters Spawned: {0}/{0}\n" +
+      // $"Monsters Killed: {0}/{0}");
 
         _UITopRight.text = ($"Level: {_currentLevel}\n" +
             $"Version: {_versionFile.text}");
@@ -314,6 +358,7 @@ public class GameManager : MonoBehaviour
     public void PauseGame()
     {
         _isPaused = true;
+        _reticleObject.SetActive(false);
         _menuActive = _menuPause;
         _menuActive.SetActive(true);
         Time.timeScale = 0.0f;
@@ -323,6 +368,7 @@ public class GameManager : MonoBehaviour
     public void UnpauseGame()
     {
         _isPaused = false;
+        _reticleObject.SetActive(true);
         _menuActive.SetActive(false);
         _menuActive = null;
         Time.timeScale = _timeScale;
@@ -357,4 +403,28 @@ public class GameManager : MonoBehaviour
           //  Debug.LogError("Player spawn point not found in the scene!");
         }
     }
+
+    //void JournalReminder()
+    //{
+    //    if (remindAboutJournal)
+    //    {
+    //        messageText.text = "Press J to Review your Journal";
+    //        messageText.gameObject.SetActive(true);
+    //        StartCoroutine(WaitForPlayerToCloseMessage());
+
+    //    }
+       
+    //}
+
+    //private IEnumerator WaitForPlayerToCloseMessage()
+    //{
+    //    // Wait until the player presses the Escape key
+    //    while (!Input.GetKeyDown(KeyCode.Escape))
+    //    {
+    //        yield return null;
+    //    }
+
+    //    // Deactivate the message text when the player presses Escape
+    //    messageText.gameObject.SetActive(false);
+    //}
 }

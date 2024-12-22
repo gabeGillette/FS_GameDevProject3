@@ -314,6 +314,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   questText: {fileID: 2400952024766912740}
+  _gameManager: {fileID: 8426035514892977236}
 --- !u!222 &5536543621074559598
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1116,7 +1117,9 @@ MonoBehaviour:
   _player: {fileID: 0}
   _playerSpawn: {fileID: 0}
   _evidenceTotal: 0
+  _evidenceCollected: 0
   _currentLevel: 0
+  messageText: {fileID: 0}
 --- !u!1 &1979737846361046625
 GameObject:
   m_ObjectHideFlags: 0
@@ -5641,7 +5644,7 @@ GameObject:
   - component: {fileID: 8269258617594728424}
   m_Layer: 5
   m_Name: Reticle
-  m_TagString: Untagged
+  m_TagString: Reticle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

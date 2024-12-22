@@ -32,21 +32,28 @@ public class ButtonFunctions : MonoBehaviour
 
     public void save()
     {
+        // Find the player GameObject
         GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+
         if (playerObject != null)
         {
+            // Get the playerController component
             playerController player = playerObject.GetComponent<playerController>();
             if (player != null)
             {
+                // Call the SavePlayerData method from the GameManager
                 GameManager.Instance.SavePlayerData(player);
+                Debug.Log("Player data saved successfully.");
             }
             else
             {
-                Debug.LogError("PlayerController component not found on player object!");
+                // Log error if playerController component is not found
+                Debug.LogError("playerController component not found on player object!");
             }
         }
         else
         {
+            // Log error if player GameObject is not found
             Debug.LogError("Player object not found!");
         }
     }
@@ -54,31 +61,13 @@ public class ButtonFunctions : MonoBehaviour
     public void load()
     {
         GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
-        if (playerObject != null)
-        {
-            playerController player = playerObject.GetComponent<playerController>();
-            if (player != null)
-            {
-                GameManager.Instance.LoadPlayerData(player); // Load player data first
-            }
-            else
-            {
-                Debug.LogError("PlayerController component not found on player object!");
-            }
-        }
-        else
-        {
-            Debug.LogError("Player object not found!");
-        }
+        playerController player = playerObject.GetComponent<playerController>();
 
-        // Optionally reload the current scene if necessary (if it's part of the load function)
-        Scene currentScene = SceneManager.GetActiveScene();
-        SceneManager.LoadScene(currentScene.buildIndex);
-
-        // Subscribe to sceneLoaded event to handle player data loading once the scene is loaded
-      //  SceneManager.sceneLoaded += OnSceneLoaded;
+        // Start the loading process asynchronously
+        GameManager.Instance.LoadPlayerData(player);
     }
 
+   
     public void quit()
     {
 #if UNITY_EDITOR

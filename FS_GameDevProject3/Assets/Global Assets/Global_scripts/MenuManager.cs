@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
-using System;
-using UnityEngine.UIElements;
+using UnityEngine.EventSystems;
 using TMPro;
 using UnityEngine.SceneManagement;
 
@@ -15,6 +14,7 @@ public class MenuManager : MonoBehaviour
     [SerializeField] GameObject _modalPopup;
     [SerializeField] GameObject _pauseMenu;
     [SerializeField] GameObject _mainMenu;
+  //  [SerializeField] GameObject _gameManager;
 
     [SerializeField] GameObject _optionsMenu;
 
@@ -22,6 +22,7 @@ public class MenuManager : MonoBehaviour
 
     [SerializeField] GameObject _LoadMenu;
     [SerializeField] GameObject _storyBoard;
+    [SerializeField] GameObject _credits;
 
     //[SerializeField] GameObject[] _allMenus;
 
@@ -57,12 +58,27 @@ public class MenuManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        GameObject globalSaveObject = GameObject.Find("GlobalSaveChecker");
+
+
         _menuSounds = new Dictionary<string, AudioClip>(){{"hover", _hover}, {"accept", _accept}, {"deny", _deny}, {"next", _next}, {"gunshot", _gunShot}};
         
         _buttonActions = new Dictionary<string, UnityAction>();
         _buttonActions.Add("new", () => StartNewGame()); // Starts new game
 
-        _buttonActions.Add("load", () => Debug.Log("load game"));
+        _buttonActions.Add("load", () =>
+        {
+            // _gameManager.LoadPlayerData();
+            int currentLevel = PlayerPrefs.GetInt("CurrentLevel", 1);
+            if (currentLevel != SceneManager.GetActiveScene().buildIndex)
+            {
+                SceneManager.LoadScene(currentLevel); // Load the saved level, if necessary
+                _helpMenu.gameObject.SetActive(false); // Disable the help menu
+
+            }
+            //   GlobalSaveChecker globalSaveChecker = globalSaveObject.GetComponent<GlobalSaveChecker>();
+            //   globalSaveChecker._isLoad = true;
+        });
        
 
         _buttonActions.Add("options", () => {
@@ -78,7 +94,10 @@ public class MenuManager : MonoBehaviour
             _storyBoard.gameObject.SetActive(true);
         });
             
-        _buttonActions.Add("credits", () => Debug.Log("credits menu"));
+        _buttonActions.Add("credits", () =>
+        {
+            _credits.gameObject.SetActive(true);
+        });
 
         _buttonActions.Add("quit", () => {
             DisplayModal("Are you sure?", "Do you really want to quit?", 
@@ -113,6 +132,7 @@ public class MenuManager : MonoBehaviour
             if (_helpMenu != null)
             {
                 _helpMenu.gameObject.SetActive(false); // Disable the help menu
+                _credits.gameObject.SetActive(false);
             }
             else
             {
@@ -217,4 +237,6 @@ public class MenuManager : MonoBehaviour
 
 
     }
+
+    
 }
