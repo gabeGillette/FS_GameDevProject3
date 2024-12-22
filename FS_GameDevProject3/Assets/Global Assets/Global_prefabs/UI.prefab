@@ -993,7 +993,7 @@ GameObject:
   - component: {fileID: 6126571549523607945}
   m_Layer: 0
   m_Name: MainPanel
-  m_TagString: Untagged
+  m_TagString: JournalPanel
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1116,6 +1116,7 @@ MonoBehaviour:
   _versionFile: {fileID: 4900000, guid: 35c4f19d0d371284189df6fdd20eebbc, type: 3}
   _player: {fileID: 0}
   _playerSpawn: {fileID: 0}
+  _saveChecker: {fileID: 0}
   _evidenceTotal: 0
   _evidenceCollected: 0
   _currentLevel: 0
@@ -2184,7 +2185,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -378, y: 482}
+  m_AnchoredPosition: {x: -143, y: 482}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1834439015610660144
@@ -2215,7 +2216,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: JOURNAL ENTRIES
+  m_text: "JOURNAL ENTRIES\n -Collect Evidence-"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2242,8 +2243,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 100
-  m_fontSizeBase: 100
+  m_fontSize: 50
+  m_fontSizeBase: 50
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

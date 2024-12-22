@@ -15,7 +15,7 @@ public enum currentSceneSelected
 
 public class LevelRequirement : MonoBehaviour, IInteractable
 {
-
+    public GameObject _journalObject;
 
     public bool hasKey = false;  // Player state: does the player have the key?
     public TextMeshProUGUI messageText;  // Reference to the message UI element
@@ -39,6 +39,7 @@ public class LevelRequirement : MonoBehaviour, IInteractable
     void Awake()
     {
         _gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
+        _journalObject = GameObject.FindGameObjectWithTag("JournalPanel");
     }
 
     void Start()
@@ -186,5 +187,7 @@ public class LevelRequirement : MonoBehaviour, IInteractable
 
         // Load the next scene by its name, not index
         ChangeScene(nextSceneName);
+        _journalObject.SetActive(true);
+
     }
 }

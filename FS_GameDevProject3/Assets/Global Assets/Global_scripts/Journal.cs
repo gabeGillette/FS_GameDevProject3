@@ -56,7 +56,7 @@ public class Journal : MonoBehaviour
 
 
 
-        _mainPanel.SetActive(false);  // Hide the journal panel initially
+     //   _mainPanel.SetActive(false);  // Hide the journal panel initially
         _timeScale = 1.0f;  // Normal time scale (game not paused)
         _playerController = FindObjectOfType<playerController>();  // Find player controller (if needed)
 

@@ -18,6 +18,7 @@ TagManager:
   - MovingPlatform
   - ItemDropper
   - Reticle
+  - JournalPanel
   layers:
   - Default
   - TransparentFX
