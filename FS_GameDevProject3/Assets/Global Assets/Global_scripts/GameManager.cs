@@ -71,8 +71,8 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        GameObject globalSaveObject = GameObject.Find("GlobalSaveChecker");
-        GlobalSaveChecker globalSaveChecker = globalSaveObject.GetComponent<GlobalSaveChecker>();
+     //    GameObject globalSaveObject = GameObject.Find("GlobalSaveChecker");
+      //  GlobalSaveChecker globalSaveChecker = globalSaveObject.GetComponent<GlobalSaveChecker>();
 
         _reticleObject = GameObject.FindGameObjectWithTag("Reticle");
         _isPaused = false;
@@ -89,14 +89,9 @@ public class GameManager : MonoBehaviour
         {
             if (_player == null)
             {
-                if (globalSaveChecker._isLoad)
-                {
-                    LoadPlayerData(_playerScript); 
-                }
-                else
-                {
+                
                     RespawnPlayer(_playerSpawn.transform);
-                }
+                
 
               //  SetPlayerReference();
             }
@@ -298,7 +293,7 @@ public class GameManager : MonoBehaviour
 
 
         SetPlayerReference();
-        _playerScript.restoreHealth(100);
+       // _playerScript.restoreHealth(100);
         UpdateUI();
        // LoadPlayerData(_player.GetComponent<playerController>());
 

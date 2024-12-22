@@ -6,7 +6,6 @@ public class FallingDeath : MonoBehaviour
 {
    
 
-    // Update is called once per frame
     private void OnTriggerEnter(Collider other)
     {
         GameObject player = GameObject.FindGameObjectWithTag("Player");
