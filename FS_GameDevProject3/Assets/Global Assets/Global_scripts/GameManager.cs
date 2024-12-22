@@ -390,6 +390,7 @@ public class GameManager : MonoBehaviour
 
         if (_playerSpawn != null)
         {
+           
             // Respawn the player at the PlayerSpawn position
             RespawnPlayer(_playerSpawn.transform);
         }
